@@ -158,5 +158,5 @@ It can also:
 
 ### 1️⃣ Clone the repository
 ```bash
-git clone https://github.com/Itzeiaa/exam-miner-2.0.git
-cd exam-miner-2.0
+git clone https://github.com/Itzeiaa/exam-maker.git
+cd examminer

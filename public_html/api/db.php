@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "examminer";
 $password = "YOUR_PASSWPRD";
-$dbname = "examminer";
+$dbname = "exammaker_db";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);

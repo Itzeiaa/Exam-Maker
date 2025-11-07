@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Exam Miner 2.0 — View Exam (Mobile)</title>
+  <title>Exam Maker — View Exam (Mobile)</title>
   @vite('resources/css/app.css')
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
 
@@ -51,7 +51,7 @@
           <img style="width:30px" src="/images/icon.png"></img>
         </div>
         <h1 class="font-bold text-gray-900 whitespace-nowrap leading-tight
-                   text-[clamp(1.1rem,4.6vw,1.35rem)]">Exam Miner 2.0</h1>
+                   text-[clamp(1.1rem,4.6vw,1.35rem)]">Exam Maker</h1>
       </div>
 
       <a href="/profile" class="w-10 h-10 rounded-full overflow-hidden border border-gray-200 shadow">
@@ -71,7 +71,7 @@
           <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center mr-3 shadow">
             <img style="width:30px" src="/images/icon.png"></img>
           </div>
-          <h2 class="text-white font-bold text-lg">Exam Miner 2.0</h2>
+          <h2 class="text-white font-bold text-lg">Exam Maker</h2>
         </div>
       </div>
 

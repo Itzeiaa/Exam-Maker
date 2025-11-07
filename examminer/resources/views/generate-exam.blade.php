@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
-  <title>Exam Maker — NLP Generator</title>
+  <title>Exam Maker — exam Generator</title>
   @vite('resources/css/app.css')
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
 
@@ -2087,6 +2087,141 @@ async function runBatchesParallel(kb, allPlans){
   return results;
 }
 
+/*
+function buildHTMLFromAISchemaSet(set, title, figs = []) {
+  const num = set.set_id || 1;
+  const sections = { MCQ:[], TF:[], ID:[], MATCH:[], ESSAY:[] };
+  const keyLines = [];
+  let qnum = 1;
+  const pushKey = (n, ans) => keyLines.push(`${n}. ${ans}`);
+
+  // pick ONE figure for the whole set (first selected, if any)
+  const headerFig = (Array.isArray(figs) && figs.length) ? figs[0] : null;
+  const headerFigureHTML = headerFig ? `
+    <div class="mt-2 mb-3 text-center">
+      <img src="${headerFig.src}" alt="${escapeHTML(headerFig.name||'Figure')}"
+           style="max-width:100%;max-height:180px;object-fit:contain;border:1px solid #eee;padding:6px;border-radius:8px;">
+      ${headerFig.name ? `<div class="small muted mt-1">${escapeHTML(headerFig.name)}</div>` : ""}
+    </div>
+  ` : "";
+
+  // MCQ
+  (set.mcq||[]).forEach(it=>{
+    const opts = (it.choices||[]).join('<br>');
+    sections.MCQ.push(
+      `<div class="q">
+         <div><strong>${qnum}.</strong> ${escapeHTML(it.stem)}</div>
+         <div style="margin-top:6px">${opts}</div>
+       </div>`
+    );
+    pushKey(qnum, it.answer || "");
+    qnum++;
+  });
+
+  // True/False
+  (set.true_false||[]).forEach(it=>{
+    sections.TF.push(
+      `<div class="q">
+         <div><strong>${qnum}.</strong> ${escapeHTML(it.stem)} (True/False)</div>
+       </div>`
+    );
+    pushKey(qnum, it.answer || "");
+    qnum++;
+  });
+
+  // Identification
+  (set.identification||[]).forEach(it=>{
+    sections.ID.push(
+      `<div class="q"><strong>${qnum}.</strong> ${escapeHTML(it.prompt)} <em>(Identification)</em></div>`
+    );
+    pushKey(qnum, it.answer || "");
+    qnum++;
+  });
+
+
+// Matching — COUNT EACH PAIR AS ONE NUMBERED ITEM
+(set.matching || []).forEach((group, gidx) => {
+  const colA = Array.isArray(group?.columnA) ? group.columnA.slice() : [];
+  const colB = Array.isArray(group?.columnB) ? group.columnB.slice() : [];
+  const pairs = Math.min(colA.length, colB.length);
+  if (!pairs) return;
+
+  const stripLead = s => String(s ?? "").replace(/^\s*([0-9]+\.|[A-Za-z]\.)\s* 0970/, "").trim();
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+  const colBLines = colB.slice(0, pairs).map((txt, i) => {
+    const L = letters[i] || String.fromCharCode(65 + (i % 26));
+    return `${L}. ${escapeHTML(stripLead(txt))}`;
+  });
+
+  const aLinesHTML = colA.slice(0, pairs).map((txt, i) =>
+    `${(qnum + i)}. ${escapeHTML(stripLead(txt))}`
+  ).join("<br>");
+
+  const bLinesHTML = colBLines.join("<br>");
+
+  sections.MATCH.push(
+    `<div class="q">
+       ${ (set.matching?.length > 1) ? `<div class="small muted mb-1">Group ${gidx+1}</div>` : "" }
+       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px;">
+         <div><div class="small muted">Column A</div>${aLinesHTML}</div>
+         <div><div class="small muted">Column B</div>${bLinesHTML}</div>
+       </div>
+     </div>`
+  );
+
+  const keyMap = group?.answer_key || {};
+  for (let i = 0; i < pairs; i++) {
+    let ans = keyMap[String(i + 1)];
+    if (!ans) {
+      const k = letters[i];
+      ans = keyMap[k] || keyMap[k?.toLowerCase()];
+    }
+    pushKey(qnum + i, (ans || "").toString().trim());
+  }
+  qnum += pairs;
+});
+
+
+
+
+
+// Essay
+  (set.essay||[]).forEach(it=>{
+    const stem = it.prompt + (it.guidance ? ` ${it.guidance}` : "");
+    sections.ESSAY.push(
+      `<div class="q"><strong>${qnum}.</strong> ${escapeHTML(stem)} <em>(Essay)</em></div>`
+    );
+    pushKey(qnum, "(open-ended)");
+    qnum++;
+  });
+
+  const examHtml = `
+    <div class="paper" contenteditable="true" data-paper>
+      <header class="flex items-end justify-between gap-4 pb-3 mb-2 border-b border-gray-200">
+        <div class="title">${escapeHTML(title)} — SET ${num}</div>
+        <div class="small muted">Name: ____________________  Score: ______</div>
+      </header>
+      ${headerFigureHTML}
+      ${ sections.MCQ.length   ? `<div class="font-semibold mt-4 mb-1">Multiple Choice</div>${sections.MCQ.join('')}`   : '' }
+      ${ sections.TF.length    ? `<div class="font-semibold mt-4 mb-1">True or False</div>${sections.TF.join('')}`       : '' }
+      ${ sections.ID.length    ? `<div class="font-semibold mt-4 mb-1">Identification</div>${sections.ID.join('')}`       : '' }
+      ${ sections.MATCH.length ? `<div class="font-semibold mt-4 mb-1">Matching Type</div>${sections.MATCH.join('')}`     : '' }
+      ${ sections.ESSAY.length ? `<div class="font-semibold mt-4 mb-1">Essay</div>${sections.ESSAY.join('')}`             : '' }
+      <footer class="mt-6 pt-3 border-t border-dashed border-gray-200 small muted">Generated by Exam Maker - Agents</footer>
+    </div>
+  `;
+  const keyHtml = `
+    <div class="paper page-break" data-key>
+      <div class="title font-bold text-lg mb-2">${escapeHTML(title)} — Answer Key (SET ${num})</div>
+      <div class="small whitespace-pre-line">${escapeHTML(
+        keyLines.slice().sort((A,B)=>parseInt(A)-parseInt(B)).join("\\n")
+      )}</div>
+    </div>
+  `;
+  return { examHtml, keyHtml, keyLines };
+}
+*/
 
 function buildHTMLFromAISchemaSet(set, title, figs = []) {
   const num = set.set_id || 1;
@@ -2097,6 +2232,25 @@ function buildHTMLFromAISchemaSet(set, title, figs = []) {
   
   const pushKey = (n, ans) => keyLines.push(`${n}. ${ans}`);
 
+  // cycle figures across questions
+  // const nextFig = makeFigureCycler(figs);
+/*
+  // helper: insert inline figure into a stem (supports [FIG] placeholder)
+  function stemWithInlineFigure(rawStem, fallbackAlt = 'Figure') {
+    const stemHTML = String(rawStem ?? '');
+    const fig = nextFig();
+    if (!fig) return escapeHTML(stemHTML);
+
+    const figHTML = figureImgHTML(fig, fallbackAlt);
+
+    // If author explicitly put [FIG] in the stem, replace that token
+    if (/\[FIG\]/i.test(stemHTML)) {
+      return escapeHTML(stemHTML).replace(/\[FIG\]/i, figHTML);
+    }
+    // Otherwise, append the image inline at the end of the stem
+    return `${escapeHTML(stemHTML)} ${figHTML}`;
+  }
+  */
   // Insert a figure only for allowed types; supports [FIG] placeholder
 function stemWithInlineFigureFor(type, rawStem, fallbackAlt = 'Figure') {
   const stemText = String(rawStem ?? '');
@@ -2237,7 +2391,8 @@ function stemWithInlineFigureFor(type, rawStem, fallbackAlt = 'Figure') {
     <div class="paper" contenteditable="true" data-paper>
       <header class="flex items-end justify-between gap-4 pb-3 mb-2 border-b border-gray-200">
         <div class="title">${escapeHTML(title)} — SET ${num}</div>
-        <div class="small muted">Name: ____________________  Score: ______</div>
+        <div class="small muted">Name: ____________________  Date: ______</div>
+        <div class="small muted">Year & Section: ____________________  Score: ______</div>
       </header>
       ${ sections.MCQ.length   ? `<div class="font-semibold mt-4 mb-1">Multiple Choice</div>${sections.MCQ.join('')}`   : '' }
       ${ sections.TF.length    ? `<div class="font-semibold mt-4 mb-1">True or False</div>${sections.TF.join('')}`       : '' }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exam Miner 2.0 - My Exams</title>
+    <title>Exam Makers - My Exams</title>
     @vite('resources/css/app.css')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -24,7 +24,7 @@
                 <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center mr-3 shadow-lg">
                     <img style="width:30px" src="/images/icon.png"></img>
                 </div>
-                <h1 class="text-xl font-bold text-white">Exam Miner 2.0</h1>
+                <h1 class="text-xl font-bold text-white">Exam Maker</h1>
             </a>
 
             <nav class="mt-6 px-4">
@@ -40,6 +40,7 @@
                     <i class="fas fa-file-alt mr-3"></i>
                     My Exams
                 </a>
+                <a href="/cms" class="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-xl mb-2"><i class="fas fa-clipboard-list mr-3"></i> CMS</a>
             </nav>
 
             <!-- User Profile Section (filled via JS) -->
@@ -110,7 +111,7 @@
         <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-6 rounded-t-2xl">
                 <div class="flex items-center justify-between">
-                    <h2 class="text-2xl font-bold text-white">How Exam Miner 2.0 Works</h2>
+                    <h2 class="text-2xl font-bold text-white">How Exam Maker Works</h2>
                     <button onclick="closeTutorial()" class="text-white hover:text-gray-200 transition-colors duration-200">
                         <i class="fas fa-times text-xl"></i>
                     </button>

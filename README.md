@@ -1,18 +1,18 @@
-# 🧠 Exam-Miner 2.0
+# 🧠 Exam-Maker
 
-![Exam-Miner Banner](https://exam-miner.com/images/banner.png)
+![Exam-Miner Banner](https://exammaker.site/images/banner.png)
 
 > **AI-Powered Exam & Quiz Generator** that automatically creates high-quality test questions from your uploaded learning materials — supporting **PDF**, **Word**, and **PowerPoint** files.
 
 ---
 
 ## 🌐 Live Demo
-🎯 **Try it now:** [https://exam-miner.com](https://exam-miner.com)
+🎯 **Try it now:** [https://exammaker.site](https://exammaker.site)
 
 ---
 
 ## 🚀 About the Project
-**Exam-Miner 2.0** is an intelligent, web-based platform designed to help teachers and educators generate exams and quizzes instantly.  
+**Exam-Maker** is an intelligent, web-based platform designed to help teachers and educators generate exams and quizzes instantly.  
 It uses **AI models** (Gemini, DeepSeek, OpenRouter LLMs, etc.) to analyze your uploaded files and produce **multiple exam types**, including:
 
 - Multiple Choice  
@@ -48,7 +48,7 @@ It can also:
 
 | Dashboard | Exam Generator | Mobile View |
 |:----------:|:---------------:|:----------:|
-| ![Dashboard](https://exam-miner.com/images/dashboard.png) | ![Exam Generator](https://exam-miner.com/images/generator.png) | ![Mobile View](https://exam-miner.com/images/mobile.png) |
+| ![Dashboard](https://exammaker.site/images/dashboard.png) | ![Exam Generator](https://exammaker.site/images/generator.png) | ![Mobile View](https://exammaker.site/images/mobile.png) |
 
 ---
 
@@ -61,7 +61,7 @@ It can also:
 | **AI Models** | Gemini 2.5 Flash / DeepSeek / OpenRouter LLMs |
 | **PDF / DOCX Handling** | PhpWord, jsPDF, html-docx-js |
 | **Auth** | Firebase PHP-JWT & local JWT tokens |
-| **Hosting** | Hostinger Premium + exam-miner.com |
+| **Hosting** | Hostinger Premium + exammaker.site |
 
 ---
 

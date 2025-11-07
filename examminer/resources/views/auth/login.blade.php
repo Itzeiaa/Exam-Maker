@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Exam Miner 2.0 - Login</title>
+    <title>Exam Maker - Login</title>
     @vite('resources/css/app.css')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 </head>
@@ -19,9 +19,9 @@
     <div class="relative z-10 w-full max-w-md">
         <a href="/" class="flex items-center mb-8 hover:opacity-80 transition-opacity duration-200">
             <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center mr-3 shadow-lg">
-                <i class="fas fa-graduation-cap text-blue-500 text-xl"></i>
+               <img style="width:30px" src="/images/icon.png"></img>
             </div>
-            <h1 class="text-3xl font-bold text-white drop-shadow-lg">Exam Miner 2.0</h1>
+            <h1 class="text-3xl font-bold text-white drop-shadow-lg">Exam Maker</h1>
         </a>
 
         <div class="glass-effect rounded-2xl shadow-2xl p-8 border border-white border-opacity-30">

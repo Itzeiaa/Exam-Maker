@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>Exam Miner 2.0 - Profile Settings</title>
+    <title>Exam Maker - Profile Settings</title>
     @vite('resources/css/app.css')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -25,7 +25,7 @@
                 <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center mr-3 shadow-lg">
                     <img style="width:30px" src="/images/icon.png"></img>
                 </div>
-                <h1 class="text-xl font-bold text-white">Exam Miner 2.0</h1>
+                <h1 class="text-xl font-bold text-white">Exam Maker</h1>
             </a>
 
             <nav class="mt-6 px-4">
@@ -41,6 +41,7 @@
                     <i class="fas fa-file-alt mr-3 group-hover:scale-110 transition-transform duration-200"></i>
                     My Exams
                 </a>
+                <a href="/cms" class="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-xl mb-2"><i class="fas fa-clipboard-list mr-3"></i> CMS</a>
             </nav>
 
             <!-- User Profile Section (populated via JS) -->

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Exam Miner 2.0 - AI-powered exam creation</title>
+    <title>Exam Maker - AI-powered exam creation</title>
     @vite('resources/css/app.css')
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -29,7 +29,7 @@
             <div class="w-10 h-10 sm:w-14 sm:h-14 bg-white rounded-2xl flex items-center justify-center mr-3 sm:mr-4 shadow-xl">
                 <img style="width:30px" src="/images/icon.png"></img>
             </div>
-           <h1 class="font-bold text-white drop-shadow-lg whitespace-nowrap leading-tight text-[clamp(1.125rem,5.2vw,1.5rem)] sm:text-3xl">Exam Miner 2.0</h1>
+           <h1 class="font-bold text-white drop-shadow-lg whitespace-nowrap leading-tight text-[clamp(1.125rem,5.2vw,1.5rem)] sm:text-3xl">Exam Maker</h1>
         </div>
 
         <!-- Header buttons (smaller on mobile, original on ≥sm) -->
@@ -113,8 +113,8 @@
             <div class="relative animate-float">
                 <!-- Responsive circular container that governs ALL layers -->
                 <div class="relative robot-size mx-auto">
-                    <img src="/images/logo.png" 
-                         alt="Exam Miner Robot" 
+                    <img src="/images/logo-robot.png" 
+                         alt="Exam Maker" 
                          class="relative z-10 w-full h-full object-contain drop-shadow-2xl"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     

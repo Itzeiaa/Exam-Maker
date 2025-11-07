@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Exam Miner 2.0 - View Exam</title>
+  <title>Exam Maker - View Exam</title>
   @vite('resources/css/app.css')
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
 
@@ -14,6 +14,9 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.4/purify.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html-docx-js/dist/html-docx.js"></script>
+ 
+  <!--script src="https://cdn.jsdelivr.net/npm/html-to-docx@1.8.0/dist/html-to-docx.umd.js"></script>
+  <!--script src="https://cdn.jsdelivr.net/npm/html-docx-js/dist/html-docx.js"></script-->
   <!--script src="https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/dist/html-docx.js"></script-->
 </head>
 <body class="min-h-screen relative overflow-x-hidden bg-gray-50">
@@ -31,7 +34,7 @@
         <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center mr-3 shadow-lg">
           <img style="width:30px" src="/images/icon.png"></img>
         </div>
-        <h1 class="text-xl font-bold text-white">Exam Miner 2.0</h1>
+        <h1 class="text-xl font-bold text-white">Exam Maker</h1>
       </a>
 
       <nav class="mt-6 px-4">
@@ -47,6 +50,7 @@
           <i class="fas fa-file-alt mr-3"></i>
           My Exams
         </a>
+        <a href="/cms" class="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-xl mb-2"><i class="fas fa-clipboard-list mr-3"></i> CMS</a>
         <a href="/profile" class="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-all duration-200 mb-2 group">
           <i class="fas fa-user mr-3 group-hover:scale-110 transition-transform duration-200"></i>
           Profile
@@ -151,27 +155,6 @@
           </div>
         </div>
       </section>
-
-      <!-- Editor Toolbar >
-      <div class="bg-white rounded-xl shadow-md border border-gray-100 p-3 mb-3 flex flex-wrap gap-2">
-        <button data-cmd="bold" class="px-3 py-2 border rounded hover:bg-gray-50"><i class="fas fa-bold"></i></button>
-        <button data-cmd="italic" class="px-3 py-2 border rounded hover:bg-gray-50"><i class="fas fa-italic"></i></button>
-        <button data-cmd="underline" class="px-3 py-2 border rounded hover:bg-gray-50"><i class="fas fa-underline"></i></button>
-        <button data-cmd="insertUnorderedList" class="px-3 py-2 border rounded hover:bg-gray-50"><i class="fas fa-list-ul"></i></button>
-        <button data-cmd="insertOrderedList" class="px-3 py-2 border rounded hover:bg-gray-50"><i class="fas fa-list-ol"></i></button>
-        <button data-align="left" class="px-3 py-2 border rounded hover:bg-gray-50"><i class="fas fa-align-left"></i></button>
-        <button data-align="center" class="px-3 py-2 border rounded hover:bg-gray-50"><i class="fas fa-align-center"></i></button>
-        <button data-align="right" class="px-3 py-2 border rounded hover:bg-gray-50"><i class="fas fa-align-right"></i></button>
-        <select id="fontSizeSel" class="px-2 py-2 border rounded">
-          <option value="">Font Size</option>
-          <option value="12px">12</option>
-          <option value="14px">14</option>
-          <option value="16px">16</option>
-          <option value="18px">18</option>
-          <option value="24px">24</option>
-          <option value="32px">32</option>
-        </select>
-      </div-->
       
       <!-- Editor Toolbar -->
         <div class="editor-toolbar bg-white rounded-xl shadow-md border border-gray-100 p-3 mb-3">
@@ -416,6 +399,176 @@
     }
 
     // ---- export helpers (DOCX/PDF) ----
+    
+    
+    
+    
+    function getCleanHTMLForPdf(){
+  const node = document.getElementById('paper').cloneNode(true);
+
+  // 1) Force IMG width in px (no %, no auto). Clamp to printable width ~480px
+  const MAX_W = 480;
+  node.querySelectorAll('img').forEach(img => {
+    // use natural width if available, otherwise 480
+    const nat = Math.max(1, img.naturalWidth || MAX_W);
+    const w = Math.min(nat, MAX_W);
+    img.removeAttribute('height');
+    img.style.height = '';             // let height auto-scale
+    img.style.maxWidth = '';           // remove % max-width
+    img.style.width = w + 'px';
+    img.setAttribute('width', w);      // helps html-to-pdfmake
+  });
+
+  // 2) Replace "pt" units with px in style attributes (1pt ≈ 1.333px)
+  const PT_TO_PX = 1.3333333;
+  const walk = node.querySelectorAll('*');
+  walk.forEach(el => {
+    if (el.hasAttribute('style')) {
+      let s = el.getAttribute('style') || '';
+      s = s.replace(/(-?\d*\.?\d+)\s*pt/gi, (_, n) =>
+        Math.round(parseFloat(n) * PT_TO_PX) + 'px'
+      );
+      el.setAttribute('style', s);
+    }
+  });
+
+  // 3) Strip obviously bad numeric styles (e.g., width: ; margin: auto)
+  walk.forEach(el => {
+    const st = el.style;
+    if (!st) return;
+    if (st.width && /%|auto/i.test(st.width)) st.width = '';
+    if (st.height && /%|auto/i.test(st.height)) st.height = '';
+    if (st.margin && /auto/i.test(st.margin)) st.margin = '';
+    if (st.lineHeight && /auto/i.test(st.lineHeight)) st.lineHeight = '';
+  });
+
+  // Remove <script>/<style>
+  node.querySelectorAll('script,style').forEach(el => el.remove());
+
+  return node.innerHTML;
+}
+
+
+function numOr(defaultVal, v){
+  if (typeof v === 'number') return Number.isFinite(v) ? v : defaultVal;
+  if (typeof v === 'string'){
+    const n = parseFloat(v);
+    return Number.isFinite(n) ? n : defaultVal;
+  }
+  return defaultVal;
+}
+
+function sanitizePdfNode(node){
+  if (Array.isArray(node)) return node.map(sanitizePdfNode);
+
+  if (node && typeof node === 'object'){
+    // columns must be an array
+    if ('columns' in node && !Array.isArray(node.columns)) {
+      node.columns = [ node.columns ];
+    }
+    // normalize numeric fields
+    ['fontSize','lineHeight','width','height','italics','bold','characterSpacing','leadingIndent','opacity']
+      .forEach(k => {
+        if (k in node){
+          if (k === 'italics' || k === 'bold') return; // booleans
+          const n = numOr(undefined, node[k]);
+          if (typeof n === 'number') node[k] = n; else delete node[k];
+        }
+      });
+
+    if ('margin' in node){
+      if (Array.isArray(node.margin)) {
+        node.margin = node.margin.map(v => numOr(0, v));
+      } else {
+        node.margin = numOr(0, node.margin);
+      }
+    }
+
+    // Recurse into known containers
+    ['content','stack','columns','header','footer','background'].forEach(k=>{
+      if (k in node) node[k] = sanitizePdfNode(node[k]);
+    });
+  }
+  return node;
+}
+
+    
+    
+    
+    async function urlToDataURL(src) {
+  try {
+    // already data URL
+    if (/^data:/i.test(src)) return src;
+    const res = await fetch(src, { mode: 'cors' }); // try CORS first
+    const blob = await res.blob();
+    const reader = new FileReader();
+    return await new Promise((resolve, reject) => {
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  } catch (e) {
+    console.warn('Falling back to no-CORS image fetch for', src, e);
+    // last resort: try no-cors (may still fail on some hosts)
+    const res = await fetch(src, { mode: 'no-cors' }).catch(()=>null);
+    if (!res || !res.body) return src; // keep original if we really can’t inline
+    const blob = await res.blob();
+    const reader = new FileReader();
+    return await new Promise((resolve, reject) => {
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+}
+
+// Inline all <img> src into data: URLs and optionally clamp width
+async function inlineAndClampImages(html, clampPx = null, clampIn = null) {
+  const node = document.createElement('div');
+  node.innerHTML = html;
+
+  const imgs = Array.from(node.querySelectorAll('img'));
+  for (const img of imgs) {
+    // Inline
+    const dataUrl = await urlToDataURL(img.getAttribute('src') || '');
+    img.setAttribute('src', dataUrl);
+
+    // Clamp
+    if (clampPx != null) {
+      img.setAttribute('width', String(clampPx));
+      img.removeAttribute('height');
+      img.style.width = clampPx + 'px';
+      img.style.height = 'auto';
+      img.style.maxWidth = '';
+      img.style.maxHeight = '';
+    }
+    if (clampIn != null) {
+      img.removeAttribute('width');
+      img.removeAttribute('height');
+      img.style.width = clampIn + 'in';
+      img.style.height = 'auto';
+      img.style.maxWidth = '';
+      img.style.maxHeight = '';
+    }
+  }
+  return node.innerHTML;
+}
+
+// Keep your font stripping
+function stripUnsupportedFonts(html){
+  return html.replace(/font-family\s*:\s*[^;"]+;?/gi, '');
+}
+
+// Get clean editor HTML (you already have this)
+function getEditorHTML(){
+  const node = document.getElementById('paper').cloneNode(true);
+  node.querySelectorAll('script,style').forEach(el => el.remove());
+  return node.innerHTML;
+}
+
+
+
+
     function getEditorHTML(){
       // clone to strip scripts/styles for export safety
       const node = $('paper').cloneNode(true);
@@ -425,6 +578,8 @@
     function stripUnsupportedFonts(html){
       return html.replace(/font-family\s*:\s*[^;"]+;?/gi, '');
     }
+    
+    
     function downloadDOCX(title){
       const titleText = (title || 'Exam Paper').toUpperCase();
       const fname = (title || 'exam_paper').trim();
@@ -439,6 +594,7 @@
       const blob = window.htmlDocx.asBlob(html);
       saveAs(blob, fname.replace(/[^\w\-\. ]+/g,'_') + ".docx");
     }
+    /*
     function downloadPDF(title){
       const docTitle = (title || 'Exam Paper').toUpperCase();
       let html = DOMPurify.sanitize(getEditorHTML(), { ADD_ATTR: ['style'] });
@@ -458,6 +614,178 @@
       };
       pdfMake.createPdf(docDefinition).download(docTitle + ".pdf");
     }
+    
+    
+    function downloadPDF(title){
+  const hasImages = !!document.getElementById('paper')?.querySelector('img');
+  try {
+    const docTitle = (title || 'Exam Paper').toUpperCase();
+    let html = DOMPurify.sanitize(getEditorHTML(), { ADD_ATTR: ['style'] });
+    html = stripUnsupportedFonts(html);
+
+    // html-to-pdfmake sometimes crashes when <img> are present/unsupported
+    const pdfContent = window.htmlToPdfmake(html, { window });
+
+    const docDefinition = {
+      info: { title: docTitle },
+      pageSize: "A4",
+      pageMargins: [40, 60, 40, 60],
+      content: [
+        { text: docTitle, style: "header", alignment: "center", margin: [0,0,0,12] },
+        ...pdfContent
+      ],
+      styles: { header: { fontSize: 16, bold: true } },
+      defaultStyle: { font: "Roboto", fontSize: 12, lineHeight: 1.4 }
+    };
+
+    pdfMake.createPdf(docDefinition).download(docTitle + ".pdf");
+  } catch (err) {
+    console.error('PDF export failed:', err);
+    if (hasImages) {
+      alert('Saving/exporting to PDF with images is currently not supported in this function. Please remove images first or use DOCX.');
+    } else {
+      alert('PDF export failed. ' + (err?.message || 'Please try again.'));
+    }
+  }
+}
+
+
+
+
+function downloadPDF(title){
+  const hasImages = !!document.getElementById('paper')?.querySelector('img');
+
+  try {
+    const docTitle = (title || 'Exam Paper').toUpperCase();
+    let html = DOMPurify.sanitize(getEditorHTML(), { ADD_ATTR: ['style'] });
+    html = stripUnsupportedFonts(html);
+
+    let pdfContent = window.htmlToPdfmake(html, { window });
+
+    // Ensure array
+    if (!Array.isArray(pdfContent)) pdfContent = [pdfContent];
+
+    // Deep-normalize any { columns: ... } to arrays (pdfmake requires arrays)
+    const toArrayColumns = (node) => {
+      if (node && typeof node === 'object') {
+        if ('columns' in node && !Array.isArray(node.columns)) {
+          node.columns = [node.columns];
+        }
+        // also normalize nested content/stack recursively
+        ['content','stack','columns'].forEach(k=>{
+          const v = node[k];
+          if (Array.isArray(v)) v.forEach(toArrayColumns);
+          else if (v && typeof v === 'object') toArrayColumns(v);
+        });
+      }
+      return node;
+    };
+    pdfContent = pdfContent.map(toArrayColumns);
+
+    const docDefinition = {
+      info: { title: docTitle },
+      pageSize: "A4",
+      pageMargins: [40, 60, 40, 60],
+      content: [
+        { text: docTitle, style: "header", alignment: "center", margin: [0,0,0,12] },
+        ...pdfContent
+      ],
+      styles: { header: { fontSize: 16, bold: true } },
+      defaultStyle: { font: "Roboto", fontSize: 12, lineHeight: 1.4 }
+    };
+
+    pdfMake.createPdf(docDefinition).download(docTitle + ".pdf");
+  } catch (err) {
+    console.error('PDF export failed:', err);
+    if (hasImages) {
+      alert('Saving/exporting to PDF with images is currently not supported in this function. Please remove images first or use DOCX.');
+    } else {
+      alert('PDF export failed. ' + (err?.message || 'Please try again.'));
+    }
+  }
+}
+*/
+
+
+function downloadPDF(title){
+  const hasImages = !!document.getElementById('paper')?.querySelector('img');
+  try {
+    const docTitle = (title || 'Exam Paper').toUpperCase();
+
+    let html = DOMPurify.sanitize(getCleanHTMLForPdf(), { ADD_ATTR: ['style'] });
+    html = stripUnsupportedFonts(html);
+
+    let pdfContent = window.htmlToPdfmake(html, { window });
+    if (!Array.isArray(pdfContent)) pdfContent = [pdfContent];
+
+    // sanitize structure (fix columns, numbers, margins, etc.)
+    pdfContent = sanitizePdfNode(pdfContent);
+
+    const docDefinition = {
+      info: { title: docTitle },
+      pageSize: 'A4',
+      pageMargins: [40, 60, 40, 60],
+      content: [
+        { text: docTitle, style: 'header', alignment: 'center', margin: [0,0,0,12] },
+        ...pdfContent
+      ],
+      styles: { header: { fontSize: 16, bold: true } },
+      defaultStyle: { font: 'Roboto', fontSize: 12, lineHeight: 1.4 }
+    };
+
+    pdfMake.createPdf(docDefinition).download(docTitle + '.pdf');
+  } catch (err) {
+    console.error('PDF export failed:', err);
+    if (hasImages) {
+      alert('PDF export failed. Images must have fixed pixel widths for now. Try removing images or export as DOCX.');
+    } else {
+      alert('PDF export failed. ' + (err?.message || 'Please try again.'));
+    }
+  }
+}
+
+// Optional: catch unhandled promise rejections from pdfmake internals
+window.addEventListener('unhandledrejection', (e) => {
+  console.error('Unhandled rejection:', e.reason);
+  alert('PDF export failed during layout. If the exam has images or % widths, set fixed pixel widths or export as DOCX.');
+});
+
+
+
+    /*
+ 
+// DOCX
+async function exportDocxServer() {
+  const html = document.getElementById('paper').innerHTML; // include current edits
+  const fd = new FormData();
+  fd.append('id', String(loadedExam.id || ''));
+  fd.append('title', document.getElementById('examTitle').innerText.trim());
+  fd.append('html', html);
+
+  const res = await fetch('/api/export_docx.php', { method:'POST', body: fd });
+  if (!res.ok) { alert('DOCX export failed'); return; }
+  const blob = await res.blob();
+  saveAs(blob, (loadedExam.title || 'Exam Paper') + '.docx');
+}
+
+// PDF
+async function exportPdfServer() {
+  const html = document.getElementById('paper').innerHTML;
+  const fd = new FormData();
+  fd.append('id', String(loadedExam.id || ''));
+  fd.append('title', document.getElementById('examTitle').innerText.trim());
+  fd.append('html', html);
+
+  const res = await fetch('/api/export_pdf.php', { method:'POST', body: fd });
+  if (!res.ok) { alert('PDF export failed'); return; }
+  const blob = await res.blob();
+  saveAs(blob, (loadedExam.title || 'Exam Paper') + '.pdf');
+}
+
+// wire buttons
+document.getElementById('btnDocx').onclick = exportDocxServer;
+document.getElementById('btnPdf').onclick  = exportPdfServer;
+*/
 
     // ---- state + load ----
     const examId = (() => {
@@ -580,7 +908,7 @@
       }
     });
 
-    // ---- Client-side exports from current editor content ----
+     // ---- Client-side exports from current editor content ----
     $('btnDocx').addEventListener('click', ()=>{
       downloadDOCX(($('examTitle').innerText || 'Exam Paper').trim());
     });

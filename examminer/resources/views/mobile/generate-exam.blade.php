@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
-  <title>Exam Miner 2.0 - Generate Exam</title>
+  <title>Exam Maker - Generate Exam</title>
   @vite('resources/css/app.css')
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
 
@@ -120,7 +120,7 @@
            <img style="width:30px" src="/images/icon.png"></img>
           </div>
           <div class="leading-tight">
-            <div class="font-bold text-gray-900">Exam Miner 2.0</div>
+            <div class="font-bold text-gray-900">Exam Maker</div>
             <div class="text-xs text-gray-500">Generate Exam</div>
           </div>
         </div>
@@ -142,7 +142,7 @@
         <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center mr-3 shadow-lg">
           <img style="width:30px" src="/images/icon.png"></img>
         </div>
-        <h1 class="text-xl font-bold text-white">Exam Miner 2.0</h1>
+        <h1 class="text-xl font-bold text-white">Exam Maker</h1>
       </a>
 
       <nav class="mt-6 px-4">
@@ -1120,10 +1120,10 @@ async function callModelStrict(prompt, model){
     {role:"user", content:prompt}
   ]};
   const data = await scheduledJsonFetch({
-    url: "https://exam-miner.com/api/v1/chat/completions.php",
+    url: "https://exammaker.site/api/v1/chat/completions.php",
     init: {
       method:"POST",
-      headers:{ "Content-Type":"application/json", "Authorization":apikey, "HTTP-Referer":"https://exam-miner.site", "X-Title":"Exam Miner 2.0" },
+      headers:{ "Content-Type":"application/json", "Authorization":apikey, "HTTP-Referer":"https://exammaker.site", "X-Title":"Exam Maker" },
       body: JSON.stringify(payload)
     },
     promptTextForToks: prompt
@@ -1314,8 +1314,8 @@ async function summarizeContent(text){
     { role:"user", content:text }
   ]};
   const data = await scheduledJsonFetch({
-    url: "https://exam-miner.com/api/v1/chat/completions.php",
-    init: { method:"POST", headers:{ "Content-Type":"application/json","Authorization":apikey,"HTTP-Referer":"https://ivnx9.github.io","X-Title":"Exam Miner 2.0"}, body: JSON.stringify(payload) },
+    url: "https://exammaker.site/api/v1/chat/completions.php",
+    init: { method:"POST", headers:{ "Content-Type":"application/json","Authorization":apikey,"HTTP-Referer":"https://exammaker.site","X-Title":"Exam Maker"}, body: JSON.stringify(payload) },
     promptTextForToks: text
   });
   if(data.error) throw new Error(data.error.message||'Model error');

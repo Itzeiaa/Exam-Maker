@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Exam Miner 2.0 — My Exams (Mobile)</title>
+  <title>Exam Maker — My Exams (Mobile)</title>
   @vite('resources/css/app.css')
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 
@@ -38,7 +38,7 @@
           <img style="width:30px" src="/images/icon.png"></img>
         </div>
         <h1 class="font-bold text-gray-900 leading-tight whitespace-nowrap
-                   text-[clamp(1.1rem,4.6vw,1.35rem)]">Exam Miner 2.0</h1>
+                   text-[clamp(1.1rem,4.6vw,1.35rem)]">Exam Maker</h1>
       </a>
 
       <a href="/profile" class="w-10 h-10 rounded-full overflow-hidden border border-gray-200 shadow">
@@ -61,7 +61,7 @@
           <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center mr-3 shadow">
             <img style="width:30px" src="/images/icon.png"></img>
           </div>
-          <h2 class="text-white font-bold text-lg">Exam Miner 2.0</h2>
+          <h2 class="text-white font-bold text-lg">Exam Maker</h2>
         </div>
       </div>
 
@@ -149,7 +149,7 @@
     <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
       <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-6 rounded-t-2xl">
         <div class="flex items-center justify-between">
-          <h2 class="text-2xl font-bold text-white">How Exam Miner 2.0 Works</h2>
+          <h2 class="text-2xl font-bold text-white">How Exam Maker Works</h2>
           <button onclick="closeTutorial()" class="text-white hover:text-gray-200 transition">
             <i class="fas fa-times text-xl"></i>
             <span class="sr-only">Close</span>

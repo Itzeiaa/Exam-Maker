@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <title>Exam Miner 2.0 - Profile Settings</title>
+  <title>Exam Maker - Profile Settings</title>
   @vite('resources/css/app.css')
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 
@@ -47,7 +47,7 @@
         <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow">
           <img style="width:30px" src="/images/icon.png"></img>
         </div>
-        <h1 class="text-lg font-bold text-gray-900 whitespace-nowrap">Exam Miner 2.0</h1>
+        <h1 class="text-lg font-bold text-gray-900 whitespace-nowrap">Exam Maker</h1>
       </a>
     </div>
   </header>
@@ -59,7 +59,7 @@
         <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center mr-3 shadow-lg">
           <img style="width:30px" src="/images/icon.png"></img>
         </div>
-        <h1 class="text-xl font-bold text-white">Exam Miner 2.0</h1>
+        <h1 class="text-xl font-bold text-white">Exam Maker</h1>
       </a>
 
       <nav class="mt-6 px-4">

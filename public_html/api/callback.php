@@ -5,7 +5,7 @@ header("Content-Type: text/html; charset=utf-8");
 
 // Optional: allow same-origin for your domain (not required for a redirect page)
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-if (in_array($origin, ['https://exam-miner.com','https://www.exam-miner.com'], true)) {
+if (in_array($origin, ['https://exammaker.site','https://www.exammaker.site'], true)) {
   header("Access-Control-Allow-Origin: $origin");
   header("Vary: Origin");
 }
@@ -13,8 +13,8 @@ if (in_array($origin, ['https://exam-miner.com','https://www.exam-miner.com'], t
 require __DIR__ . '/../../examminer/vendor/autoload.php';
 require __DIR__ . '/google_config.php'; // << correct path
 require __DIR__ . '/db.php'; // << correct path
-// require 'https://exam-miner.com/api/oauth/google_config.php';
-// require 'https://exam-miner.com/api/db.php'; // provides $conn (mysqli)
+// require 'https://exammaker.site/api/oauth/google_config.php';
+// require 'https://exammaker.site/api/db.php'; // provides $conn (mysqli)
 
 use Google\Client;
 use Firebase\JWT\JWT;
@@ -265,7 +265,7 @@ try {
     "username"        => $user['username'],
     "email"           => $user['email'],
     "name"            => $user['name'],
-    "profile_picture" => $user['profile_picture'] ?? '',
+   // "profile_picture" => $user['profile_picture'] ?? '',
     "scope"           => "api",
     "iat"             => time(),
     "exp"             => time() + 60*60*24

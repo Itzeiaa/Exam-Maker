@@ -1,6 +1,6 @@
 # 🧠 Exam-Maker
 
-![Exam-Miner Banner](https://exammaker.site/images/banners.png)
+![Exam-Miner Banner](https://exammaker.site/images/banner.png)
 
 > **AI-Powered Exam & Quiz Generator** that automatically creates high-quality test questions from your uploaded learning materials — supporting **PDF**, **Word**, and **PowerPoint** files.
 

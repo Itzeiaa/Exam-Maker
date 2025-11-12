@@ -14,10 +14,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.4/purify.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html-docx-js/dist/html-docx.js"></script>
- 
-  <!--script src="https://cdn.jsdelivr.net/npm/html-to-docx@1.8.0/dist/html-to-docx.umd.js"></script>
-  <!--script src="https://cdn.jsdelivr.net/npm/html-docx-js/dist/html-docx.js"></script-->
-  <!--script src="https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/dist/html-docx.js"></script-->
 </head>
 <body class="min-h-screen relative overflow-x-hidden bg-gray-50">
   <div class="absolute inset-0 gradient-animated pointer-events-none"></div>
@@ -50,7 +46,6 @@
           <i class="fas fa-file-alt mr-3"></i>
           My Exams
         </a>
-        <a href="/cms" class="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-xl mb-2"><i class="fas fa-clipboard-list mr-3"></i> CMS</a>
         <a href="/profile" class="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-all duration-200 mb-2 group">
           <i class="fas fa-user mr-3 group-hover:scale-110 transition-transform duration-200"></i>
           Profile
@@ -84,11 +79,12 @@
           </div>
           <div class="flex flex-wrap gap-4">
             <button id="btnDocx" class="bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl font-medium inline-flex items-center transform hover:scale-105 active:scale-95" style="background-color: #2563eb !important; color: white !important;">
-              <i class="fas fa-file-word mr-2"></i> Download DOCX
+              <i class="fas fa-file-word mr-2"></i> Download Exam
             </button>
-            <button id="btnPdf" class="bg-red-600 text-white px-4 py-3 rounded-lg hover:bg-red-700 transition-all duration-200 shadow-lg hover:shadow-xl font-medium inline-flex items-center transform hover:scale-105 active:scale-95" style="background-color: #dc2626 !important; color: white !important;">
-              <i class="fas fa-file-pdf mr-2"></i> Download PDF
+            <button id="btnPdfKeys" class="bg-amber-600 text-white px-4 py-3 rounded-lg hover:bg-amber-700 transition-all duration-200 shadow-lg hover:shadow-xl font-medium inline-flex items-center transform hover:scale-105 active:scale-95">
+              <i class="fas fa-key mr-2"></i> Download PDF (Answer Key Only)
             </button>
+
             <button id="btnSave" class="bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700 transition-all duration-200 shadow-lg hover:shadow-xl font-medium inline-flex items-center transform hover:scale-105 active:scale-95" style="background-color: #16a34a !important; color: white !important;">
               <i class="fas fa-save mr-2"></i> Save Changes
             </button>
@@ -193,8 +189,124 @@
           <div id="saveNote" class="text-xs text-gray-500 mt-2">Unsaved</div>
         </div>
       </section>
+      
+      
     </main>
+    
+    
+    <!-- ===== Export Header Modal (drop-in) ===== -->
+<div id="exportHeaderModal" class="fixed inset-0 z-[99999] hidden">
+  <!-- backdrop -->
+  <div class="absolute inset-0 bg-black/60"></div>
+
+  <!-- panel -->
+  <div class="absolute inset-0 p-4 md:p-8 flex items-start md:items-center justify-center overflow-y-auto">
+    <div class="w-full max-w-3xl bg-white rounded-2xl shadow-2xl ring-1 ring-black/5 pointer-events-auto relative">
+      <!-- top bar -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <div class="flex items-center gap-3">
+          <div class="size-9 rounded-xl bg-blue-600/10 text-blue-700 grid place-items-center">
+            <i class="fa-solid fa-school text-sm"></i>
+          </div>
+          <div>
+            <div class="text-lg font-semibold text-gray-900">Export Header</div>
+            <div class="text-xs text-gray-500">Add your school logos, name, and address (optional)</div>
+          </div>
+        </div>
+        <button id="eh_close" class="p-2 rounded-lg hover:bg-gray-100 text-gray-500">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- body -->
+      <div class="px-6 py-5">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
+          <!-- Left logo card -->
+          <div class="rounded-xl border border-gray-200 p-4">
+            <div class="text-sm font-medium mb-2">Left Logo</div>
+            <label class="block">
+              <input id="eh_leftFile" type="file" accept="image/*" class="hidden">
+              <div id="eh_leftDrop"
+                   class="aspect-square rounded-xl border-2 border-dashed border-gray-300 grid place-items-center text-gray-400 hover:border-blue-400 hover:text-blue-500 cursor-pointer relative">
+                <div id="eh_leftEmpty" class="text-center text-xs px-2">
+                  <i class="fa-regular fa-image mb-2 block text-xl"></i>
+                  Click to upload
+                </div>
+                <img id="eh_leftPreview" class="hidden object-contain w-full h-full p-2 rounded-xl" alt="Left logo">
+                <button id="eh_leftRemove"
+                        class="hidden absolute -right-2 -top-2 size-7 rounded-full bg-white shadow ring-1 ring-gray-200 text-gray-600 hover:bg-gray-50"
+                        title="Remove">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+            </label>
+            <div class="mt-3">
+              <label class="block text-xs text-gray-600 mb-1">Width (px)</label>
+              <input id="eh_leftW" type="number" value="90" min="30" max="240"
+                     class="border rounded-lg px-2 py-1 w-28">
+            </div>
+          </div>
+
+          <!-- Center text -->
+          <div class="rounded-xl border border-gray-200 p-4 md:col-span-1">
+            <div class="text-sm font-medium mb-2">School Header Text</div>
+            <input id="eh_title" type="text"
+                   placeholder="Bulacan State University — Main Campus"
+                   class="border rounded-lg px-3 py-2 w-full mb-2">
+            <input id="eh_college" type="text"
+                   placeholder="College of Information Technology"
+                   class="border rounded-lg px-3 py-2 w-full mb-2">
+            <input id="eh_addr" type="text"
+                   placeholder="Guinhawa, City of Malolos, Bulacan"
+                   class="border rounded-lg px-3 py-2 w-full">
+            <p class="text-[11px] text-gray-500 mt-2">If only text is provided, the header will center it without logos.</p>
+          </div>
+
+          <!-- Right logo card -->
+          <div class="rounded-xl border border-gray-200 p-4">
+            <div class="text-sm font-medium mb-2">Right Logo</div>
+            <label class="block">
+              <input id="eh_rightFile" type="file" accept="image/*" class="hidden">
+              <div id="eh_rightDrop"
+                   class="aspect-square rounded-xl border-2 border-dashed border-gray-300 grid place-items-center text-gray-400 hover:border-blue-400 hover:text-blue-500 cursor-pointer relative">
+                <div id="eh_rightEmpty" class="text-center text-xs px-2">
+                  <i class="fa-regular fa-image mb-2 block text-xl"></i>
+                  Click to upload
+                </div>
+                <img id="eh_rightPreview" class="hidden object-contain w-full h-full p-2 rounded-xl" alt="Right logo">
+                <button id="eh_rightRemove"
+                        class="hidden absolute -right-2 -top-2 size-7 rounded-full bg-white shadow ring-1 ring-gray-200 text-gray-600 hover:bg-gray-50"
+                        title="Remove">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+            </label>
+            <div class="mt-3">
+              <label class="block text-xs text-gray-600 mb-1">Width (px)</label>
+              <input id="eh_rightW" type="number" value="90" min="30" max="240"
+                     class="border rounded-lg px-2 py-1 w-28">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- footer actions -->
+      <div class="px-6 py-4 border-t border-gray-100 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-gray-50">
+        <div class="text-[11px] text-gray-500">You can leave any field empty. We’ll still export.</div>
+        <div class="flex gap-2">
+          <button style="background-color: #2563eb !important; color: white !important;margin-right: 10px;" id="eh_ok_docx" class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 shadow-sm">
+            <i class="fa-solid fa-file-word mr-2"></i>Download DOCX
+          </button>
+          <button style="background-color: #dc2626 !important; color: white !important;" id="eh_ok_pdf" class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 shadow-sm">
+            <i class="fa-solid fa-file-pdf mr-2"></i>Download PDF
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
+</div>
+  </div>
+
 
     <style>
       .editor-toolbar {
@@ -306,6 +418,123 @@
   </style>
 
   <script>
+  // Open the modal: openExportHeaderModal('docx'|'pdf'|'skip')
+  function openExportHeaderModal(target='docx'){
+    const m = document.getElementById('exportHeaderModal');
+    m.classList.remove('hidden');
+    // focus the close button for a11y
+    document.getElementById('eh_close').focus();
+  }
+  function closeExportHeaderModal(){
+    document.getElementById('exportHeaderModal').classList.add('hidden');
+  }
+
+  // Make the whole dropzone clickable
+  const lDrop = document.getElementById('eh_leftDrop');
+  const rDrop = document.getElementById('eh_rightDrop');
+  lDrop.addEventListener('click', ()=> document.getElementById('eh_leftFile').click());
+  rDrop.addEventListener('click', ()=> document.getElementById('eh_rightFile').click());
+
+  // Helpers: show preview + remove
+  function wirePreview(side){
+    const file   = document.getElementById(`eh_${side}File`);
+    const prev   = document.getElementById(`eh_${side}Preview`);
+    const empty  = document.getElementById(`eh_${side}Empty`);
+    const remove = document.getElementById(`eh_${side}Remove`);
+
+    file.addEventListener('change', async () => {
+      const f = file.files && file.files[0];
+      if (!f) return;
+      const url = await fileToDataUrl(f);
+      prev.src = url;
+      prev.classList.remove('hidden');
+      empty.classList.add('hidden');
+      remove.classList.remove('hidden');
+      prev.dataset.dataurl = url; // stash for export
+    });
+
+    remove.addEventListener('click', (e) => {
+      e.stopPropagation();
+      file.value = '';
+      prev.removeAttribute('src');
+      prev.dataset.dataurl = '';
+      prev.classList.add('hidden');
+      remove.classList.add('hidden');
+      empty.classList.remove('hidden');
+    });
+  }
+  wirePreview('left');
+  wirePreview('right');
+
+  async function fileToDataUrl(f){
+    return await new Promise((res,reject)=>{
+      const r = new FileReader();
+      r.onload = () => res(String(r.result||'')); r.onerror = reject; r.readAsDataURL(f);
+    });
+  }
+
+  // Collect config to a global used by your exporters
+  function readHeaderForm(){
+    return {
+      title:  document.getElementById('eh_title').value.trim(),
+      addr:   document.getElementById('eh_addr').value.trim(),
+      left: {
+        src:  document.getElementById('eh_leftPreview').dataset.dataurl || '',
+        wpx:  Number(document.getElementById('eh_leftW').value||0) || 0
+      },
+      right: {
+        src:  document.getElementById('eh_rightPreview').dataset.dataurl || '',
+        wpx:  Number(document.getElementById('eh_rightW').value||0) || 0
+      }
+    };
+  }
+
+  // Buttons
+  document.getElementById('eh_close').onclick = closeExportHeaderModal;
+  
+  document.getElementById('eh_ok_docx').onclick = () => {
+    window._exportHeaderCfg = readHeaderForm();
+    closeExportHeaderModal();
+    triggerExport('docx');
+  };
+  document.getElementById('eh_ok_pdf').onclick  = () => {
+    window._exportHeaderCfg = readHeaderForm();
+    closeExportHeaderModal();
+    triggerExport('pdf');
+  };
+
+  // Hook your toolbar buttons to open the modal instead of exporting immediately
+  document.getElementById('btnDocx').onclick = ()=> openExportHeaderModal('docx');
+
+  function triggerExport(kind){
+    const title = (document.getElementById('examTitle').innerText || 'Exam Paper').trim();
+    if (kind === 'docx') return downloadDOCX(title);   // your existing function
+    if (kind === 'pdf')  return downloadPDF(title);    // your existing function
+  }
+
+  // Optional: close on ESC / backdrop click
+  document.getElementById('exportHeaderModal').addEventListener('click', (e)=>{
+    if (e.target === e.currentTarget || e.target === e.currentTarget.firstElementChild) closeExportHeaderModal();
+  });
+  window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeExportHeaderModal(); });
+
+function makeHeaderHTML(cfg){
+  if (!cfg) return '';
+  const img = (s,w)=> s ? `<img src="${s}" style="width:${w||90}px;height:auto;object-fit:contain;">` : '';
+  const title = cfg.title ? `<div style="font-weight:700;font-size:16pt">${escapeHTML(cfg.title)}</div>` : '';
+  const addr  = cfg.addr  ? `<div style="font-size:11pt;color:#444">${escapeHTML(cfg.addr)}</div>` : '';
+  return `
+  <table style="width:100%;border-collapse:collapse;margin:0 0 10pt 0">
+    <tr>
+      <td style="width:25%;text-align:left;vertical-align:middle">${img(cfg.left?.src,  cfg.left?.w)}</td>
+      <td style="width:50%;text-align:center;vertical-align:middle">${title}${addr}</td>
+      <td style="width:25%;text-align:right;vertical-align:middle">${img(cfg.right?.src, cfg.right?.w)}</td>
+    </tr>
+  </table>`;
+}
+
+      
+     
     /* --------- config --------- */
     const TOKEN_KEY   = 'jwt_token';
     const CACHE_KEY   = 'profile_cache';
@@ -399,6 +628,132 @@
     }
 
     // ---- export helpers (DOCX/PDF) ----
+    
+
+function stripLeadingNumbersInLis(root){
+  root.querySelectorAll('ol li').forEach(li=>{
+    li.innerHTML = (li.innerHTML || '').replace(/^\s*(\(?\d+\)?[.)]|\d+)\s+/, '');
+  });
+}
+
+function cleanLeadingNums(text){
+  // strips 1., 1), (1), A., A), (A) at start
+  return String(text || '').replace(/^\s*(\(?\d+\)?[.)]|\(?[A-D]\)?[.)])\s*/i, '').trim();
+}
+
+function flattenAnswerKeyOLs(root){
+  root.querySelectorAll('ol').forEach(ol=>{
+    const wrap = document.createElement('div');
+    Array.from(ol.querySelectorAll(':scope > li')).forEach((li, i)=>{
+      const line = document.createElement('p');
+      line.style.margin = '0 0 4px 0';
+      // use textContent to ignore nested tags’ numbering, then rebuild
+      const text = cleanLeadingNums(li.textContent);
+      line.textContent = `${i+1}. ${text}`;
+      wrap.appendChild(line);
+    });
+    ol.replaceWith(wrap);
+  });
+}
+
+
+function getAnswerKeyOnlyHTML(){
+  const paper = document.getElementById('paper');
+  if (!paper) return '';
+
+  const root = paper.cloneNode(true);
+  let frag = null;
+
+  // 1) Compiled keys host
+  const keyHost = root.querySelector('[data-compiled-keys]');
+  if (keyHost){
+    frag = keyHost.cloneNode(true);
+  } else {
+    // 2) Per-set keys
+    const perSet = Array.from(root.querySelectorAll('[data-key]'));
+    if (perSet.length){
+      frag = document.createElement('div');
+      perSet.forEach(block => frag.appendChild(block.cloneNode(true)));
+    } else {
+      // 3) Heading text "Answer Key(s)"
+      const ak = Array.from(root.querySelectorAll('h1,h2,h3,h4,div,section,p'))
+        .find(el => /answer\s*keys?/i.test((el.textContent||'').trim()));
+      if (ak){
+        frag = document.createElement('div');
+        let n = ak;
+        while (n){ frag.appendChild(n.cloneNode(true)); n = n.nextSibling; }
+      } else {
+        // 4) After last footer
+        const footers = Array.from(root.querySelectorAll('footer'));
+        const lastFooter = footers.reverse().find(f =>
+          /Generated by Exam Maker - Agents/i.test(f.textContent || '') ||
+          (f.className || '').includes('border-t')
+        );
+        if (lastFooter){
+          frag = document.createElement('div');
+          let n = lastFooter.nextSibling;
+          while (n){ frag.appendChild(n.cloneNode(true)); n = n.nextSibling; }
+        }
+      }
+    }
+  }
+
+  if (!frag) return '';
+
+  // Normalize styles that break html-to-pdfmake
+  frag.querySelectorAll('ol').forEach(ol => ol.removeAttribute('style'));
+  frag.querySelectorAll('[style]').forEach(el => {
+    el.style.columnCount = '';
+    el.style.columns = '';
+    el.style.webkitColumns = '';
+    el.style.MozColumns = '';
+  });
+
+  // Prevent "1. 1. A" duplication
+  stripLeadingNumbersInLis(frag);
+  
+  
+  if (!frag) return '';
+
+    flattenAnswerKeyOLs(frag);     // <— converts OL to plain numbered paragraphs
+    // (optional) if you still keep some OLs elsewhere, you can also strip styles:
+    frag.querySelectorAll('[style]').forEach(el => {
+      el.style.columnCount = '';
+      el.style.columns = '';
+      el.style.webkitColumns = '';
+      el.style.MozColumns = '';
+    });
+
+  return frag.innerHTML;
+}
+
+
+
+function downloadPDF_AnswerKeyOnly(title) {
+  const docTitle = ((title || 'Answer Keys') + ' - ANSWER KEY').toUpperCase();
+  let html = DOMPurify.sanitize(getAnswerKeyOnlyHTML(), { ADD_ATTR: ['style'] });
+  if (!html.trim()) { alert('No Answer Key found on the page.'); return; }
+
+  html = stripUnsupportedFonts(html);
+  let pdfContent = window.htmlToPdfmake(html, { window });
+  if (!Array.isArray(pdfContent)) pdfContent = [pdfContent];
+  pdfContent = sanitizePdfNode(pdfContent);
+
+  const docDefinition = {
+    info: { title: docTitle },
+    pageSize: 'A4',
+    pageMargins: [40, 60, 40, 60],
+    content: [
+      { text: docTitle, style: 'header', alignment: 'center', margin: [0,0,0,12] },
+      ...pdfContent
+    ],
+    styles: { header: { fontSize: 16, bold: true } },
+    defaultStyle: { font: 'Roboto', fontSize: 12, lineHeight: 1.4 }
+  };
+
+  pdfMake.createPdf(docDefinition).download(docTitle + '.pdf');
+}
+
     
     function getHTMLWithoutAnswerKey() {
   const paper = document.getElementById('paper');
@@ -516,43 +871,50 @@ function numOr(defaultVal, v){
   }
   return defaultVal;
 }
-
-function sanitizePdfNode(node){
+    
+     // ORIGINAL  
+  function sanitizePdfNode(node){
   if (Array.isArray(node)) return node.map(sanitizePdfNode);
 
   if (node && typeof node === 'object'){
+    // Fix table.widths like ["18%","64%","18%"]
+    if (node.table && Array.isArray(node.table.widths)) {
+      node.table.widths = node.table.widths.map(w => {
+        if (w === '*' || w === 'auto') return w;
+        const n = parseFloat(w);
+        return Number.isFinite(n) ? n : '*';
+      });
+    }
+
     // columns must be an array
     if ('columns' in node && !Array.isArray(node.columns)) {
       node.columns = [ node.columns ];
     }
+
     // normalize numeric fields
-    ['fontSize','lineHeight','width','height','italics','bold','characterSpacing','leadingIndent','opacity']
+    ['fontSize','lineHeight','width','height','characterSpacing','leadingIndent','opacity']
       .forEach(k => {
         if (k in node){
-          if (k === 'italics' || k === 'bold') return; // booleans
-          const n = numOr(undefined, node[k]);
-          if (typeof n === 'number') node[k] = n; else delete node[k];
+          const n = (typeof node[k] === 'string') ? parseFloat(node[k]) : node[k];
+          if (Number.isFinite(n)) node[k] = n; else delete node[k];
         }
       });
 
     if ('margin' in node){
       if (Array.isArray(node.margin)) {
-        node.margin = node.margin.map(v => numOr(0, v));
+        node.margin = node.margin.map(v => Number.isFinite(parseFloat(v)) ? parseFloat(v) : 0);
       } else {
-        node.margin = numOr(0, node.margin);
+        const n = parseFloat(node.margin);
+        node.margin = Number.isFinite(n) ? n : 0;
       }
     }
 
     // Recurse into known containers
-    ['content','stack','columns','header','footer','background'].forEach(k=>{
-      if (k in node) node[k] = sanitizePdfNode(node[k]);
-    });
+    ['content','stack','columns','header','footer','background','ul','ol','table','layout']
+      .forEach(k=>{ if (k in node) node[k] = sanitizePdfNode(node[k]); });
   }
   return node;
 }
-
-    
-    
     
     async function urlToDataURL(src) {
   try {
@@ -637,124 +999,204 @@ function getEditorHTML(){
     function stripUnsupportedFonts(html){
       return html.replace(/font-family\s*:\s*[^;"]+;?/gi, '');
     }
-    
-    /*
-    function downloadDOCX(title){
-      const titleText = (title || 'Exam Paper').toUpperCase();
-      const fname = (title || 'exam_paper').trim();
-      const bodyHtml = DOMPurify.sanitize(getEditorHTML(), { ADD_ATTR: ['style'] });
-      const html = `
-      <!DOCTYPE html><html><head><meta charset="utf-8">
-      <style>body{font-family:Arial,sans-serif;font-size:14pt;line-height:1.6}</style>
-      </head><body>
-        <div style="text-align:center;font-weight:bold;font-size:16pt;margin:0 0 12pt">${titleText}</div>
-        ${bodyHtml}
-      </body></html>`;
-      const blob = window.htmlDocx.asBlob(html);
-      saveAs(blob, fname.replace(/[^\w\-\. ]+/g,'_') + ".docx");
-    }
- */
- 
- function downloadDOCX(title){
+
+// Clamp helper
+const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, Number(n)||0));
+
+function buildHeaderHTML_DOCX(){
+  const L = exportHeaderState.left  || {};
+  const R = exportHeaderState.right || {};
+  const title = (exportHeaderState.title || '').trim();
+  const college = (exportHeaderState.college || '').trim();
+  const addr  = (exportHeaderState.addr  || '').trim();
+
+  // Use the user-entered widths; clamp to a sane range for DOCX
+  const LW = L.src ? clamp(L.w, 30, 240) : 0;
+  const RW = R.src ? clamp(R.w, 30, 240) : 0;
+
+  const leftImg  = L.src ? `<img src="${L.src}" width="${LW}" style="width:${LW}px;height:auto;display:block;margin:0 auto;">` : '';
+  const rightImg = R.src ? `<img src="${R.src}" width="${RW}" style="width:${RW}px;height:auto;display:block;margin:0 auto;">` : '';
+
+  // Use a fixed-layout table; center the middle cell
+  return `
+  <table width="100%" border="0" style="border-collapse:collapse;table-layout:fixed;margin:0 0 12pt 0">
+    <tr>
+      <td width="${LW ? LW+20 : 0}" align="left"  valign="middle">${leftImg}</td>
+      <td align="center" valign="middle">
+        ${title ? `<div style="font-weight:700;font-size:16pt;line-height:1.2;text-align:center">${escapeHTML(title)}</div>` : ''}
+        ${college ? `<div style="font-weight:700;font-size:14pt;line-height:1.2;text-align:center">${escapeHTML(college)}</div>` : ''}
+        ${addr  ? `<div style="font-size:11pt;color:#444;line-height:1.2;text-align:center">${escapeHTML(addr)}</div>` : ''}
+      </td>
+      <td width="${RW ? RW+20 : 0}" align="right" valign="middle">${rightImg}</td>
+    </tr>
+  </table>`;
+}
+
+
+// Pick a sensible default max printable width
+const FIGURE_MAX_PX = 480; // ~A4 inner width with 40pt side margins
+
+function fixFigureSizesHTML(html, maxPx = FIGURE_MAX_PX){
+  const node = document.createElement('div');
+  node.innerHTML = html;
+
+  node.querySelectorAll('img').forEach(img=>{
+    // Allow per-image override via data-w="320" (or width attr), else clamp to maxPx
+    const want = parseInt(img.getAttribute('data-w') || img.getAttribute('width') || 0, 10);
+    const w = Math.max(30, Math.min(maxPx, Number.isFinite(want) && want>0 ? want : maxPx));
+
+    img.setAttribute('width', String(w));     // attribute for Word
+    img.removeAttribute('height');
+    img.style.width = w + 'px';               // inline style for browsers
+    img.style.height = 'auto';
+    img.style.maxWidth = '';                  // kill % sizing
+    img.style.maxHeight = '';
+  });
+
+  return node.innerHTML;
+}
+
+
+async function downloadDOCX_withHeader(title){
   const titleText = (title || 'Exam Paper').toUpperCase();
   const fname = (title || 'exam_paper').trim();
 
-  // <-- use the trimmed HTML (no answer key)
-  const bodyHtml = DOMPurify.sanitize(getHTMLWithoutAnswerKey(), { ADD_ATTR: ['style'] });
+  // Body (no Answer Key)
+  let bodyHtml = DOMPurify.sanitize(getHTMLWithoutAnswerKey(), { ADD_ATTR: ['style'] });
+  bodyHtml = fixFigureSizesHTML(bodyHtml, 280);
+  
+  
+  // Build header HTML for DOCX and (optionally) inline images so they always embed
+  let headerHTML = buildHeaderHTML_DOCX();
+  // Inline to data: URLs but DO NOT clamp sizes (we already set exact widths above)
+  headerHTML = await inlineAndClampImages(headerHTML, null, null);
 
   const html = `
-  <!DOCTYPE html><html><head><meta charset="utf-8">
-  <style>body{font-family:Arial,sans-serif;font-size:14pt;line-height:1.6}</style>
-  </head><body>
-    <div style="text-align:center;font-weight:bold;font-size:16pt;margin:0 0 12pt">${titleText}</div>
-    ${bodyHtml}
-  </body></html>`;
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<style>
+  body{font-family:Arial,sans-serif;font-size:14pt;line-height:1.6}
+</style>
+</head><body>
+  ${headerHTML}
+  <div style="text-align:center;font-weight:bold;font-size:16pt;margin:0 0 12pt">${titleText}</div>
+  ${bodyHtml}
+</body></html>`;
 
   const blob = window.htmlDocx.asBlob(html);
   saveAs(blob, fname.replace(/[^\w\-\. ]+/g,'_') + ".docx");
 }
 
- 
- 
- 
-/*
-// last latest version
-function downloadPDF(title){
-  const hasImages = !!document.getElementById('paper')?.querySelector('img');
-  try {
-    const docTitle = (title || 'Exam Paper').toUpperCase();
-
-    let html = DOMPurify.sanitize(getCleanHTMLForPdf(), { ADD_ATTR: ['style'] });
-    html = stripUnsupportedFonts(html);
-
-    let pdfContent = window.htmlToPdfmake(html, { window });
-    if (!Array.isArray(pdfContent)) pdfContent = [pdfContent];
-
-    // sanitize structure (fix columns, numbers, margins, etc.)
-    pdfContent = sanitizePdfNode(pdfContent);
-
-    const docDefinition = {
-      info: { title: docTitle },
-      pageSize: 'A4',
-      pageMargins: [40, 60, 40, 60],
-      content: [
-        { text: docTitle, style: 'header', alignment: 'center', margin: [0,0,0,12] },
-        ...pdfContent
-      ],
-      styles: { header: { fontSize: 16, bold: true } },
-      defaultStyle: { font: 'Roboto', fontSize: 12, lineHeight: 1.4 }
-    };
-
-    pdfMake.createPdf(docDefinition).download(docTitle + '.pdf');
-  } catch (err) {
-    console.error('PDF export failed:', err);
-    if (hasImages) {
-      alert('PDF export failed. Images must have fixed pixel widths for now. Try removing images or export as DOCX.');
-    } else {
-      alert('PDF export failed. ' + (err?.message || 'Please try again.'));
-    }
-  }
+// tiny guard (you saw "escapeHTML is not defined")
+if (typeof window.escapeHTML !== 'function') {
+  window.escapeHTML = s => String(s ?? '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
-*/
 
-function downloadPDF(title){
-  const hasImages = !!document.getElementById('paper')?.querySelector('img');
-  try {
-    const docTitle = (title || 'Exam Paper').toUpperCase();
+// minimal NaN scrubber (keeps only valid numbers or '*')
+function scrubNumbers(node){
+  const fixNum = v => {
+    if (typeof v === 'number') return Number.isFinite(v) ? v : undefined;
+    if (typeof v === 'string') { const n = parseFloat(v); return Number.isFinite(n) ? n : undefined; }
+    return undefined;
+  };
+  const walk = n => {
+    if (Array.isArray(n)) return n.forEach(walk);
+    if (!n || typeof n !== 'object') return;
 
-    // use the trimmed HTML (no Answer Key)
-    let html = DOMPurify.sanitize(getHTMLWithoutAnswerKey(), { ADD_ATTR: ['style'] });
-    html = stripUnsupportedFonts(html);
-
-    let pdfContent = window.htmlToPdfmake(html, { window });
-    if (!Array.isArray(pdfContent)) pdfContent = [pdfContent];
-
-    pdfContent = sanitizePdfNode(pdfContent); // your existing fixer
-
-    const docDefinition = {
-      info: { title: docTitle },
-      pageSize: 'A4',
-      pageMargins: [40, 60, 40, 60],
-      content: [
-        { text: docTitle, style: 'header', alignment: 'center', margin: [0,0,0,12] },
-        ...pdfContent
-      ],
-      styles: { header: { fontSize: 16, bold: true } },
-      defaultStyle: { font: 'Roboto', fontSize: 12, lineHeight: 1.4 }
-    };
-
-    pdfMake.createPdf(docDefinition).download(docTitle + '.pdf');
-  } catch (err) {
-    console.error('PDF export failed:', err);
-    if (hasImages) {
-      alert('PDF export failed. Images must have fixed pixel widths for now. Try removing images or export as DOCX.');
-    } else {
-      alert('PDF export failed. ' + (err?.message || 'Please try again.'));
+    if (n.table && Array.isArray(n.table.widths)) {
+      n.table.widths = n.table.widths.map(w => (w === '*' || w === 'auto')
+        ? w : (Number.isFinite(+w) ? +w : '*'));
     }
-  }
+    ['width','height','fontSize','lineHeight','characterSpacing','leadingIndent','opacity'].forEach(k=>{
+      if (k in n){ const x = fixNum(n[k]); if (x === undefined) delete n[k]; else n[k] = x; }
+    });
+    if ('margin' in n){
+      n.margin = Array.isArray(n.margin) ? n.margin.map(v=>fixNum(v) ?? 0) : (fixNum(n.margin) ?? 0);
+    }
+    if (n.image){ // guarantee numeric image width
+      n.width = fixNum(n.width) ?? 240;
+      delete n.fit; delete n.height;
+    }
+    ['content','stack','columns','header','footer','background','ul','ol','table'].forEach(k=>{
+      if (k in n) walk(n[k]);
+    });
+  };
+  walk(node);
+  return node;
+}
+
+// Build a pdfmake header node (no borders, fully centered, NaN-safe)
+function buildPdfHeaderNode() {
+  const L = exportHeaderState.left  || {};
+  const R = exportHeaderState.right || {};
+  const title = (exportHeaderState.title || '').trim();
+  const college = (exportHeaderState.college || '').trim();
+  const addr  = (exportHeaderState.addr  || '').trim();
+
+      // Clamp logo widths so they never crush the middle column
+  const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, Number(n)||0));
+  const leftW  = L.src ? clamp(L.w, 40, 110)  : 0;  // <= make these smaller if you like
+  const rightW = R.src ? clamp(R.w, 40, 110)  : 0;
+
+  const leftImg  = (L.src ? { image: L.src, width: Number(L.w)||leftW } : null);
+  const rightImg = (R.src ? { image: R.src, width: Number(R.w)||rightW } : null);
+
+  // Middle stack: center-aligned text
+  const middleStack = [];
+  if (title) middleStack.push({ text: title, bold: true, fontSize: 16, alignment: 'center', margin:[0,0,0,2] });
+  if (college) middleStack.push({ text: college, bold: true, fontSize: 14, alignment: 'center', margin:[0,0,0,2] });
+  if (addr)  middleStack.push({ text: addr, fontSize: 11, color: '#444', alignment: 'center' });
+
+  // If nothing to show, return null so caller can skip it
+  if (!leftImg && !rightImg && middleStack.length === 0) return null;
+
+  return {
+    columns: [
+      { width: leftW  ? leftW  : 0, alignment: 'left',   stack: leftImg  ? [leftImg]  : [] },
+      { width: '*',   alignment: 'center', stack: middleStack },
+      { width: rightW ? rightW : 0, alignment: 'right',  stack: rightImg ? [rightImg] : [] }
+    ],
+    columnGap: 10,
+    margin: [0,0,0,10]
+  };
 }
 
 
+// Your working flow + header stitched in
+
+async function downloadPDF_withHeader(title){
+  const docTitle = (title || 'Exam Paper').toUpperCase();
+
+  // BODY stays exactly like your working version
+  let html = DOMPurify.sanitize(getHTMLWithoutAnswerKey(), { ADD_ATTR: ['style'] });
+  html = stripUnsupportedFonts(html);
+
+  let bodyNodes = window.htmlToPdfmake(html, { window });
+  if (!Array.isArray(bodyNodes)) bodyNodes = [bodyNodes];
+  bodyNodes = sanitizePdfNode(bodyNodes);
+
+  // Build pdfmake header node (no tables, no borders, centered)
+  const headerNode = buildPdfHeaderNode();
+
+  // Compose content: header (if any) → big title → body
+  let content = [];
+  if (headerNode) content.push(headerNode);
+  // content.push({ text: docTitle, style: 'header', alignment: 'center', margin: [0,0,0,12] });
+  content.push(...bodyNodes);
+
+  // Final scrub, just in case
+  content = sanitizePdfNode(content);
+
+  pdfMake.createPdf({
+    info: { title: docTitle },
+    pageSize: 'A4',
+    pageMargins: [40, 60, 40, 60],
+    content,
+    styles: { header: { fontSize: 16, bold: true } },
+    defaultStyle: { font: 'Roboto', fontSize: 12, lineHeight: 1.4 }
+  }).download(docTitle + '.pdf');
+}
 
 
 // Optional: catch unhandled promise rejections from pdfmake internals
@@ -763,42 +1205,6 @@ window.addEventListener('unhandledrejection', (e) => {
   alert('PDF export failed during layout. If the exam has images or % widths, set fixed pixel widths or export as DOCX.');
 });
 
-
-
-    /*
- 
-// DOCX
-async function exportDocxServer() {
-  const html = document.getElementById('paper').innerHTML; // include current edits
-  const fd = new FormData();
-  fd.append('id', String(loadedExam.id || ''));
-  fd.append('title', document.getElementById('examTitle').innerText.trim());
-  fd.append('html', html);
-
-  const res = await fetch('/api/export_docx.php', { method:'POST', body: fd });
-  if (!res.ok) { alert('DOCX export failed'); return; }
-  const blob = await res.blob();
-  saveAs(blob, (loadedExam.title || 'Exam Paper') + '.docx');
-}
-
-// PDF
-async function exportPdfServer() {
-  const html = document.getElementById('paper').innerHTML;
-  const fd = new FormData();
-  fd.append('id', String(loadedExam.id || ''));
-  fd.append('title', document.getElementById('examTitle').innerText.trim());
-  fd.append('html', html);
-
-  const res = await fetch('/api/export_pdf.php', { method:'POST', body: fd });
-  if (!res.ok) { alert('PDF export failed'); return; }
-  const blob = await res.blob();
-  saveAs(blob, (loadedExam.title || 'Exam Paper') + '.pdf');
-}
-
-// wire buttons
-document.getElementById('btnDocx').onclick = exportDocxServer;
-document.getElementById('btnPdf').onclick  = exportPdfServer;
-*/
 
     // ---- state + load ----
     const examId = (() => {
@@ -923,11 +1329,13 @@ document.getElementById('btnPdf').onclick  = exportPdfServer;
 
      // ---- Client-side exports from current editor content ----
     $('btnDocx').addEventListener('click', ()=>{
-      downloadDOCX(($('examTitle').innerText || 'Exam Paper').trim());
+      showExportHeaderModal('docx');
     });
+    /*
     $('btnPdf').addEventListener('click', ()=>{
-      downloadPDF(($('examTitle').innerText || 'Exam Paper').trim());
-    });
+      showExportHeaderModal('pdf');
+    }); */ 
+    
 
     // ---- logout ----
     $('logoutBtn')?.addEventListener('click', () => {
@@ -935,6 +1343,98 @@ document.getElementById('btnPdf').onclick  = exportPdfServer;
       localStorage.removeItem(CACHE_KEY);
       location.replace('/login');
     });
+    
+    
+    const exportHeaderState = { left:{src:'',w:80}, right:{src:'',w:80}, title:'', college: '', addr:'' };
+
+function showExportHeaderModal(kind){ // kind: 'docx' | 'pdf'
+  const el = $('exportHeaderModal');
+  // el.dataset.kind = kind;
+  el.classList.remove('hidden');
+}
+
+function hideExportHeaderModal(){
+  $('exportHeaderModal').classList.add('hidden');
+}
+
+function readFileToDataURL(file){
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onload=()=>res(String(r.result||'')); r.onerror=rej; r.readAsDataURL(file);
+  });
+}
+
+function wireExportHeaderModal(){
+  const g = id => document.getElementById(id);
+  const bind = (id, handler) => { const el = g(id); if (el) el.onclick = handler; };
+
+  const L  = g('eh_leftFile'),  R  = g('eh_rightFile');
+  const LW = g('eh_leftW'),     RW = g('eh_rightW');
+  const T  = g('eh_title'), C = g('eh_college'), A  = g('eh_addr');
+
+  if (L)  L.onchange  = async()=>{ if (L.files?.[0]) exportHeaderState.left.src  = await readFileToDataURL(L.files[0]); };
+  if (R)  R.onchange  = async()=>{ if (R.files?.[0]) exportHeaderState.right.src = await readFileToDataURL(R.files[0]); };
+  if (LW) LW.oninput  = ()=> exportHeaderState.left.w  = Math.max(30, Math.min(240, parseInt(LW.value||'80',10)||80));
+  if (RW) RW.oninput  = ()=> exportHeaderState.right.w = Math.max(30, Math.min(240, parseInt(RW.value||'80',10)||80));
+  if (T)  T.oninput   = ()=> exportHeaderState.title = T.value.trim();
+  if (C)  C.oninput   = ()=> exportHeaderState.college = C.value.trim();
+  if (A)  A.oninput   = ()=> exportHeaderState.addr  = A.value.trim();
+
+  bind('eh_cancel', hideExportHeaderModal);
+  bind('eh_ok_docx', async ()=>{
+    hideExportHeaderModal();
+    const t = (document.getElementById('examTitle')?.innerText || 'Exam Paper').trim();
+    downloadDOCX_withHeader(t, buildHeaderHTML());
+  });
+  bind('eh_ok_pdf', async ()=>{
+    hideExportHeaderModal();
+    const t = (document.getElementById('examTitle')?.innerText || 'Exam Paper').trim();
+    downloadPDF_withHeader(t, buildHeaderHTML());
+  });
+}
+document.addEventListener('DOMContentLoaded', wireExportHeaderModal);
+
+// also guard this (it can be null)
+document.getElementById('btnPdfKeys')?.addEventListener('click', ()=>{
+  downloadPDF_AnswerKeyOnly((document.getElementById('examTitle')?.innerText || 'Exam Paper').trim());
+});
+
+
+function escapeHTML(v){
+  if (v == null) return '';
+  return String(v)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
+}
+
+function buildHeaderHTML(){
+  const L = exportHeaderState.left, R = exportHeaderState.right;
+  const showL = !!L.src, showR = !!R.src;
+  const title = exportHeaderState.title || '';
+  const addr  = exportHeaderState.addr  || '';
+
+  if (!showL && !showR && !title && !addr) return '';
+
+  const left  = showL ? `<img src="${L.src}" style="display:block;width:${L.w||80}px;height:auto;margin:auto">` : '';
+  const right = showR ? `<img src="${R.src}" style="display:block;width:${R.w||80}px;height:auto;margin:auto">` : '';
+  const mid = `
+    ${title ? `<div style="font-weight:700;font-size:18px;line-height:1.2">${escapeHTML(title)}</div>` : ''}
+    ${addr  ? `<div style="font-size:12px;color:#444;line-height:1.2">${escapeHTML(addr)}</div>` : ''}
+  `;
+
+  // NOTE: no width="18%" etc; no px strings except inside inline CSS of IMG
+  return `
+    <table style="border-collapse:collapse;margin-bottom:10px">
+      <tr>
+        <td style="text-align:left;vertical-align:middle">${left}</td>
+        <td style="text-align:center;vertical-align:middle">${mid}</td>
+        <td style="text-align:right;vertical-align:middle">${right}</td>
+      </tr>
+    </table>
+  `;
+}
+ 
   </script>
 </body>
 </html>

@@ -254,7 +254,7 @@
                    placeholder="Bulacan State University — Main Campus"
                    class="border rounded-lg px-3 py-2 w-full mb-2">
             <input id="eh_college" type="text"
-                   placeholder="College of Information Technology"
+                   placeholder="College of Information and Communication Technology"
                    class="border rounded-lg px-3 py-2 w-full mb-2">
             <input id="eh_addr" type="text"
                    placeholder="Guinhawa, City of Malolos, Bulacan"
@@ -999,37 +999,286 @@ function getEditorHTML(){
     function stripUnsupportedFonts(html){
       return html.replace(/font-family\s*:\s*[^;"]+;?/gi, '');
     }
-
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ // A unique token that *survives* htmlToPdfmake and is easy to find later
+const SET_HEADER_TOKEN = '[[__SET_HEADER__]]';
 // Clamp helper
 const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, Number(n)||0));
 
+// Put a marker as the *first child* of every .paper (the first set will still get replaced,
+// we’ll just avoid pagebreak-before for the first).
+function annotateSetsInHTML(html) {
+  const root = document.createElement('div');
+  root.innerHTML = html;
+  const papers = root.querySelectorAll('.paper');
+  papers.forEach(p => {
+    const marker = document.createElement('p');
+    marker.textContent = SET_HEADER_TOKEN;
+    p.insertBefore(marker, p.firstChild);
+  });
+  return root.innerHTML;
+}
+
+// ===== DOCX pieces =====
+
+// Your DOCX header (logos + school), already good:
 function buildHeaderHTML_DOCX(){
   const L = exportHeaderState.left  || {};
   const R = exportHeaderState.right || {};
   const title = (exportHeaderState.title || '').trim();
   const college = (exportHeaderState.college || '').trim();
   const addr  = (exportHeaderState.addr  || '').trim();
-
-  // Use the user-entered widths; clamp to a sane range for DOCX
+  const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, Number(n)||0));
   const LW = L.src ? clamp(L.w, 30, 240) : 0;
   const RW = R.src ? clamp(R.w, 30, 240) : 0;
 
   const leftImg  = L.src ? `<img src="${L.src}" width="${LW}" style="width:${LW}px;height:auto;display:block;margin:0 auto;">` : '';
   const rightImg = R.src ? `<img src="${R.src}" width="${RW}" style="width:${RW}px;height:auto;display:block;margin:0 auto;">` : '';
 
-  // Use a fixed-layout table; center the middle cell
   return `
-  <table width="100%" border="0" style="border-collapse:collapse;table-layout:fixed;margin:0 0 12pt 0">
+  <table width="100%" border="0" style="border-collapse:collapse;table-layout:fixed;margin:0 0 10pt 0">
     <tr>
       <td width="${LW ? LW+20 : 0}" align="left"  valign="middle">${leftImg}</td>
       <td align="center" valign="middle">
-        ${title ? `<div style="font-weight:700;font-size:16pt;line-height:1.2;text-align:center">${escapeHTML(title)}</div>` : ''}
-        ${college ? `<div style="font-weight:700;font-size:14pt;line-height:1.2;text-align:center">${escapeHTML(college)}</div>` : ''}
-        ${addr  ? `<div style="font-size:11pt;color:#444;line-height:1.2;text-align:center">${escapeHTML(addr)}</div>` : ''}
+        ${title   ? `<div style="font-weight:700;font-size:16pt;line-height:1.2">${escapeHTML(title)}</div>` : ''}
+        ${college ? `<div style="font-weight:700;font-size:14pt;line-height:1.2">${escapeHTML(college)}</div>` : ''}
+        ${addr    ? `<div style="font-size:11pt;color:#444;line-height:1.2">${escapeHTML(addr)}</div>` : ''}
       </td>
       <td width="${RW ? RW+20 : 0}" align="right" valign="middle">${rightImg}</td>
     </tr>
   </table>`;
+}
+
+// Plain-text name lines for DOCX (no borders/tables; width blocks for alignment)
+function makePlainTextHeader_HTML() {
+  return `
+  <div style="width:680px; font-size:11pt; line-height:1.2; margin:0 0 8pt 0">
+    <div>
+      <span style="display:inline-block; width:440px;">Name: ____________________________________</span>
+      <span style="display:inline-block; width:20px;"></span>
+      <span style="display:inline-block; width:220px;">Date: ____________________</span>
+    </div>
+    <div>
+      <span style="display:inline-block; width:440px;">Year &amp; Section: _________________________</span>
+      <span style="display:inline-block; width:20px;"></span>
+      <span style="display:inline-block; width:220px;">Score: ____________________</span>
+    </div>
+  </div>`;
+}
+ 
+ // Inject the DOCX header + name-lines HTML at the top of every .paper
+async function injectHeaderPerSet_DOCX(html) {
+  const root = document.createElement('div');
+  root.innerHTML = html;
+
+  let hdr = buildHeaderHTML_DOCX();
+  hdr = await inlineAndClampImages(hdr, null, null); // ensure logos embed
+
+  const nameLines = makePlainTextHeader_HTML();
+
+  root.querySelectorAll('.paper').forEach((paper, i) => {
+    // optional page-break before every set except first (Word-friendly)
+    if (i > 0) {
+      const br = document.createElement('p');
+      br.setAttribute('style','page-break-before:always;margin:0;padding:0;');
+      br.innerHTML = '&nbsp;';
+      paper.parentNode.insertBefore(br, paper);
+    }
+    const wrap = document.createElement('div');
+    wrap.innerHTML = hdr + nameLines;
+    // insert at top of the paper
+    paper.insertBefore(wrap, paper.firstChild);
+  });
+
+  return root.innerHTML;
+}
+
+
+// ===== PDF pieces =====
+
+
+function buildPdfHeaderNode() {
+  const L = exportHeaderState.left  || {};
+  const R = exportHeaderState.right || {};
+  const title   = (exportHeaderState.title   || '').trim();
+  const college = (exportHeaderState.college || '').trim();
+  const addr    = (exportHeaderState.addr    || '').trim();
+
+  const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, Number(n)||0));
+  const leftW  = L.src ? clamp(L.w, 30, 240) : 0;
+  const rightW = R.src ? clamp(R.w, 30, 240) : 0;
+
+  const leftImg  = L.src ? { image: L.src, width: leftW }  : null;
+  const rightImg = R.src ? { image: R.src, width: rightW } : null;
+
+  const middle = [];
+  if (title)   middle.push({ text: title,   bold:true, fontSize:16, alignment:'center', margin:[0,0,0,2] });
+  if (college) middle.push({ text: college, bold:true, fontSize:12, alignment:'center', margin:[0,0,0,2] });
+  if (addr)    middle.push({ text: addr,    fontSize:11, color:'#444', alignment:'center' });
+
+  return {
+    columns: [
+      { width: leftW  || 0, alignment:'left',  stack: leftImg  ? [leftImg]  : [] },
+      { width: '*',   alignment:'center',      stack: middle },
+      { width: rightW || 0, alignment:'right', stack: rightImg ? [rightImg] : [] },
+    ],
+    columnGap: 10,
+    margin: [0,0,0,8]
+  };
+}
+
+
+function buildNameDateRow() {
+  const l1Left  = { text: 'Name: _______________________________________', margin:[0,0,0,2] };
+  const l1Right = { text: 'Date: ____________________', alignment: 'right', margin:[0,0,0,2] };
+
+  const l2Left  = { text: 'Year & Section: _____________________________', margin:[0,0,0,0] };
+  const l2Right = { text: 'Score: ____________________', alignment: 'right', margin:[0,0,0,0] };
+
+  return {
+    margin: [0, 4, 0, 10],
+    columnGap: 10,
+    stack: [
+      { columns: [ { width:'*', ...l1Left },  { width: 200, ...l1Right } ] },
+      { columns: [ { width:'*', ...l2Left },  { width: 200, ...l2Right } ] }
+    ]
+  };
+}
+
+
+/* small helper: deep-clone any node before reusing it */
+const cloneNode = (obj) => JSON.parse(JSON.stringify(obj));
+
+/* one bundle to drop before each set */
+function buildHeaderBlock() {
+  const hdr = buildPdfHeaderNode();
+  const row = buildNameDateRow();
+  return [hdr, row];
+}
+
+
+
+// pdfmake name lines (columns so right side truly right-aligned)
+function buildPdfStudentLinesNode() {
+  const l1Left  = { text: 'Name: ____________________________________',   margin:[0,0,8,2] };
+  const l1Right = { text: 'Date: ____________________', alignment: 'right', margin:[0,0,0,2] };
+
+  const l2Left  = { text: 'Year & Section: _________________________' };
+  const l2Right = { text: 'Score: ____________________', alignment: 'right' };
+
+  return {
+    margin:[0,0,0,8],
+    columnGap: 10,
+    stack: [
+      { columns: [ { width:'*', ...l1Left },  { width:220, ...l1Right } ] },
+      { columns: [ { width:'*', ...l2Left },  { width:220, ...l2Right } ] }
+    ]
+  };
+}
+
+// Replace each SET marker token with (header + student lines) and add pageBreak before all but first
+function injectHeaderPerSet_PDF(nodes) {
+  let seen = 0;
+  const headerNode = buildPdfHeaderNode();
+  const nameNode   = buildPdfStudentLinesNode();
+
+  const replace = arr => {
+    const out = [];
+    for (const n of arr) {
+      // pdfmake simple text node
+      if (n && typeof n === 'object' && typeof n.text === 'string' && n.text.includes(SET_HEADER_TOKEN)) {
+        // page break BEFORE the header for sets after the first
+        if (seen > 0) out.push({ text:'', pageBreak:'before' });
+        out.push(headerNode);
+        out.push(nameNode);
+        seen++;
+        continue; // skip the token itself
+      }
+
+      // recurse into containers
+      if (n && typeof n === 'object') {
+        ['stack','content','columns','ul','ol'].forEach(k=>{
+          if (Array.isArray(n[k])) n[k] = replace(n[k]);
+        });
+        if (n.table && Array.isArray(n.table.body)) {
+          n.table.body = n.table.body.map(row => Array.isArray(row) ? replace(row) : row);
+        }
+      }
+      out.push(n);
+    }
+    return out;
+  };
+
+  return Array.isArray(nodes) ? replace(nodes) : nodes;
+}
+ 
+ function tightenPdfSpacing(node){
+  const walk = (n)=>{
+    if (Array.isArray(n)) return n.map(walk);
+    if (!n || typeof n !== 'object') return n;
+
+
+if ('text' in n && !('table' in n) && !('image' in n) && !('columns' in n)) {
+  if (!n.margin) n.margin = [0, 1, 0, 3]; // was [0,2,0,4]
+}
+if ('ul' in n || 'ol' in n) { if (!n.margin) n.margin = [0, 1, 0, 3]; }
+if ('table' in n){ if (!n.margin) n.margin = [0, 2, 0, 4]; }
+
+
+    // Lists / stacks / tables
+    if ('stack' in n || 'content' in n || 'columns' in n) {
+      ['stack','content','columns','ul','ol'].forEach(k=>{ if (n[k]) n[k] = walk(n[k]); });
+    }
+    
+    return n;
+  };
+  return walk(node);
+}
+
+
+// Read any of: data-w, width="", style="width:123px", or naturalWidth.
+// Then force pixel width + auto height so htmlToPdfmake emits clean numbers.
+function fixFiguresForPdf(html, maxPx = 480) {
+  const root = document.createElement('div');
+  root.innerHTML = html;
+
+  const px = v => {
+    const n = parseFloat(v);
+    return Number.isFinite(n) ? Math.max(1, Math.min(n, maxPx)) : NaN;
+  };
+
+  // <figure> containers (optional)
+  root.querySelectorAll('figure').forEach(fig => {
+    let w = px(fig.getAttribute('data-w'))
+         || px(fig.getAttribute('width'))
+         || (fig.style?.width?.endsWith('px') ? px(fig.style.width) : NaN);
+    if (!Number.isFinite(w)) w = maxPx;
+    fig.style.width = w + 'px';
+  });
+
+  // <img> elements
+  root.querySelectorAll('img').forEach(img => {
+    let w = px(img.getAttribute('data-w'))
+         || px(img.getAttribute('width'))
+         || (img.style?.width?.endsWith('px') ? px(img.style.width) : NaN)
+         || px(img.naturalWidth);
+    if (!Number.isFinite(w)) w = maxPx;
+    w = Math.min(w, maxPx);
+    img.setAttribute('width', String(w));
+    img.removeAttribute('height');
+    img.style.width = w + 'px';
+    img.style.height = 'auto';
+    img.style.maxWidth = '';
+    img.style.maxHeight = '';
+  });
+
+  return root.innerHTML;
 }
 
 
@@ -1056,29 +1305,18 @@ function fixFigureSizesHTML(html, maxPx = FIGURE_MAX_PX){
   return node.innerHTML;
 }
 
-
-async function downloadDOCX_withHeader(title){
-  const titleText = (title || 'Exam Paper').toUpperCase();
+ 
+ async function downloadDOCX_withHeader(title){
   const fname = (title || 'exam_paper').trim();
 
-  // Body (no Answer Key)
   let bodyHtml = DOMPurify.sanitize(getHTMLWithoutAnswerKey(), { ADD_ATTR: ['style'] });
-  bodyHtml = fixFigureSizesHTML(bodyHtml, 280);
-  
-  
-  // Build header HTML for DOCX and (optionally) inline images so they always embed
-  let headerHTML = buildHeaderHTML_DOCX();
-  // Inline to data: URLs but DO NOT clamp sizes (we already set exact widths above)
-  headerHTML = await inlineAndClampImages(headerHTML, null, null);
+  bodyHtml = fixFigureSizesHTML(bodyHtml, 280);                 // your figure size clamp
+  bodyHtml = await injectHeaderPerSet_DOCX(bodyHtml);           // <— inject per-set header + name lines
 
   const html = `
 <!DOCTYPE html><html><head><meta charset="utf-8">
-<style>
-  body{font-family:Arial,sans-serif;font-size:14pt;line-height:1.6}
-</style>
+<style>body{font-family:Arial,sans-serif;font-size:14pt;line-height:1.6}</style>
 </head><body>
-  ${headerHTML}
-  <div style="text-align:center;font-weight:bold;font-size:16pt;margin:0 0 12pt">${titleText}</div>
   ${bodyHtml}
 </body></html>`;
 
@@ -1086,117 +1324,59 @@ async function downloadDOCX_withHeader(title){
   saveAs(blob, fname.replace(/[^\w\-\. ]+/g,'_') + ".docx");
 }
 
-// tiny guard (you saw "escapeHTML is not defined")
-if (typeof window.escapeHTML !== 'function') {
-  window.escapeHTML = s => String(s ?? '')
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
-
-// minimal NaN scrubber (keeps only valid numbers or '*')
-function scrubNumbers(node){
-  const fixNum = v => {
-    if (typeof v === 'number') return Number.isFinite(v) ? v : undefined;
-    if (typeof v === 'string') { const n = parseFloat(v); return Number.isFinite(n) ? n : undefined; }
-    return undefined;
-  };
-  const walk = n => {
-    if (Array.isArray(n)) return n.forEach(walk);
-    if (!n || typeof n !== 'object') return;
-
-    if (n.table && Array.isArray(n.table.widths)) {
-      n.table.widths = n.table.widths.map(w => (w === '*' || w === 'auto')
-        ? w : (Number.isFinite(+w) ? +w : '*'));
-    }
-    ['width','height','fontSize','lineHeight','characterSpacing','leadingIndent','opacity'].forEach(k=>{
-      if (k in n){ const x = fixNum(n[k]); if (x === undefined) delete n[k]; else n[k] = x; }
-    });
-    if ('margin' in n){
-      n.margin = Array.isArray(n.margin) ? n.margin.map(v=>fixNum(v) ?? 0) : (fixNum(n.margin) ?? 0);
-    }
-    if (n.image){ // guarantee numeric image width
-      n.width = fixNum(n.width) ?? 240;
-      delete n.fit; delete n.height;
-    }
-    ['content','stack','columns','header','footer','background','ul','ol','table'].forEach(k=>{
-      if (k in n) walk(n[k]);
-    });
-  };
-  walk(node);
-  return node;
-}
-
-// Build a pdfmake header node (no borders, fully centered, NaN-safe)
-function buildPdfHeaderNode() {
-  const L = exportHeaderState.left  || {};
-  const R = exportHeaderState.right || {};
-  const title = (exportHeaderState.title || '').trim();
-  const college = (exportHeaderState.college || '').trim();
-  const addr  = (exportHeaderState.addr  || '').trim();
-
-      // Clamp logo widths so they never crush the middle column
-  const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, Number(n)||0));
-  const leftW  = L.src ? clamp(L.w, 40, 110)  : 0;  // <= make these smaller if you like
-  const rightW = R.src ? clamp(R.w, 40, 110)  : 0;
-
-  const leftImg  = (L.src ? { image: L.src, width: Number(L.w)||leftW } : null);
-  const rightImg = (R.src ? { image: R.src, width: Number(R.w)||rightW } : null);
-
-  // Middle stack: center-aligned text
-  const middleStack = [];
-  if (title) middleStack.push({ text: title, bold: true, fontSize: 16, alignment: 'center', margin:[0,0,0,2] });
-  if (college) middleStack.push({ text: college, bold: true, fontSize: 14, alignment: 'center', margin:[0,0,0,2] });
-  if (addr)  middleStack.push({ text: addr, fontSize: 11, color: '#444', alignment: 'center' });
-
-  // If nothing to show, return null so caller can skip it
-  if (!leftImg && !rightImg && middleStack.length === 0) return null;
-
-  return {
-    columns: [
-      { width: leftW  ? leftW  : 0, alignment: 'left',   stack: leftImg  ? [leftImg]  : [] },
-      { width: '*',   alignment: 'center', stack: middleStack },
-      { width: rightW ? rightW : 0, alignment: 'right',  stack: rightImg ? [rightImg] : [] }
-    ],
-    columnGap: 10,
-    margin: [0,0,0,10]
-  };
-}
-
-
-// Your working flow + header stitched in
 
 async function downloadPDF_withHeader(title){
   const docTitle = (title || 'Exam Paper').toUpperCase();
 
-  // BODY stays exactly like your working version
+  // Clean the full HTML first (images fixed, page breaks between .paper)
   let html = DOMPurify.sanitize(getHTMLWithoutAnswerKey(), { ADD_ATTR: ['style'] });
   html = stripUnsupportedFonts(html);
+  html = fixFiguresForPdf(html, 480);
 
-  let bodyNodes = window.htmlToPdfmake(html, { window });
-  if (!Array.isArray(bodyNodes)) bodyNodes = [bodyNodes];
-  bodyNodes = sanitizePdfNode(bodyNodes);
+  // Grab each .paper (one set per .paper)
+  const host = document.createElement('div');
+  host.innerHTML = html;
+  const sets = Array.from(host.querySelectorAll('.paper'));
 
-  // Build pdfmake header node (no tables, no borders, centered)
-  const headerNode = buildPdfHeaderNode();
-
-  // Compose content: header (if any) → big title → body
   let content = [];
-  if (headerNode) content.push(headerNode);
-  // content.push({ text: docTitle, style: 'header', alignment: 'center', margin: [0,0,0,12] });
-  content.push(...bodyNodes);
+  const headerBlock = buildHeaderBlock();            // built once…
+  for (let i=0; i<sets.length; i++) {
+    const setHtml = sets[i].outerHTML;
 
-  // Final scrub, just in case
+    // convert this set only
+    let nodes = window.htmlToPdfmake(setHtml, { window });
+    if (!Array.isArray(nodes)) nodes = [nodes];
+    nodes = sanitizePdfNode(nodes);
+    nodes = tightenPdfSpacing(nodes);
+
+    if (i > 0) content.push({ text:'', pageBreak:'before' });  // new page for every next set
+
+    // IMPORTANT: deep-clone header elements so pdfmake doesn’t mutate the originals
+    content.push(...cloneNode(headerBlock));
+    content.push(...nodes);
+  }
+
+  // Fallback: if no .paper found, keep old behavior (single document)
+  if (sets.length === 0) {
+    let bodyNodes = window.htmlToPdfmake(html, { window });
+    if (!Array.isArray(bodyNodes)) bodyNodes = [bodyNodes];
+    bodyNodes = sanitizePdfNode(bodyNodes);
+    bodyNodes = tightenPdfSpacing(bodyNodes);
+    content.push(...buildHeaderBlock());
+    content.push(...bodyNodes);
+  }
+
   content = sanitizePdfNode(content);
 
   pdfMake.createPdf({
     info: { title: docTitle },
     pageSize: 'A4',
-    pageMargins: [40, 60, 40, 60],
+    pageMargins: [40, 54, 40, 54],            // a bit tighter
     content,
-    styles: { header: { fontSize: 16, bold: true } },
-    defaultStyle: { font: 'Roboto', fontSize: 12, lineHeight: 1.4 }
+    defaultStyle: { font:'Roboto', fontSize:12, lineHeight:1.15 }
   }).download(docTitle + '.pdf');
 }
+
 
 
 // Optional: catch unhandled promise rejections from pdfmake internals
@@ -1204,6 +1384,7 @@ window.addEventListener('unhandledrejection', (e) => {
   console.error('Unhandled rejection:', e.reason);
   alert('PDF export failed during layout. If the exam has images or % widths, set fixed pixel widths or export as DOCX.');
 });
+
 
 
     // ---- state + load ----
@@ -1331,10 +1512,6 @@ window.addEventListener('unhandledrejection', (e) => {
     $('btnDocx').addEventListener('click', ()=>{
       showExportHeaderModal('docx');
     });
-    /*
-    $('btnPdf').addEventListener('click', ()=>{
-      showExportHeaderModal('pdf');
-    }); */ 
     
 
     // ---- logout ----
@@ -1435,6 +1612,7 @@ function buildHeaderHTML(){
   `;
 }
  
+    
   </script>
 </body>
 </html>

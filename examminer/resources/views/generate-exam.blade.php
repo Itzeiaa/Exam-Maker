@@ -48,7 +48,7 @@
     .fg-thumb { width:72px;height:54px;object-fit:cover;border:1px solid #e5e7eb;border-radius:6px; }
     
     /* From Uiverse.io by arieshiphop */ 
-    #autoDistributeBtn, #addRowBtn, #removeRow, #rescan {
+    #addRowBtn, #removeRow, #rescan {
      font-size: 12px;
      padding: 10px 10px; 
      margin: 10px;
@@ -58,25 +58,26 @@
      color: white;
      border-radius: 4px;
     }
-    
+    /* #autoDistributeBtn,*/
     #removeRow {
         background-color: #c0392b;
     }
     
-    #autoDistributeBtn:hover, #addRowBtn:hover, #rescan:hover {
+    #addRowBtn:hover, #rescan:hover {
      background: rgb(2,0,36);
      background: linear-gradient(90deg, rgba(30,144,255,1) 0%, rgba(0,212,255,1) 100%);
     }
+    /* #autoDistributeBtn:hover,*/
     
      #removeRow:hover {
      background:  #c0392b;
      background: linear-gradient(90deg, #c0392b 0%, #e74c3c 100%);
     }
     
-    #autoDistributeBtn:active, #addRowBtn:active, #removeRow:active, #rescan:active {
+     #addRowBtn:active, #removeRow:active, #rescan:active {
      transform: translate(0em, 0.2em);
     }
-    
+    /*#autoDistributeBtn:active,*/
     
     .figWrap{
       display:grid;
@@ -106,137 +107,55 @@
     }
 
 
-
-
-    .container {
-  --transition: 350ms;
-  --folder-W: 120px;
-  --folder-H: 80px;
-  width: 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 10px;
-  margin-top: 5em;
-  background: linear-gradient(135deg, rgba(30,144,255,1) 0%, rgba(0,212,255,1)); /* linear-gradient(135deg, #f162ba, #ed45ae); */
-  border-radius: 15px;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-  height: calc(var(--folder-H) * 1.7);
-  position: relative;
-}
-
-.folder {
-  position: absolute;
-  top: -20px;
-  left: calc(50% - 60px);
-  animation: float 2.5s infinite ease-in-out;
-  transition: transform var(--transition) ease;
-}
-
-.folder:hover {
-  transform: scale(1.05);
-}
-
-.folder .front-side,
-.folder .back-side {
-  position: absolute;
-  transition: transform var(--transition);
-  transform-origin: bottom center;
-}
-
-.folder .back-side::before,
-.folder .back-side::after {
-  content: "";
-  display: block;
-  background-color: white;
-  opacity: 0.5;
-  z-index: 0;
-  width: var(--folder-W);
-  height: var(--folder-H);
-  position: absolute;
-  transform-origin: bottom center;
-  border-radius: 15px;
-  transition: transform 350ms;
-  z-index: 0;
-}
-
-.container:hover .back-side::before {
-  transform: rotateX(-5deg) skewX(5deg);
-}
-.container:hover .back-side::after {
-  transform: rotateX(-15deg) skewX(12deg);
-}
-
-.folder .front-side {
-  z-index: 1;
-}
-
-.container:hover .front-side {
-  transform: rotateX(-40deg) skewX(15deg);
-}
-
-.folder .tip {
-  background: linear-gradient(135deg, #ff9a56, #ff6f56);
-  width: 80px;
-  height: 20px;
-  border-radius: 12px 12px 0 0;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  position: absolute;
-  top: -10px;
-  z-index: 2;
-}
-
-.folder .cover {
-  background: linear-gradient(135deg, #ffe563, #ffc663);
-  width: var(--folder-W);
-  height: var(--folder-H);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
-}
-
-.custom-file-upload {
-  font-size: 1.1em;
-  color: #ffffff;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  border-radius: 10px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: background var(--transition) ease;
-  display: inline-block;
-  width: 100%;
-  padding: 10px 35px;
-  position: relative;
-}
-
-.custom-file-upload:hover {
-  background: rgba(255, 255, 255, 0.4);
-}
-
-.custom-file-upload input[type="file"] {
-  display: none;
-}
-
-@keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-20px);
-  }
-
-  100% {
-    transform: translateY(0px);
-  }
-}
-
-
 ol { padding-left: 1.25rem; }
 ol li { margin: 2px 0; }
 
+#figureBtn {
+ font-size: 8px;
+ margin-left: 5px;
+ padding: 5px 5px;
+ border: transparent;
+ box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+ background: dodgerblue;
+ color: white;
+ border-radius: 4px;
+}
+
+#figureBtn:hover {
+ background: rgb(2,0,36);
+ background: linear-gradient(90deg, rgba(30,144,255,1) 0%, rgba(0,212,255,1) 100%);
+}
+
+#figureBtn:active {
+ transform: translate(0em, 0.2em);
+}
+
+
+#file-input {
+  width: 89px;
+  max-width: 100%;
+  font-size: 10px;
+  color: #444;
+  padding: 1px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid rgba(8, 8, 8, 0.288);
+}
+
+#file-input::file-selector-button {
+  margin-right: 20px;
+  border: none;
+  background: #084cdf;
+  padding: 7px 15px;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  transition: background .2s ease-in-out;
+}
+
+#file-input::file-selector-button:hover {
+  background: #0d45a5;
+}
   </style>
 </head>
 <body class="min-h-screen">
@@ -274,11 +193,11 @@ ol li { margin: 2px 0; }
         <a href="/my-exams" class="flex items-center px-4 py-3 text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-all duration-200 mb-2 group">
           <i class="fas fa-file-alt mr-3"></i> My Exams
         </a>
-        <a href="/cms" class="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-xl mb-2"><i class="fas fa-clipboard-list mr-3"></i> CMS</a>
+        <!--a href="/cms" class="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-xl mb-2"><i class="fas fa-clipboard-list mr-3"></i> CMS</a-->
       </nav>
 
       <!-- Profile -->
-      <div class="absolute bottom-0 w-64 p-6 border-t border-gray-100 bg-gray-50">
+      <div style="max-width:240px" class="absolute bottom-0 w-64 p-6 border-t border-gray-100 /*bg-gray-50*/">
         <div class="flex items-center mb-4">
           <div class="w-10 h-10 rounded-full mr-3 shadow-md border border-gray-300 overflow-hidden">
             <img id="profilePic" src="/images/default-avatar.png" alt="Profile Picture" class="w-full h-full object-cover">
@@ -301,7 +220,7 @@ ol li { margin: 2px 0; }
             <i class="fas fa-arrow-left text-blue-500 text-2xl"></i>
           </a>
           <div>
-            <h1 class="text-4xl font-bold text-gray-900 mb-1">NLP-Powered Exam Generator</h1>
+            <h1 class="text-4xl font-bold text-gray-900 mb-1">Exam Generator</h1>
             <p class="text-gray-600">Use TOS + Bloom mapping. Materials per row → figures selection → generate sets → export/save.</p>
           </div>
         </div>
@@ -310,51 +229,45 @@ ol li { margin: 2px 0; }
       <!-- Alerts -->
       <div id="alertBox" class="hidden fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg"></div>
 
-      <!-- Meta (no global upload here) -->
-      <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden mb-6">
-        <div class="p-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div class="md:col-span-2">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Exam Title</label>
-            <input id="examTitle" type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="e.g., Midterm — Computer Networks (OSI Model)"/>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"># of Sets</label>
-            <input id="numSets" type="number" min="1" max="150" value="1" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Model (for cleaner only)</label>
-            <select id="model" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-              <option value="gemini/gemini-aistudio:free">Gemini-aistudio (free)</option>
-              <option value="deepseek/deepseek-r1:free">DeepSeek R1 (free)</option>
-              <option value="deepseek/deepseek-chat-v3-0324:free">DeepSeek V3 (free)</option>
-              <option value="mistralai/mistral-small-3.1-24b-instruct:free">Mistral 3.1 (free)</option>
-            </select>
-          </div>
-
-          <div class="md:col-span-4">
-            <div class="flex flex-wrap items-center gap-3">
-              <span class="badge">Exam Types:</span>
-              <label class="badge"><input type="checkbox" class="examType" value="mcq" checked> MCQ</label>
-              <label class="badge"><input type="checkbox" class="examType" value="tf" checked> T/F</label>
-              <label class="badge"><input type="checkbox" class="examType" value="id" checked> ID</label>
-              <label class="badge"><input type="checkbox" class="examType" value="match" checked> Matching</label>
-              <label class="badge"><input type="checkbox" class="examType" value="essay" checked> Essay</label>
+          <!-- Meta (Exam title + Model only) -->
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden mb-6">
+          <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="md:col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Exam Title</label>
+              <input id="examTitle" type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="e.g., Midterm — Computer Networks (OSI Model)"/>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Model (for cleaner only)</label>
+              <select id="model" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <option value="gemini/gemini-aistudio:free">Gemini-aistudio (free)</option>
+                <option value="deepseek/deepseek-r1:free">DeepSeek R1 (free)</option>
+                <option value="deepseek/deepseek-chat-v3-0324:free">DeepSeek V3 (free)</option>
+                <option value="mistralai/mistral-small-3.1-24b-instruct:free">Mistral 3.1 (free)</option>
+              </select>
+            </div>
+        
+            <div class="md:col-span-3">
+              <span class="inline-flex items-center gap-2 text-sm px-2 py-1 rounded bg-blue-50 text-blue-700 border border-blue-200">
+                <i class="fas fa-circle-check"></i>
+                Mode: <strong>Multiple Choice only</strong>
+              </span>
             </div>
           </div>
         </div>
-      </div>
+
 
       <!-- TOS + Bloom rows + Global totals controls -->
       <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden mb-6">
         <div class="p-6 border-b border-gray-100">
           <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
-            <h2 class="text-xl font-bold text-gray-900">Most Essential Learning Competencies (per Topic)</h2>
+            <h2 class="text-xl font-bold text-gray-900">Most Essential Learning Competencies <span id="autoDistributeBtn">(per Topic)</span></h2>
             <div class="flex flex-wrap items-center gap-2">
-              <span class="badge">Easy <input id="gEasy" type="number" class="border rounded px-2 py-1" value="0" min="0" style="width:80px"></span>
-              <span class="badge">Average <input id="gAvg" type="number" class="border rounded px-2 py-1" value="0" min="0" style="width:80px"></span>
-              <span class="badge">Difficult <input id="gDiff" type="number" class="border rounded px-2 py-1" value="0" min="0" style="width:80px"></span>
-              <button id="autoDistributeBtn" ><i class="fas fa-shuffle mr-1"></i>Auto-Distribute</button>
-              <button id="addRowBtn" class="px-3 py-2 rounded border bg-gray-50 hover:bg-gray-100"><i class="fas fa-plus mr-1"></i>Add Row</button>
+              <span style="display:none" class="badge">Easy <input id="gEasy" type="number" class="border rounded px-2 py-1" value="20" min="0" style="width:80px"></span>
+              <span style="display:none" class="badge">Average <input id="gAvg" type="number" class="border rounded px-2 py-1" value="20" min="0" style="width:80px"></span>
+              <span style="display:none" class="badge">Difficult <input id="gDiff" type="number" class="border rounded px-2 py-1" value="10" min="0" style="width:80px"></span>
+              <!--span class="badge">Auto distribute 50 question randomly(for testing purposes)</span-->
+              <!--button id="autoDistributeBtn" ><i class="fas fa-shuffle mr-1"></i>Auto-Distribute</button-->
+              <!--button id="addRowBtn" class="px-3 py-2 rounded border bg-gray-50 hover:bg-gray-100"><i class="fas fa-plus mr-1"></i>Add Row</button-->
             </div>
           </div>
         </div>
@@ -364,6 +277,7 @@ ol li { margin: 2px 0; }
         <div class="px-6 pb-6">
           <div id="tosWarn" class="text-sm text-red-600 my-2 hidden"></div>
           <div id="tosMatrixWrap"></div>
+          <br/>
         </div>
       </div>
 
@@ -420,6 +334,7 @@ ol li { margin: 2px 0; }
               </button>
             </div>
           </div>
+          
         
           <!-- Paper View -->
           <div id="paperPanel">
@@ -446,8 +361,65 @@ ol li { margin: 2px 0; }
     </main>
   </div>
   
+ 
+  <script> // TOPS
   
-  <script> // TOP
+  /* =========================
+   TOS-only data model (source of truth)
+========================= */
+const tosRows = []; // [{id, topic, days, files:[], figs:[], selected:Set<number>, cells:{r,u,ap,an,cr,ev}}]
+const newId = () => 'tos_' + Math.random().toString(36).slice(2,9);
+
+function createEmptyTosRow() {
+  return {
+    id: newId(),
+    topic: '',
+    days: 1,
+    files: [],
+    figs: [],                 // [{src, name}]
+    selected: new Set(),      // selected figure indexes
+    cells: { r:[], u:[], ap:[], an:[], cr:[], ev:[] }
+  };
+}
+
+function addTosRow(initial = {}) {
+  const row = createEmptyTosRow();
+  if (initial.topic) row.topic = initial.topic;
+  if (Number.isFinite(initial.days)) row.days = initial.days|0;
+  ['r','u','ap','an','cr','ev'].forEach(k=>{
+    const v = initial[k]; if (v) row.cells[k] = parseNums(v);
+  });
+  tosRows.push(row);
+  renderTOS();
+}
+
+function removeTosRowByIndex(idx){
+  if (idx>=0 && idx<tosRows.length){ tosRows.splice(idx,1); renderTOS(); }
+}
+
+/* Utility for updating numeric-list cells from string */
+function setCellFromString(row, key, str){
+  row.cells[key] = parseNums(str);
+}
+
+/* Convenience accessors used by the rest of your pipeline */
+function countTotalNumbersFromTosRows(){
+  const all = [];
+  tosRows.forEach(r=>{
+    all.push(...r.cells.r, ...r.cells.u, ...r.cells.ap, ...r.cells.an, ...r.cells.cr, ...r.cells.ev);
+  });
+  return Array.from(new Set(all)).length;
+}
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
 /* -----------------------------------------------------------
    Tiny DOM fallbacks (kept minimal & non-breaking)
@@ -620,6 +592,8 @@ async function extractFigures(files){
 
 /* ================= Rows (TOS + Bloom) ================= */
 const rowState = {}; // id -> {files:[], figs:[], selectedFigIdx:Set, topic:'', days:1}
+
+
 function makeRowCard(id, initial={}){
   const card=document.createElement('div'); card.className='border rounded-xl p-4'; card.dataset.rowId=id;
   card.innerHTML=`
@@ -648,17 +622,23 @@ function makeRowCard(id, initial={}){
           </label>
         </div>
         </center>
-        
-        <div class="fileBadges flex flex-wrap gap-2 mt-2"></div>
+
+        <div class="flex items-center gap-2 mt-2">
+          <div class="fileBadges flex flex-wrap gap-2"></div>
+        </div>
 
         <div class="mt-3">
           <div class="flex items-center justify-between">
             <label class="text-sm font-medium">Figures (choose manually)</label>
-            <button type="button" class="text-xs underline text-blue-600 refreshFigs">Rescan</button>
+            <div class="flex items-center gap-2">
+              <button type="button" class="text-xs underline text-blue-600 refreshFigs">Rescan</button>
+              <!-- NEW: modal launcher beside upload -->
+              <button type="button" class="text-xs underline text-indigo-600 chooseFigsBtn">Choose images…</button>
+            </div>
           </div>
           <details>
-          <summary>Figures(Show/Hide):</summary>
-          <div class="figWrap grid grid-cols-3 gap-2 mt-2"></div>
+            <summary>Figures(Show/Hide):</summary>
+            <div class="figWrap grid grid-cols-3 gap-2 mt-2"></div>
           </details>
         </div>
 
@@ -695,6 +675,8 @@ function makeRowCard(id, initial={}){
   `;
   return card;
 }
+
+
 function bindRowCard(card){
   const id=card.dataset.rowId;
   const dz=card.querySelector('[data-dropzone]'); const picker=card.querySelector('.openPicker'); const fileInput=card.querySelector('.fileInput');
@@ -727,7 +709,22 @@ function bindRowCard(card){
   }
   card.querySelector('.refreshFigs')?.addEventListener('click', scanFigs);
 
-  card.querySelectorAll('textarea, .topicInput, .daysInput').forEach(el=> el.addEventListener('input', renderTOS));
+  // card.querySelectorAll('textarea, .topicInput, .daysInput').forEach(el=> el.addEventListener('input', renderTOS)); 0970
+  
+  card.querySelectorAll('textarea, .topicInput, .daysInput').forEach(el=>{
+  const apply = ()=> {
+    const id = card.dataset.rowId;
+    const topicEl = card.querySelector('.topicInput');
+    const daysEl  = card.querySelector('.daysInput');
+    if (topicEl) rowState[id].topic = topicEl.value;
+    if (daysEl)  rowState[id].days  = Math.max(0, parseInt(daysEl.value||'0',10));
+  };
+  el.addEventListener('input', apply);            // no re-render on every key
+  el.addEventListener('change', ()=>{ apply(); renderTOS(); });
+  el.addEventListener('blur',   ()=>{ apply(); renderTOS(); });
+});
+
+  
   card.querySelector('.rmBtn')?.addEventListener('click', ()=>{ delete rowState[id]; card.remove(); renderTOS(); });
 
   renderBadges();
@@ -742,62 +739,106 @@ function addRow(initial = {}) {
 function splitEvenly(arr){ const half=Math.floor(arr.length/2); return [arr.slice(0, half + (arr.length%2?1:0)), arr.slice(half + (arr.length%2?1:0))]; }
 function clearAllCells(){ $$('#rows textarea').forEach(t=>t.value=''); }
 function roundRobinAssign(nums, selector){
-  const cards=$$('#rows > div'); if(!cards.length) return;
+    if (!tosRows.length) return;
+  const cards=tosRows.length; 
+// if(!cards.length) return;
   let i=0; nums.forEach(n=>{ const c=cards[i%cards.length]; const ta=c.querySelector(selector); const cur=parseNums(ta.value); cur.push(n); cur.sort((a,b)=>a-b); ta.value=cur.join(', '); i++; });
 }
+
+
 function autoDistribute(){
   const E=+byId('gEasy')?.value||0, A=+byId('gAvg')?.value||0, D=+byId('gDiff')?.value||0;
-  const N=E+A+D; if(N<=0) return showAlert('err','Totals must be > 0.');
-  if(!$$('#rows > div').length) return showAlert('err','Add at least one row first.');
+  const N=E+A+D;
+  if(N<=0) return showAlert('err','Totals must be > 0.');
+  if(!tosRows.length) return showAlert('err','Add at least one row first.');
+
   const nums = shuffle(Array.from({length:N},(_,i)=>i+1));
   const easy = nums.slice(0,E), avg = nums.slice(E,E+A), diff = nums.slice(E+A);
-  const [R,U] = splitEvenly(easy);
-  const [AP,AN] = splitEvenly(avg);
-  const [CR,EV] = splitEvenly(diff);
-  clearAllCells();
-  roundRobinAssign(R,'.r');   roundRobinAssign(U,'.u');
-  roundRobinAssign(AP,'.ap'); roundRobinAssign(AN,'.an');
-  roundRobinAssign(CR,'.cr'); roundRobinAssign(EV,'.ev');
+  const splitEven = arr => { const half=Math.floor(arr.length/2); const a=arr.slice(0, half + (arr.length%2?1:0)); const b=arr.slice(half + (arr.length%2?1:0)); return [a,b]; };
+  const [R,U]  = splitEven(easy);
+  const [AP,AN]= splitEven(avg);
+  const [CR,EV]= splitEven(diff);
+
+  // round-robin push into tosRows
+  const assign = (nums, key)=>{
+    let i=0; nums.forEach(n=>{
+      const row = tosRows[i % tosRows.length];
+      row.cells[key].push(n);
+      row.cells[key] = Array.from(new Set(row.cells[key])).sort((a,b)=>a-b);
+      i++;
+    });
+  };
+  // clear old numbers
+  tosRows.forEach(r=>{ r.cells.r=[]; r.cells.u=[]; r.cells.ap=[]; r.cells.an=[]; r.cells.cr=[]; r.cells.ev=[]; });
+
+  assign(R,'r');  assign(U,'u');
+  assign(AP,'ap');assign(AN,'an');
+  assign(CR,'cr');assign(EV,'ev');
+
   renderTOS();
 }
 
+
 /* ===== Build TOS and render ===== */
+
 function buildTOS(){
   const tableWrap = byId('tosMatrixWrap');
-  const rows = $$('#rows > div').map((card, idx)=>{
-    const topic = card.querySelector('.topicInput')?.value || `Row ${idx+1}`;
-    const days = +card.querySelector('.daysInput')?.value || 0;
-    const r=parseNums(card.querySelector('.r')?.value);
-    const u=parseNums(card.querySelector('.u')?.value);
-    const ap=parseNums(card.querySelector('.ap')?.value);
-    const an=parseNums(card.querySelector('.an')?.value);
-    const cr=parseNums(card.querySelector('.cr')?.value);
-    const ev=parseNums(card.querySelector('.ev')?.value);
-    const uniq = new Set([...r,...u,...ap,...an,...cr,...ev]);
-    return { topic, days, cells:{r,u,ap,an,cr,ev}, total: uniq.size };
+
+  const rows = tosRows.map(r=>{
+    const uniq = new Set([...r.cells.r, ...r.cells.u, ...r.cells.ap, ...r.cells.an, ...r.cells.cr, ...r.cells.ev]);
+    return {
+      topic: r.topic || '',
+      days:  Number.isFinite(r.days) ? r.days|0 : 0,
+      cells: {
+        r: r.cells.r.slice(),
+        u: r.cells.u.slice(),
+        ap: r.cells.ap.slice(),
+        an: r.cells.an.slice(),
+        cr: r.cells.cr.slice(),
+        ev: r.cells.ev.slice(),
+      },
+      total: uniq.size
+    };
   });
 
+  // Build number->Bloom map (for quotas/difficulty)
   const map = {};
   const push=(arr,tag)=>arr.forEach(n=>map[n]=tag);
-  rows.forEach(d=>{ push(d.cells.r,'remember'); push(d.cells.u,'understand'); push(d.cells.ap,'apply'); push(d.cells.an,'analyze'); push(d.cells.cr,'create'); push(d.cells.ev,'evaluate'); });
+  rows.forEach(d=>{
+    push(d.cells.r,'remember'); push(d.cells.u,'understand');
+    push(d.cells.ap,'apply');   push(d.cells.an,'analyze');
+    push(d.cells.cr,'create');  push(d.cells.ev,'evaluate');
+  });
 
   return { rows, numMap: map, tableWrap };
 }
+
 function renderTOS(){
   const { rows, tableWrap } = buildTOS();
   if(!tableWrap) return;
+
   if(!rows.length){
-    tableWrap.innerHTML=''; byId('tosWarn') && byId('tosWarn').classList.add('hidden'); return;
+    tableWrap.innerHTML='';
+    byId('tosWarn') && byId('tosWarn').classList.add('hidden');
+    return;
   }
 
+  // live totals
   let sum={r:0,u:0,ap:0,an:0,cr:0,ev:0, days:0, items:0};
-  rows.forEach(d=>{ sum.r+=d.cells.r.length; sum.u+=d.cells.u.length; sum.ap+=d.cells.ap.length; sum.an+=d.cells.an.length; sum.cr+=d.cells.cr.length; sum.ev+=d.cells.ev.length; sum.days+=d.days; sum.items+=d.total; });
+  rows.forEach(d=>{
+    sum.r+=d.cells.r.length; sum.u+=d.cells.u.length;
+    sum.ap+=d.cells.ap.length; sum.an+=d.cells.an.length;
+    sum.cr+=d.cells.cr.length; sum.ev+=d.cells.ev.length;
+    sum.days+=d.days; sum.items+=d.total;
+  });
 
   const grand = sum.items || 0;
   let percents = rows.map(r=> grand? (r.total/grand*100):0);
   let round2 = percents.map(x=> Math.round(x*100)/100);
   const deficit = Math.round((100 - round2.reduce((a,b)=>a+b,0))*100)/100;
-  if(rows.length && Math.abs(deficit) >= 0.01){ round2[round2.length-1] = Math.round((round2[round2.length-1]+deficit)*100)/100; }
+  if(rows.length && Math.abs(deficit) >= 0.01){
+    round2[round2.length-1] = Math.round((round2[round2.length-1]+deficit)*100)/100;
+  }
 
   const easyTotal = sum.r + sum.u;
   const avgTotal  = sum.ap + sum.an;
@@ -805,50 +846,67 @@ function renderTOS(){
 
   const warn = byId('tosWarn');
   if(warn){
-    if(grand===0){ warn.textContent='No items yet. Type numbers or use Auto-Distribute.'; warn.classList.remove('hidden'); }
-    else { const s = round2.reduce((a,b)=>a+b,0); const ok = Math.abs(s-100)<=0.05; warn.textContent = ok?'':'Warning: Percent total is not exactly 100% (shown '+s.toFixed(2)+'%).'; warn.classList.toggle('hidden', ok); }
+    if(grand===0){
+      warn.textContent='No items yet. Type numbers or use Auto-Distribute.';
+      warn.classList.remove('hidden');
+    } else {
+      const s = round2.reduce((a,b)=>a+b,0);
+      const ok = Math.abs(s-100)<=0.05;
+      warn.textContent = ok?'':'Warning: Percent total is not exactly 100% (shown '+s.toFixed(2)+'%).';
+      warn.classList.toggle('hidden', ok);
+    }
   }
 
   const head = `
     <thead>
       <tr>
-        <th rowspan="2">Most Essential Learning Competencies (Topic)</th>
-        <th colspan="2">EASY (30%)</th>
-        <th colspan="2">AVERAGE (60%)</th>
-        <th colspan="2">DIFFICULT (10%)</th>
-        <th rowspan="2">No. of days</th>
-        <th rowspan="2">No. of items</th>
-        <th rowspan="2">Percent in test</th>
-      </tr>
-      <tr>
-        <th>Remembering</th><th>Understanding</th>
-        <th>Applying</th><th>Analyzing</th>
-        <th>Creating</th><th>Evaluating</th>
+        <th rowspan="2">Topic</th>
+        <th>Module</th>
+        <th>Remember</th><th>Understand</th>
+        <th>Apply</th><th>Analyze</th>
+        <th>Create</th><th>Evaluate</th>
+        <th>No. of days</th>
+        <th rowspan="1">No. of items</th>
+        <th rowspan="1">Percent in test</th>
+        <th>Exam Type</th>
+        <th></th>
       </tr>
     </thead>
   `;
+
   const body = `
     <tbody>
       ${rows.map((d,i)=>`
-        <tr>
-          <td>${escapeHTML(d.topic)}</td>
-          <td class="text-center">${d.cells.r.length}</td>
-          <td class="text-center">${d.cells.u.length}</td>
-          <td class="text-center">${d.cells.ap.length}</td>
-          <td class="text-center">${d.cells.an.length}</td>
-          <td class="text-center">${d.cells.cr.length}</td>
-          <td class="text-center">${d.cells.ev.length}</td>
-          <td class="text-center">${d.days}</td>
+        <tr data-row="${i}">
+          <td><input class="tosCell border rounded px-2 py-1 w-full" data-field="topic" value="${escapeHTML(d.topic)}"></td>
+          <td>
+            <div class="flex items-center gap-2">
+              <input id="file-input"  type="file" class="tosFileInput" multiple accept=".pdf,.docx,.pptx,.xlsx,.csv,.txt,.html,.htm,.md"/>
+              <button id="figureBtn" type="button" class="figBtn text-xs underline text-blue-600">Pick Figures</button>
+            </div>
+            <div style="font-size: 8px; max-width: 140px; overflow:hidden" class="tosFileList small mt-1 text-gray-600"> ${((tosRows[i]?.files||[]).map(f=>escapeHTML(f.name)).join(' • '))} </div>
+          </td>
+          <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-28 text-center" data-field="r"  value="${(d.cells.r||[]).join(', ')}"></td>
+          <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-28 text-center" data-field="u"  value="${(d.cells.u||[]).join(', ')}"></td>
+          <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-28 text-center" data-field="ap" value="${(d.cells.ap||[]).join(', ')}"></td>
+          <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-28 text-center" data-field="an" value="${(d.cells.an||[]).join(', ')}"></td>
+          <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-28 text-center" data-field="cr" value="${(d.cells.cr||[]).join(', ')}"></td>
+          <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-28 text-center" data-field="ev" value="${(d.cells.ev||[]).join(', ')}"></td>
+          <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-20 text-center" data-field="days" type="number" min="0" value="${d.days}"></td>
           <td class="text-center"><strong>${d.total}</strong></td>
           <td class="text-center">${(round2[i]||0).toFixed(2)}</td>
+          <td>Multiple choice</td>
+          <td class="text-right"><button type="button" class="rmRow text-xs text-red-600 underline">Remove</button></td>
         </tr>
       `).join('')}
     </tbody>
   `;
+
   const foot = `
     <tfoot>
       <tr>
         <th>Totals</th>
+        <th></th>
         <th class="text-center">${sum.r}</th>
         <th class="text-center">${sum.u}</th>
         <th class="text-center">${sum.ap}</th>
@@ -858,63 +916,210 @@ function renderTOS(){
         <th class="text-center">${sum.days}</th>
         <th class="text-center"><strong>${sum.items}</strong></th>
         <th class="text-center"><strong>${(round2.reduce((a,b)=>a+b,0)).toFixed(2)}</strong></th>
+        <th></th><th></th>
       </tr>
       <tr>
         <th>Group totals</th>
+        <th></th>
         <th colspan="2" class="text-center">${easyTotal}</th>
         <th colspan="2" class="text-center">${avgTotal}</th>
         <th colspan="2" class="text-center">${diffTotal}</th>
-        <th colspan="3"></th>
+        <th colspan="4"></th>
+        <th colspan="2" class="text-right">
+          <button id="addRowBtn" type="button" class="text-xs underline text-blue-600">Add Row</button>
+        </th>
       </tr>
     </tfoot>
   `;
-  tableWrap.innerHTML = `<div class="border rounded-xl p-4"><div class="font-semibold mb-2">Item Placement - Table of Specifications</div><div class="overflow-x-auto"><table class="tos">${head}${body}${foot}</table></div></div>`;
-}
 
-/* ========= Controls binding ========= */
-document.addEventListener('DOMContentLoaded', () => {
-  byId('addRowBtn')?.addEventListener('click', ()=>addRow());
-  byId('autoDistributeBtn')?.addEventListener('click', autoDistribute);
-  if (rowsEl()) addRow();
+  tableWrap.innerHTML = `
+    <div class="border rounded-xl p-4">
+      <div class="font-semibold mb-2">Item Placement - Table of Specifications (Editable)</div>
+      <div class="overflow-x-auto"><table class="tos">${head}${body}${foot}</table></div>
+    </div>
+  `;
+
+
+
+tableWrap.querySelectorAll('input.tosCell').forEach(inp=>{
+  const updateModel = ()=>{
+    const idx = parseInt(inp.closest('tr').dataset.row,10);
+    const row = tosRows[idx]; if(!row) return;
+    const field = inp.dataset.field;
+    if (field === 'topic')        row.topic = inp.value;
+    else if (field === 'days')    row.days  = Math.max(0, parseInt(inp.value||'0',10) || 0);
+    else                          setCellFromString(row, field, inp.value);
+  };
+  inp.addEventListener('input',  updateModel);                   // no re-render
+  inp.addEventListener('change', ()=>{ updateModel(); renderTOS(); });
+  inp.addEventListener('blur',   ()=>{ updateModel(); renderTOS(); });
 });
 
-/* =================== Scheduler / gateway (kept) =================== */
-const apikey = "Bearer exam-miner";
-const LIMITS = { rpm: 6, tpm: 120000, windowMs: 60000 };
-function approxTokens(str){ const n=(str||'').length; return Math.max(1, Math.ceil(n/4)); }
-class GlobalScheduler{
-  constructor(){ this.q=[]; this.state={windowStart:Date.now(),reqs:0,toks:0,cooldownUntil:0}; setInterval(()=>this._tick(),200); }
-  _reset(){ const now=Date.now(); if(now-this.state.windowStart>=LIMITS.windowMs){ this.state.windowStart=now; this.state.reqs=0; this.state.toks=0; } }
-  _tick(){ this._reset(); const s=this.state; const now=Date.now(); if(now<s.cooldownUntil || !this.q.length) return;
-    const job=this.q[0]; const nextReqs=s.reqs+1, nextToks=s.toks+job.tokenCost;
-    if(nextReqs>LIMITS.rpm || nextToks>LIMITS.tpm) return;
-    this.q.shift(); s.reqs=nextReqs; s.toks=nextToks; job.run();
-  }
-  backoff(ms){ const until=Date.now()+Math.max(2000,ms|0); this.state.cooldownUntil=Math.max(this.state.cooldownUntil,until); }
-  enqueue(tokenCost, fn){ return new Promise((resolve,reject)=>{ this.q.push({tokenCost:Math.max(1,tokenCost|0), run: async()=>{ try{ await new Promise(r=>setTimeout(r,150)); resolve(await fn()); }catch(e){ reject(e); } }}); }); }
+  // remove row
+  tableWrap.querySelectorAll('.rmRow').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const idx = parseInt(btn.closest('tr').dataset.row,10);
+      removeTosRowByIndex(idx);
+    });
+  });
+
+  // add row
+  byId('addRowBtn')?.addEventListener('click', ()=> addTosRow());
+
+  // files → tosRows[idx].files, then scan figures
+  tableWrap.querySelectorAll('input.tosFileInput').forEach((fi)=>{
+    fi.addEventListener('change', async (e)=>{
+      const idx = parseInt(fi.closest('tr').dataset.row,10);
+      const row = tosRows[idx]; if(!row) return;
+      const add = Array.from(e.target.files||[]);
+      row.files.push(...add);
+
+      // show names
+      const listEl = fi.closest('td').querySelector('.tosFileList');
+      if (listEl) listEl.textContent = row.files.map(f=>f.name).join(' • ');
+
+      // rescan figures for this row
+      try{
+        row.figs = await extractFigures(add);
+      }catch(err){
+        console.warn('Figure scan failed:', err);
+      }
+      // keep selection set as-is; user picks via modal
+    });
+  });
+
+  // open figure picker modal
+  tableWrap.querySelectorAll('.figBtn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const idx = parseInt(btn.closest('tr').dataset.row,10);
+      openFigureModalForRow(idx);
+    });
+  });
 }
-const scheduler=new GlobalScheduler();
-async function scheduledJsonFetch({url, init, tokenText, maxRetries=8}){
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  byId('autoDistributeBtn')?.addEventListener('click', autoDistribute);
+  // start with one empty row
+  if (!tosRows.length) addTosRow();
+});
+
+
+
+
+
+/* ==============================================
+   ============  Exam Generator Logic ===========
+   ============================================== */
+
+/* =================== Scheduler / gateway (kept) =================== */
+
+// Cheap token estimator (~4 chars per token; count non-ASCII as 2 chars)
+function approxTokens(x){
+  const s = typeof x === 'string' ? x : JSON.stringify(x || '');
+  const asciiWeighted = s.replace(/[^\x00-\x7F]/g, 'xx'); // non-ASCII ~2 bytes
+  return Math.max(1, Math.ceil(asciiWeighted.length / 4));
+}
+
+
+
+const apikey = "Bearer exam-miner";
+const LIMITS = { rpm: 8, tpm: 120000, windowMs: 60000 };
+// Raise rpm to just under provider limit, add jitter, honor Retry-After
+
+class GlobalScheduler {
+  constructor() {
+    this.q = [];
+    this.state = { windowStart: Date.now(), reqs: 0, toks: 0, cooldownUntil: 0 };
+    setInterval(() => this._tick(), 150);
+  }
+  _reset() {
+    const now = Date.now();
+    if (now - this.state.windowStart >= LIMITS.windowMs) {
+      this.state.windowStart = now; this.state.reqs = 0; this.state.toks = 0;
+    }
+  }
+  _tick() {
+    this._reset();
+    const s = this.state;
+    const now = Date.now();
+    if (now < s.cooldownUntil) return;
+    if (!this.q.length) return;
+
+    // smooth drip: at most 1 req every ~ (60s / rpm)
+    const minGap = Math.ceil(LIMITS.windowMs / Math.max(1, LIMITS.rpm));
+    if (s._lastSentAt && now - s._lastSentAt < minGap) return;
+
+    const job = this.q[0];
+    const nextReqs = s.reqs + 1, nextToks = s.toks + job.tokenCost;
+    if (nextReqs > LIMITS.rpm || nextToks > LIMITS.tpm) return;
+
+    this.q.shift();
+    s.reqs = nextReqs; s.toks = nextToks; s._lastSentAt = now;
+    job.run();
+  }
+  backoff(ms) {
+    const jitter = Math.floor(Math.random() * 500);
+    const until = Date.now() + Math.max(2000, (ms | 0)) + jitter;
+    this.state.cooldownUntil = Math.max(this.state.cooldownUntil, until);
+  }
+  enqueue(tokenCost, fn) {
+    return new Promise((resolve, reject) => {
+      this.q.push({
+        tokenCost: Math.max(1, tokenCost | 0),
+        run: async () => {
+          try {
+            resolve(await fn());
+          } catch (e) {
+            reject(e);
+          }
+        }
+      });
+    });
+  }
+}
+const scheduler = new GlobalScheduler();
+
+async function scheduledJsonFetch({ url, init, tokenText, maxRetries = 8 }) {
   const tokenCost = approxTokens(tokenText || '') + approxTokens(init?.body || '');
-  return scheduler.enqueue(tokenCost, async ()=>{
-    let attempt=0;
-    while(true){
+  return scheduler.enqueue(tokenCost, async () => {
+    let attempt = 0;
+    while (true) {
       attempt++;
       let res, text;
-      try{ res=await fetch(url, init); text=await res.text(); }catch(e){
-        if(attempt>=maxRetries) throw e;
-        await new Promise(r=>setTimeout(r, 700*Math.pow(2,attempt-1))); continue;
+      try {
+        res = await fetch(url, init);
+        text = await res.text();
+      } catch (e) {
+        if (attempt >= maxRetries) throw e;
+        scheduler.backoff(1500 * attempt);
+        await new Promise(r => setTimeout(r, 800 * attempt));
+        continue;
       }
-      let data=null; try{ data=JSON.parse(text); }catch{}
-      const ok = res.ok && data && !data.error && (data.choices?.[0]?.message?.content||'').trim();
-      if(ok) return data;
-      const status=res.status; const retriable=(status===429||status>=500||res.ok);
-      if(!retriable || attempt>=maxRetries){ throw new Error((data?.error?.message||text||('HTTP '+status))||'Request failed'); }
-      if(status===429) scheduler.backoff(20000);
-      await new Promise(r=>setTimeout(r, Math.min(30000, 1000*Math.pow(2,attempt-1))));
+
+      let data = null;
+      try { data = JSON.parse(text); } catch {}
+
+      const ok = res.ok && data && (data.choices?.[0]?.message?.content || '').trim();
+      if (ok) return data;
+
+      // Handle retryable statuses & Retry-After
+      const retryAfter = parseInt(res.headers.get('Retry-After') || '0', 10);
+      const status = res.status;
+      const retriable = status === 429 || status >= 500 || res.ok;
+      if (!retriable || attempt >= maxRetries) {
+        throw new Error((data?.error?.message || text || ('HTTP ' + status)) || 'Request failed');
+      }
+      if (status === 429) {
+        scheduler.backoff((retryAfter ? retryAfter * 1000 : 20000));
+      } else {
+        scheduler.backoff(2000 + attempt * 500);
+      }
+      await new Promise(r => setTimeout(r, Math.min(35000, 1000 * Math.pow(1.7, attempt))));
     }
   });
 }
+
 
 /* ===== Row IO (no cleaning - gather raw Markdown + figures) ===== */
 async function getRowMarkdownFromCard(card){
@@ -955,73 +1160,25 @@ function buildTOSNumberMapFromRowsMeta(rowsMeta){
   });
   return map;
 }
+
 function countTotalNumbersFromRowsMeta(rowsMeta){
-  const all=[];
-  rowsMeta.forEach(r=>{
-    all.push(...parseNums(r.cells.r),
-             ...parseNums(r.cells.u),
-             ...parseNums(r.cells.ap),
-             ...parseNums(r.cells.an),
-             ...parseNums(r.cells.cr),
-             ...parseNums(r.cells.ev));
+  const rows = normalizeRowsMeta(rowsMeta);
+  const all = [];
+  rows.forEach(r=>{
+    const c = r?.cells || {};
+    all.push(
+      ...parseNums(c.r),  ...parseNums(c.u),
+      ...parseNums(c.ap), ...parseNums(c.an),
+      ...parseNums(c.cr), ...parseNums(c.ev)
+    );
   });
-  return Array.from(new Set(all)).sort((a,b)=>a-b).length;
+  return new Set(all).size;
 }
 
-const MAX_MATCH_PAIRS = 10;
 
-function planPartBuckets(N, chosenTypes) {
-  // Keep only enabled parts in the round-robin distribution
-  const order = ["MCQ","TF","ID","MATCH","ESSAY"].filter(p=>{
-    if(p==="MCQ")   return chosenTypes.mcq;
-    if(p==="TF")    return chosenTypes.tf;
-    if(p==="ID")    return chosenTypes.id;
-    if(p==="MATCH") return chosenTypes.match;
-    if(p==="ESSAY") return chosenTypes.essay;
-  });
-
-  const buckets = {MCQ:[],TF:[],ID:[],MATCH:[],ESSAY:[]};
-  if (!order.length) return buckets;
-
-  // Evenly allocate N *item slots* to the enabled parts
-  const desired = {};
-  const base = Math.floor(N / order.length);
-  let rem = N % order.length;
-  order.forEach((p,i)=> desired[p] = base + (i < rem ? 1 : 0));
-
-  // SPECIAL: Matching = exactly ONE group, size = min(10, share)
-  // Any leftover slots that don't fit the single group are redistributed to others.
-  let matchingPairs = 0;
-  if (chosenTypes.match) {
-    const share = desired.MATCH || 0;
-    if (share > 0) {
-      matchingPairs = Math.min(MAX_MATCH_PAIRS, share); // number of pairs in the single group
-      desired.MATCH = 1;                                 // ONE group only
-      let leftover = share - matchingPairs;              // extra slots → give to others
-      if (leftover > 0) {
-        const others = order.filter(p => p !== "MATCH");
-        for (let i = 0; i < leftover; i++) {
-          const p = others[i % others.length];
-          desired[p] = (desired[p] || 0) + 1;
-        }
-      }
-    } else {
-      desired.MATCH = 0;  // zero groups if no share
-    }
-  }
-
-  // Turn the desired counts into sequential number buckets (1..N)
-  let cur = 1;
-  for (const p of order) {
-    const count = desired[p] || 0;     // NOTE: for MATCH this is number of groups (0 or 1)
-    for (let i = 0; i < count; i++) buckets[p].push(cur++);
-  }
-
-  // Store the single-group size for quotas
-  buckets.__matching_pairs = matchingPairs; // 0..10
-  return buckets;
+function planPartBuckets(N) {
+  return { MCQ: Array.from({length:N}, (_,i)=>i+1)};
 }
-
 
 
 const BLOOM_TO_DIFF = { remember:'easy', understand:'easy', apply:'avg', analyze:'avg', create:'hard', evaluate:'hard' };
@@ -1036,27 +1193,11 @@ function difficultyCountsFor(bucketNums, tosMap){
   return c;
 }
 
-
 function quotasFromBuckets(buckets, tosMap) {
-  const pairsPerGroup = buckets.__matching_pairs || 0;     // 0..10
-  const groups        = (buckets.MATCH || []).length;      // 0 or 1
-
-  const q = {
-    mcq:   difficultyCountsFor(buckets.MCQ  || [], tosMap),
-    tf:    difficultyCountsFor(buckets.TF   || [], tosMap),
-    ident: difficultyCountsFor(buckets.ID   || [], tosMap),
-    essay: difficultyCountsFor(buckets.ESSAY|| [], tosMap),
-    matching: {
-      groups,
-      pairs_per_group: pairsPerGroup,
-      total_pairs: groups * pairsPerGroup
-    }
-  };
-  q.mcq.total   = (buckets.MCQ   || []).length;
-  q.tf.total    = (buckets.TF    || []).length;
-  q.ident.total = (buckets.ID    || []).length;
-  q.essay.total = (buckets.ESSAY || []).length;
-  return q;
+  const nums = buckets.MCQ || [];
+  const c = difficultyCountsFor(nums, tosMap);
+  c.total = nums.length;
+  return { mcq: c };
 }
 
 
@@ -1066,12 +1207,12 @@ function allTopicsFromRows(rowsMeta){
   return uniq.length ? uniq : ["(General Topic)"];
 }
 
-function buildSetPlansFromTOS(rowsMeta, chosenTypes, numSets, numMap){
+function buildSetPlansFromTOS(rowsMeta, numSets, numMap){
   const N = countTotalNumbersFromRowsMeta(rowsMeta);
   const topics = allTopicsFromRows(rowsMeta);
   const plans = [];
   for(let s=0; s<numSets; s++){
-    const buckets = planPartBuckets(N, chosenTypes, 5);
+    const buckets = planPartBuckets(N);
     const quotas  = quotasFromBuckets(buckets, numMap);
     plans.push({
       set_id: s+1,
@@ -1085,7 +1226,306 @@ function buildSetPlansFromTOS(rowsMeta, chosenTypes, numSets, numMap){
 
 
 /* =============== HELPERS =================== */
-// helper: cycle through a list of figures across questions
+
+
+// Ultra-tolerant "sets" extractor that NEVER throws.
+// Returns [] when nothing usable is found.
+// Understands: {"sets":[...]}, {"tests":[...]}, [{"set_id":..,"mcq":[...]}], {"mcq":[...]}
+// Also salvages balanced objects anywhere (even inside ```json ...```), and pure "mcq":[...] fragments.
+function safeParseSets(raw) {
+  const out = [];
+  if (raw == null) return out;
+
+  // ---- helpers ----
+  const norm = (s) => String(s)
+    .replace(/^\uFEFF/, "")
+    .replace(/[\u200B-\u200D\u2060\uFEFF]/g, "")
+    .replace(/[\u2028\u2029]/g, "\n")
+    .replace(/[“”]/g, '"')
+    .replace(/[‘’]/g, "'")
+    .trim();
+
+  const cleanJsonish = (txt) =>
+    String(txt)
+      .replace(/\/\/[^\n\r]*/g, "")         // // comments
+      .replace(/\/\*[\s\S]*?\*\//g, "")     // /* comments */
+      .replace(/,\s*([}\]])/g, "$1")        // trailing commas
+      .trim();
+
+  const tryParse = (txt) => {
+    try { return JSON.parse(cleanJsonish(txt)); } catch { return null; }
+  };
+
+  const ensureSet = (o, fallbackId = 1) => {
+    const id = (o && Number.isFinite(o.set_id)) ? o.set_id : fallbackId;
+    const mcq = Array.isArray(o?.mcq) ? o.mcq : [];
+    return { set_id: id, mcq };
+  };
+
+  const isSetLike = (x) => x && typeof x === 'object' && (Array.isArray(x.mcq) || 'set_id' in x);
+
+  // Extract all balanced {...} from a string (very tolerant)
+  function extractBalancedObjects(str) {
+    const out = [];
+    const n = str.length;
+    for (let i = 0; i < n; i++) {
+      if (str[i] !== '{') continue;
+      let stack = 1, inStr = false, esc = false;
+      for (let j = i + 1; j < n; j++) {
+        const c = str[j];
+        if (inStr) {
+          if (esc) { esc = false; continue; }
+          if (c === '\\') { esc = true; continue; }
+          if (c === '"') inStr = false;
+          continue;
+        }
+        if (c === '"') { inStr = true; continue; }
+        if (c === '{') stack++;
+        else if (c === '}') {
+          stack--;
+          if (!stack) { out.push(str.slice(i, j + 1)); i = j; break; }
+        }
+      }
+    }
+    return out;
+  }
+
+  // Extract content inside the first fenced block if present
+  let s = norm(raw);
+  // Remove full fences first
+  const mFull = /```(?:jsonc?|json5)?\s*([\s\S]*?)```/i.exec(s);
+  if (mFull && mFull[1]) s = mFull[1].trim();
+  else {
+    // Remove an opening fence without a closer as well
+    const iFence = s.indexOf('```');
+    if (iFence !== -1) s = s.slice(iFence + 3).trim();
+  }
+  // If text starts with 'json' word, drop it (models sometimes prefix it)
+  s = s.replace(/^\s*json\b[:\s-]*/i, '').trim();
+
+  // ---------- Phase 1: Fast parse whole thing ----------
+  const j1 = tryParse(s);
+  if (j1) {
+    if (Array.isArray(j1.sets)) return j1.sets.map((o, i) => ensureSet(o, i + 1));
+    if (Array.isArray(j1.tests)) return j1.tests.map((o, i) => ensureSet(o, i + 1));
+    if (Array.isArray(j1) && j1.every(isSetLike)) return j1.map((o, i) => ensureSet(o, i + 1));
+    if (isSetLike(j1)) return [ensureSet(j1, 1)];
+    if (j1?.data?.sets && Array.isArray(j1.data.sets)) return j1.data.sets.map((o, i) => ensureSet(o, i + 1));
+    if (Array.isArray(j1?.result) && j1.result.every(isSetLike)) return j1.result.map((o, i) => ensureSet(o, i + 1));
+    // If it looks like {"mcq":[...]} only
+    if (Array.isArray(j1?.mcq)) return [ensureSet(j1, 1)];
+  }
+
+  // ---------- Phase 2: Recover a "sets":[ ... ] array anywhere ----------
+  // Grab the first [...] that follows a "sets": or "tests":
+  const blockSets = /"(sets|tests)"\s*:\s*\[([\s\S]*?)\]/i.exec(s);
+  if (blockSets) {
+    const arrText = '[' + cleanJsonish(blockSets[2]) + ']';
+    // Split into balanced objects inside the array
+    const objs = extractBalancedObjects(arrText);
+    const recovered = [];
+    let idx = 1;
+    for (const chunk of objs) {
+      const o = tryParse(chunk);
+      if (o && isSetLike(o)) recovered.push(ensureSet(o, idx++));
+    }
+    if (recovered.length) return recovered;
+  }
+
+  // ---------- Phase 3: Scan for ANY balanced object with mcq ----------
+  {
+    const objs = extractBalancedObjects(s.slice(0, 250000)); // cap scan
+    const recovered = [];
+    let nextId = 1;
+    for (const chunk of objs) {
+      const o = tryParse(chunk);
+      if (o?.mcq && Array.isArray(o.mcq)) recovered.push(ensureSet(o, nextId++));
+      else if (isSetLike(o)) recovered.push(ensureSet(o, nextId++));
+      else if (o && o.set && isSetLike(o.set)) recovered.push(ensureSet(o.set, nextId++));
+    }
+    if (recovered.length) return recovered;
+  }
+
+  // ---------- Phase 4: Pure "mcq":[ ... ] salvage (no braces) ----------
+  // Try to capture the array and wrap it ourselves.
+  const mcqOnly = /"mcq"\s*:\s*\[([\s\S]*?)\]/i.exec(s);
+  if (mcqOnly) {
+    const arrStr = '[' + mcqOnly[1]
+      .replace(/,\s*]/g, ']')      // trailing commas inside mcq array
+      .replace(/,\s*}/g, '}') + ']';
+    const wrapped = tryParse('{"mcq":' + arrStr + '}');
+    if (wrapped && Array.isArray(wrapped.mcq)) return [ensureSet(wrapped, 1)];
+  }
+
+  // ---------- Phase 5: Nothing usable ----------
+  console.warn('safeParseSets: could not salvage usable sets. Returning []. Sample:', s.slice(0, 400));
+  return out;
+}
+
+
+
+function normalizeRowsMeta(rm){
+  if (Array.isArray(rm)) return rm;
+  if (rm && Array.isArray(rm.rows)) return rm.rows;       // sometimes wrapped
+  if (rm && Array.isArray(rm.rowsMeta)) return rm.rowsMeta;
+  return [];
+}
+
+
+
+// Safe getters with fallbacks
+function getNumSets(){
+  const el = byId('numSets');
+  const v  = el?.value ?? window._lastNumSets ?? 1;
+  const n  = parseInt(v, 10);
+  return Math.max(1, Math.min(MAX_SETS, isNaN(n) ? 1 : n));
+}
+function getExamTitle(){
+  const t = byId('examTitle')?.value ?? window._lastExamTitle ?? 'Exam';
+  return (String(t).trim() || 'Exam');
+}
+
+
+
+async function askNumSets(){
+  const s = prompt('How many sets do you want to create? (1–100)', (byId('numSets')?.value || String(window._lastNumSets || 1)));
+  let n = Math.max(1, Math.min(MAX_SETS, parseInt(s||'1',10)||1));
+  const el = byId('numSets');
+  if (el) el.value = String(n);
+  window._lastNumSets = n;              // <-- remember last chosen
+  return n;
+}
+
+
+/* ======= Figure picker modal (per-row) ======= */
+
+function ensureFigureModal(){
+  if (byId('figModal')) return;
+
+  // Inject once: scoped styles for a hard, reliable grid + thumbnails
+  if (!byId('figModalStyles')) {
+    const style = document.createElement('style');
+    style.id = 'figModalStyles';
+    style.textContent = `
+      #figModal .modal-shell { width: 100%; max-width: 980px; }
+      #figModal .fig-scroll   { max-height: 70vh; overflow: auto; }
+      #figGrid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+      }
+      /* Each cell is a perfect square via padding-top trick * /
+      #figGrid .fig-item { font-size: 12px; text-align: center; }
+      #figGrid .thumbBox {
+        position: relative;
+        width: 100%;
+        padding-top: 100%;           
+        background: #f8fafc;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      #figGrid .thumbBox img {
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 96%;
+        max-height: 96%;
+        object-fit: contain;         /* contain tall or wide images */
+        display: block;
+      }
+      #figGrid .name { margin-top: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      /* Selection highlight * /
+      #figGrid .fig-item.selected .thumbBox { outline: 3px solid #2563eb; outline-offset: 0; }
+      #figGrid .chk { margin-top: 6px; }
+    `;
+    document.head.appendChild(style);
+  }
+
+  const div = document.createElement('div');
+  div.id = 'figModal';
+  div.className = 'fixed inset-0 bg-black/50 hidden z-50';
+  div.innerHTML = `
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div class="modal-shell bg-white rounded-xl shadow-lg p-4">
+        <div class="flex items-center justify-between mb-3">
+          <div class="font-semibold">Choose Figures</div>
+          <button type="button" id="figClose" class="text-sm underline">Close</button>
+        </div>
+
+        <div class="fig-scroll">
+          <div id="figGrid"></div>
+        </div>
+
+        <div class="text-right mt-3">
+          <button type="button" id="figApply" class="px-3 py-1 rounded bg-blue-600 text-white">Apply</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(div);
+  byId('figClose').onclick = ()=> div.classList.add('hidden');
+}
+
+function openFigureModalForRow(idx){
+  ensureFigureModal();
+  const modal = byId('figModal');
+  const grid  = byId('figGrid');
+  const row   = tosRows[idx]; if(!row) return;
+
+  grid.innerHTML = '';
+  if (!row.figs.length){
+    grid.innerHTML = `<div class="col-span-4 text-sm text-gray-600">No figures detected. Upload DOCX/PPTX/HTML/MD with images, then click Rescan (auto on upload).</div>`;
+  } else {
+
+row.figs.forEach((fg, i) => {
+  const isSel = row.selected.has(i);
+
+  const wrap = document.createElement('label');
+  wrap.className = 'fig-item cursor-pointer select-none';
+  wrap.innerHTML = `
+    <div class="thumbBox">
+      <input type="checkbox" class="chk" ${isSel ? 'checked' : ''} aria-label="Select figure ${i+1}">
+      <img src="${fg.src}" alt="${escapeHTML(fg.name||'Figure')}">
+    </div>
+    <div class="name">${escapeHTML(fg.name || ('Figure ' + (i+1)))}</div>
+  `;
+
+  const chk = wrap.querySelector('.chk');
+
+  // reflect initial selection state
+  if (isSel) wrap.classList.add('selected');
+
+  // toggle selection when checkbox changes
+  chk.onchange = () => {
+    if (chk.checked) {
+      row.selected.add(i);
+      wrap.classList.add('selected');
+    } else {
+      row.selected.delete(i);
+      wrap.classList.remove('selected');
+    }
+  };
+
+  // make the whole square clickable without fighting the checkbox
+  wrap.addEventListener('click', (e) => {
+    // ignore clicks that originated on the checkbox itself
+    if (e.target === chk) return;
+    chk.checked = !chk.checked;
+    chk.dispatchEvent(new Event('change', { bubbles: false }));
+  });
+
+  grid.appendChild(wrap);
+});
+
+    
+
+  }
+
+  byId('figApply').onclick = ()=> { modal.classList.add('hidden'); /* selection already stored */ };
+  modal.classList.remove('hidden');
+}
+
 
 // Put near your other helpers (next to urlToDataURL / blobToDataURL)
 async function normalizeFiguresToData(figs){
@@ -1147,8 +1587,6 @@ async function inlineAllImages(html){
 // Figure policy: set which parts may include inline figures
 const FIG_USE = {
   mcq: true,   // show figure on MCQ
-  tf:  true    // show figure on True/False
-  // identification / matching / essay intentionally excluded
 };
 
 
@@ -1195,10 +1633,6 @@ function buildTasksFromQuotas(plan, existingSet, nAgents) {
   };
 
   pushSplit('mcq',   d.mcq);
-  pushSplit('tf',    d.tf);
-  pushSplit('ident', d.ident);
-  pushSplit('essay', d.essay);
-  pushSplit('matching', d.matchingGroups); // count = groups
 
   return tasks;
 }
@@ -1213,22 +1647,14 @@ function assignTasksToAgents(tasks, agentsLen) {
 // Merge newly generated items into the set (append-only)
 function mergeSetInto(target, add) {
   const safeArr = (x) => Array.isArray(x) ? x : [];
-  if (add.mcq)            target.mcq            = safeArr(target.mcq).concat(safeArr(add.mcq));
-  if (add.true_false)     target.true_false     = safeArr(target.true_false).concat(safeArr(add.true_false));
-  if (add.identification) target.identification = safeArr(target.identification).concat(safeArr(add.identification));
-  if (add.essay)          target.essay          = safeArr(target.essay).concat(safeArr(add.essay));
-  if (add.matching)       target.matching       = safeArr(target.matching).concat(safeArr(add.matching));
+  if (add.mcq) target.mcq = safeArr(target.mcq).concat(safeArr(add.mcq));
   return target;
 }
 
 // Trim arrays ONLY at the very end (after we’re sure we’re >= quotas)
 function trimToQuotas(setObj, quotas) {
   const trim = (arr, want) => Array.isArray(arr) && arr.length > want ? arr.slice(0, want) : arr;
-  if (quotas?.mcq)      setObj.mcq            = trim(setObj.mcq,            quotas.mcq.total|0);
-  if (quotas?.tf)       setObj.true_false     = trim(setObj.true_false,     quotas.tf.total|0);
-  if (quotas?.ident)    setObj.identification = trim(setObj.identification, quotas.ident.total|0);
-  if (quotas?.essay)    setObj.essay          = trim(setObj.essay,          quotas.essay.total|0);
-  if (quotas?.matching) setObj.matching       = trim(setObj.matching,       quotas.matching.groups|0);
+  if (quotas?.mcq) setObj.mcq = trim(setObj.mcq, quotas.mcq.total|0);
   return setObj;
 }
 
@@ -1239,11 +1665,7 @@ async function callTopUpForTask(agentIdx, kb, plan, existingSet, task) {
     ...plan,
     strict: plan.strict ?? true,
     quotas: {
-      mcq:      task.type === 'mcq'      ? { total: task.count } : undefined,
-      tf:       task.type === 'tf'       ? { total: task.count } : undefined,
-      ident:    task.type === 'ident'    ? { total: task.count } : undefined,
-      essay:    task.type === 'essay'    ? { total: task.count } : undefined,
-      matching: task.type === 'matching' ? { groups: task.count } : undefined,
+      mcq: task.type === 'mcq' ? { total: task.count } : undefined,
     }
   };
 
@@ -1251,12 +1673,7 @@ async function callTopUpForTask(agentIdx, kb, plan, existingSet, task) {
   const add = await callTopUp(agentIdx, kb, oneTypePlan, existingSet);
 
   // Basic empty-payload retry (helps with occasional blank LLM responses)
-  const isEmpty =
-    (!add?.mcq?.length) &&
-    (!add?.true_false?.length) &&
-    (!add?.identification?.length) &&
-    (!add?.essay?.length) &&
-    (!add?.matching?.length);
+  const isEmpty = (!add?.mcq?.length);
 
   if (isEmpty) {
     await new Promise(r => setTimeout(r, 600 + Math.floor(Math.random()*200)));
@@ -1270,7 +1687,7 @@ async function callTopUpForTask(agentIdx, kb, plan, existingSet, task) {
 
 async function generateOneSetCoop(kb, plan, initialSet = {}) {
   let s = {
-    mcq: [], true_false: [], identification: [], essay: [], matching: [],
+    mcq: [],
     ...initialSet
   };
 
@@ -1281,7 +1698,7 @@ async function generateOneSetCoop(kb, plan, initialSet = {}) {
     passes++;
     const d = computeDeficits(s, plan.quotas);
     const stillNeed =
-      d.mcq || d.tf || d.ident || d.essay || d.matchingGroups;
+      d.mcq;
 
     if (!stillNeed) break; // done
 
@@ -1294,6 +1711,9 @@ async function generateOneSetCoop(kb, plan, initialSet = {}) {
     // Each agent works its bucket in sequence; all agents run in parallel
     await Promise.all(buckets.map(async (agentTasks, agentIdx) => {
       for (const task of agentTasks) {
+          // PATCH D: tiny stagger so agents don't fire at the same millisecond
+    const base = agentIdx * 75; // per-agent offset (helps even more)
+    await new Promise(r => setTimeout(r, 100 + base + Math.floor(Math.random() * 250)));
         const add = await callTopUpForTask(agentIdx, kb, plan, s, task);
         mergeSetInto(s, add);
       }
@@ -1305,13 +1725,16 @@ async function generateOneSetCoop(kb, plan, initialSet = {}) {
 
   // Final STRICT pass if we’re still short
   const dFinal = computeDeficits(s, plan.quotas);
-  if (dFinal.mcq || dFinal.tf || dFinal.ident || dFinal.essay || dFinal.matchingGroups) {
+  if (dFinal.mcq) {
     // Create one more round with strict=true and split again across agents
     const strictPlan = { ...plan, strict: true };
     const tasks = buildTasksFromQuotas(strictPlan, s, agentsLen);
     const buckets = assignTasksToAgents(tasks, agentsLen);
     await Promise.all(buckets.map(async (agentTasks, agentIdx) => {
       for (const task of agentTasks) {
+          // PATCH D: tiny stagger so agents don't fire at the same millisecond
+    const base = agentIdx * 75; // per-agent offset (helps even more)
+    await new Promise(r => setTimeout(r, 100 + base + Math.floor(Math.random() * 250)));
         const add = await callTopUpForTask(agentIdx, kb, strictPlan, s, task);
         mergeSetInto(s, add);
       }
@@ -1387,18 +1810,10 @@ async function ensureAllSetsFilled(aiSets, plans, kb, agentIdx = 0){
 
   // helper: how many items should exist (numbers 1..N) for this plan
   const desiredTotal = (plan) =>
-    (plan.quotas?.mcq?.total|0) +
-    (plan.quotas?.tf?.total|0) +
-    (plan.quotas?.ident?.total|0) +
-    (plan.quotas?.essay?.total|0) +
-    (plan.quotas?.matching?.groups|0);
+    (plan.quotas?.mcq?.total|0);
 
   const actualTotal = (set) =>
-    (set.mcq?.length||0) +
-    (set.true_false?.length||0) +
-    (set.identification?.length||0) +
-    (set.essay?.length||0) +
-    (set.matching?.length||0); // 1 number per matching group
+    (set.mcq?.length||0);
 
   for (const plan of plans){
     let s = got.get(plan.set_id) || ensureSetArrays({ set_id: plan.set_id, meta:{} });
@@ -1410,7 +1825,7 @@ let passes = 0;
 while (true) {
   passes++;
   const d = computeDeficits(s, plan.quotas);
-  const need = d.mcq || d.tf || d.ident || d.essay || d.matchingGroups;
+  const need = d.mcq;
   if (!need && actualTotal(s) === desiredTotal(plan)) break;
 
   const tasks = buildTasksFromQuotas(plan, s, agentsLen);
@@ -1421,6 +1836,8 @@ while (true) {
   // All agents run in parallel; each executes its small task list sequentially.
   await Promise.all(buckets.map(async (agentTasks, aIdx) => {
     for (const task of agentTasks) {
+         const base = aIdx * 75;
+         await new Promise(r => setTimeout(r, 100 + base + Math.floor(Math.random() * 250)));
       const add = await callTopUpForTask(aIdx, kb, plan, s, task);
       mergeSetInto(s, add);
     }
@@ -1432,13 +1849,15 @@ while (true) {
 // STRICT final pass if still short
 {
   const dFinal = computeDeficits(s, plan.quotas);
-  const stillNeed = dFinal.mcq || dFinal.tf || dFinal.ident || dFinal.essay || dFinal.matchingGroups;
+  const stillNeed = dFinal.mcq;
   if (stillNeed) {
     const strictPlan = { ...plan, strict: true };
     const tasks = buildTasksFromQuotas(strictPlan, s, agentsLen);
     const buckets = assignTasksToAgents(tasks, agentsLen);
     await Promise.all(buckets.map(async (agentTasks, aIdx) => {
       for (const task of agentTasks) {
+           const base = aIdx * 75;
+           await new Promise(r => setTimeout(r, 100 + base + Math.floor(Math.random() * 250)));
         const add = await callTopUpForTask(aIdx, kb, strictPlan, s, task);
         mergeSetInto(s, add);
       }
@@ -1449,34 +1868,18 @@ while (true) {
     // final sanity: trim any accidental overshoot (rare)
     const trim = (arr, want) => Array.isArray(arr) && arr.length > want ? arr.slice(0, want) : arr;
     s.mcq = trim(s.mcq, plan.quotas?.mcq?.total|0);
-    s.true_false = trim(s.true_false, plan.quotas?.tf?.total|0);
-    s.identification = trim(s.identification, plan.quotas?.ident?.total|0);
-    s.essay = trim(s.essay, plan.quotas?.essay?.total|0);
-    s.matching = trim(s.matching, plan.quotas?.matching?.groups|0);
 
     // (Optional) attach a checklist meta
     s.meta = s.meta || {};
     s.meta.checklist = {
       want: {
-        mcq: plan.quotas?.mcq?.total|0,
-        tf: plan.quotas?.tf?.total|0,
-        ident: plan.quotas?.ident?.total|0,
-        essay: plan.quotas?.essay?.total|0,
-        matching_groups: plan.quotas?.matching?.groups|0
+        mcq: plan.quotas?.mcq?.total|0
       },
       have: {
-        mcq: s.mcq.length,
-        tf: s.true_false.length,
-        ident: s.identification.length,
-        essay: s.essay.length,
-        matching_groups: s.matching.length
+        mcq: s.mcq.length
       },
       ok:
-        (s.mcq.length === (plan.quotas?.mcq?.total|0)) &&
-        (s.true_false.length === (plan.quotas?.tf?.total|0)) &&
-        (s.identification.length === (plan.quotas?.ident?.total|0)) &&
-        (s.essay.length === (plan.quotas?.essay?.total|0)) &&
-        (s.matching.length === (plan.quotas?.matching?.groups|0))
+        (s.mcq.length === (plan.quotas?.mcq?.total|0))
     };
 
     filled.push(s);
@@ -1571,7 +1974,7 @@ function parseJSONLoose(raw) {
 
 
 
-/* ===== Multi-Agent (A1..A7) ===== */
+/* ===== Multi-Agent (A1..A11) ===== */
 const AGENTS = [
   { agent: 1, model: 'gemini/gemini-aistudio:free', label: 'A1' },
   { agent: 2, model: 'gemini/gemini-aistudio:free', label: 'A2' },
@@ -1582,6 +1985,9 @@ const AGENTS = [
   { agent: 7, model: 'gemini/gemini-aistudio:free', label: 'A7' },
   { agent: 8, model: 'gemini/gemini-aistudio:free', label: 'A8' },
   { agent: 9, model: 'gemini/gemini-aistudio:free', label: 'A9' },
+  { agent: 10, model: 'gemini/gemini-aistudio:free', label: 'A10' },
+  { agent: 11, model: 'gemini/gemini-aistudio:free', label: 'A11' },
+  { agent: 12, model: 'gemini/gemini-aistudio:free', label: 'A12' }
 ];
 const MAX_SETS = 100;
 const BATCH_SIZE = 1; // <=10 sets per batch
@@ -1592,11 +1998,7 @@ const BATCH_SIZE = 1; // <=10 sets per batch
 function computeDeficits(setObj, quotas) {
   const need = (have, want) => Math.max(0, (want|0) - (Array.isArray(have) ? have.length : 0));
   return {
-    mcq:            quotas?.mcq ? need(setObj.mcq, quotas.mcq.total) : 0,
-    tf:             quotas?.tf ? need(setObj.true_false, quotas.tf.total) : 0,
-    ident:          quotas?.ident ? need(setObj.identification, quotas.ident.total) : 0,
-    essay:          quotas?.essay ? need(setObj.essay, quotas.essay.total) : 0,
-    matchingGroups: quotas?.matching ? need(setObj.matching, quotas.matching.groups) : 0,
+    mcq: quotas?.mcq ? need(setObj.mcq, quotas.mcq.total) : 0,
   };
 }
 
@@ -1606,31 +2008,40 @@ async function callTopUp(agentIdx, kb, plan, existingSet){
     
   const lane = AGENTS[agentIdx % AGENTS.length];
   const deficits = computeDeficits(existingSet, plan.quotas);
-  const needAny = deficits.mcq||deficits.tf||deficits.ident||deficits.essay||deficits.matchGroups;
+  const needAny = deficits.mcq;
   if(!needAny) return existingSet;
 
   const topupSchema = `{
     "set_id": ${plan.set_id},
-    "true_false": [ {"id":"TF#","stem":"...","answer":"True|False"} ],
-    "identification": [ {"id":"ID#","prompt":"...","answer":"..."} ],
-    "mcq": [ {"id":"MC#","stem":"...","choices":["A) ...","B) ...","C) ...","D) ..."],"answer":"A|B|C|D"} ],
-    "matching": [ { "id":"MT#",
-                    "columnA":["A. ...","B. ...","C. ...","D. ...","E. ..."],
-                    "columnB":["a. ...","b. ...","c. ...","d. ...","e. ..."],
-                    "answer_key":{"A":"c","B":"e","C":"b","D":"a","E":"d"} } ],
-    "essay": [ {"id":"ES#","prompt":"...","guidance":"(2–3 short paragraphs touching X, Y, Z)"} ]
+    "mcq": [ {"id":"MC#","stem":"...","choices":["A) ...","B) ...","C) ...","D) ..."],"answer":"A|B|C|D"} ]
   }`;
-
+/*
   const msgSystem = [
-    "Generate ONLY the missing items to meet quotas for this single set.",
+    "Generate ONLY the missing MCQ items to meet quotas for this one set.",
     "Do NOT repeat or modify existing items; add new ones only.",
     "If materials are thin, you MAY use reasonable domain knowledge.",
-    "Return a single JSON object with arrays ONLY for the requested counts."
+    "Return STRICT JSON: a single object with an 'mcq' array only.",
+    'Schema (exact): {"mcq":[{"id":"MC1","stem":"...","choices":["A) ...","B) ...","C) ...","D) ..."],"answer":"A|B|C|D"}]}',
+    "No code fences, no prose, no extra keys."
   ].join(" ");
+*/
 
+   const msgSystem =[
+       "You are a content-only JSON generator.",
+       "GOAL: Add ONLY the missing MCQ items for this single set.",
+        "STRICT RULES:",
+        '- Reply with ONE minified JSON object only. No prose. No Markdown. No code fences.',
+        '- The top-level MUST be exactly: {"mcq":[ ... ]}',
+        '- Each mcq item: {"id":"MC#","stem":"...","choices":["A) ...","B) ...","C) ...","D) ..."],"answer":"A|B|C|D"}',
+        '- choices must be 4 items labeled "A) "..."D) ".',
+        '- answer must be "A" or "B" or "C" or "D".',
+        '- Do not repeat or modify existing items.',
+        '- If nothing is needed, return {"mcq":[]}.'
+        ].join(" ");
+       
+       
   const requests = {
-    mcq: deficits.mcq, tf: deficits.tf, ident: deficits.ident, essay: deficits.essay,
-    matchGroups: deficits.matchingGroups, pairsPerGroup: plan.quotas.matching?.pairs_per_group || 5
+    mcq: deficits.mcq 
   };
 
   const payload = {
@@ -1653,37 +2064,55 @@ async function callTopUp(agentIdx, kb, plan, existingSet){
     init: { method:'POST', headers:{ 'Content-Type':'application/json','Authorization': apikey }, body: JSON.stringify(payload) },
     tokenText: JSON.stringify({set_id: plan.set_id, requests})
   });
+  
+  
   const raw = (data?.choices?.[0]?.message?.content || "").trim();
-  let add = parseJSONLoose(raw);
+  //let add = parseJSONLoose(raw); 0970
+
+ let addSets;
+  try { addSets = safeParseSets(raw); } catch { addSets = null; }
+
+  // "top up" asks for exactly one object; tolerate either {"mcq":[...]} or {"sets":[{...}]}
+  let add = {};
+  if (addSets && addSets.length) {
+    add = addSets[0];
+  } else {
+    // tolerate pure {"mcq":[...]}
+    try {
+      const single = JSON.parse(raw);
+      if (single && Array.isArray(single.mcq)) add = { mcq: single.mcq };
+    } catch {}
+  }
 
   // Normalize missing arrays to []
   add = add || {};
-  add.true_false = add.true_false || [];
-  add.identification = add.identification || [];
   add.mcq = add.mcq || [];
-  add.matching = add.matching || [];
-  add.essay = add.essay || [];
-
-  // Merge
-  existingSet.true_false = (existingSet.true_false||[]).concat(add.true_false);
-  existingSet.identification = (existingSet.identification||[]).concat(add.identification);
   existingSet.mcq = (existingSet.mcq||[]).concat(add.mcq);
-  existingSet.matching = (existingSet.matching||[]).concat(add.matching);
-  existingSet.essay = (existingSet.essay||[]).concat(add.essay);
-
   return existingSet;
+  
+  /* 0970
+  const raw = (data?.choices?.[0]?.message?.content || "").trim();
+    let add = {};
+    try {
+      const one = parseSetsFromAnyRaw(`{"sets":[${raw.replace(/^\s*{/, "").replace(/}\s*$/, "")}]}`); 
+      // the line above coerces {"mcq":[...]} into a fake {"sets":[{...}]} shell then reuses the same parser.
+      add = one && one[0] ? one[0] : {};
+    } catch {
+      // ultra fallback: keep your old tolerant parser for {"mcq":[...]}
+      try { add = parseJSONLoose(raw) || {}; } catch {}
+    }
+    add.mcq = Array.isArray(add.mcq) ? add.mcq : [];
+    existingSet.mcq = (existingSet.mcq || []).concat(add.mcq);
+    return existingSet;
+*/
 }
 
-
-// NEW: gather all selected figures across rows as a flat list
 function getAllSelectedFigures(){
-  const cards = $$('#rows > div');
   const list = [];
-  cards.forEach(card=>{
-    const id = card.dataset.rowId;
-    const figs = (rowState[id]?.figs)||[];
-    const sel  = (rowState[id]?.selectedFigIdx)||new Set();
-    [...sel].sort((a,b)=>a-b).forEach(i=>{ if(figs[i]) list.push(figs[i]); });
+  tosRows.forEach(row=>{
+    [...row.selected].sort((a,b)=>a-b).forEach(i=>{
+      if (row.figs[i]) list.push(row.figs[i]);
+    });
   });
   return list;
 }
@@ -1719,21 +2148,11 @@ function makeBatchMessages_AI(kb, setPlans){
   "sets": [
     {
       "set_id": <number>,
-      "true_false": [ {"id":"TF1","stem":"...", "answer":"True|False"} ],
-      "identification": [ {"id":"ID1","prompt":"...", "answer":"..."} ],
       "mcq": [ {"id":"MC1","stem":"...", "choices":["A) ...","B) ...","C) ...","D) ..."], "answer":"A|B|C|D"} ],
-      "matching": [ { "id":"MT1", "columnA": ["A. ...","B. ...","C. ...","D. ...","E. ..."],
-                      "columnB": ["a. ...","b. ...","c. ...","d. ...","e. ..."],
-                      "answer_key": {"A":"c","B":"e","C":"b","D":"a","E":"d"} } ],
-      "essay": [ {"id":"ES1","prompt":"...", "guidance":"(2–3 short paragraphs touching X, Y, Z)"} ],
       "meta": {
         "topics_used": ["...","..."],
         "tos_check": {
-          "mcq":{"easy":<n>,"avg":<n>,"hard":<n>,"total":<n>,"ok":true},
-          "tf":{"easy":<n>,"avg":<n>,"hard":<n>,"total":<n>,"ok":true},
-          "ident":{"easy":<n>,"avg":<n>,"hard":<n>,"total":<n>,"ok":true},
-          "matching":{"groups":<g>,"pairs_per_group":<m>,"total_pairs":<t>,"ok":true},
-          "essay":{"hard":<n>,"total":<n>,"ok":true}
+          "mcq":{"easy":<n>,"avg":<n>,"hard":<n>,"total":<n>,"ok":true}
         }
       }
     }
@@ -1752,13 +2171,12 @@ function makeBatchMessages_AI(kb, setPlans){
   const style = [
   "Keep stems purely content-focused; do not mention Bloom/TOS/meta/testing language.",
   "STRICT: For each set_id in 'plans', you MUST return exactly one set with that set_id.",
-  "STRICT: Meet quotas EXACTLY per type (mcq/tf/ident/matching/essay). No missing or extra items.",
+  "STRICT: Meet quotas EXACTLY for mcq type. No missing or extra items.",
   "For each set, use ONLY content relevant to that set’s 'topics' array; ignore unrelated material even if present in combined_markdown.",
   "If materials are thin, you MAY use reasonable domain knowledge to satisfy quotas.",
   "No duplicate stems within a set. MCQ has 1 correct + 3 plausible (no All/None).",
   'STRICT: Top-level MUST be a single JSON object with a "sets" array: { "sets": [ { ... }, { ... } ] }. Do not return a single set, a top-level array, or extra keys.',
-  "TF unambiguous; Identification single concise answer; Matching 1–1 with answer_key; Essay prompt + brief guidance.",
-  "OUTPUT STRICT JSON ONLY with the exact schema. No markdown, no prose, no code fences."
+  "OUTPUT STRICT JSON ONLY with the exact schema. No markdown, no prose, no code fences. do not use ```json before the exam."
 ].join(" ");
 
 
@@ -1767,7 +2185,31 @@ function makeBatchMessages_AI(kb, setPlans){
     ? "Use the provided topics as anchors and reasonable domain knowledge when the combined_markdown is brief."
     : "Prefer facts/terms from combined_markdown; ground each stem with at least one domain term found there.";
 
-  const system = `You generate exam items aligned to a TOS but without meta talk. ${style} ${grounding}`;
+  const system = `You are a content-only JSON generator.
+
+STRICT RULES:
+- Reply with ONE minified JSON object only. No prose. No Markdown. No code fences.
+- The top-level MUST be exactly: {"sets":[ ... ]}  (NOT "test", "tests", "result", etc.)
+- Each element in "sets" MUST be:
+  {"set_id": <number>,
+   "mcq":[ {"id":"MC1","stem":"...","choices":["A) ...","B) ...","C) ...","D) ..."],"answer":"A|B|C|D"} ]
+  }
+- MCQ only. No other keys or sections.
+- choices must be an array of EXACTLY 4 strings, each starting with "A) ", "B) ", "C) ", "D) ".
+- answer must be one letter: "A" or "B" or "C" or "D".
+- Do not include analysis, explanations, or comments in the JSON.
+- If you cannot produce items, still return the schema with empty arrays for that set_id.
+
+QUALITY RULES:
+- Stems are clear, self-contained, and domain-relevant.
+- 1 correct option + 3 plausible distractors. No "All of the above"/"None of the above".
+- No duplicates within a set.`;
+
+ /* You generate exam items aligned to a TOS but without meta talk. Return ONLY minified JSON. No prose, no code-fences, no keys outside the schema. Schema: {"sets":[{"set_id":1,"mcq":[{"id":"MC1","stem":"…","choices":["A) …","B) …","C) …","D) …"],"answer":"A"}]}]} ${style} ${grounding}
+*/
+
+
+
 
   const setsBrief = setPlans.map(p=>({
     set_id: p.set_id,
@@ -1793,198 +2235,33 @@ function makeBatchMessages_AI(kb, setPlans){
 function chunkPlans(plans, size){ const out=[]; for(let i=0;i<plans.length;i+=size) out.push(plans.slice(i,i+size)); return out; }
 
 
-function stripCodeFences(s=""){
-  // kill ```json ... ``` or ``` ... ```
-  return String(s).replace(/^\s*```(?:json)?\s*/i, "").replace(/\s*```\s*$/i, "").trim();
-}
-function extractFirstJSONObject(s=""){
-  // grab the first {...} block to ignore any safety prelude/epilogue
-  const start = s.indexOf("{");
-  const end   = s.lastIndexOf("}");
-  return (start >= 0 && end > start) ? s.slice(start, end+1) : s;
-}
-
-
-
-function parseJSONLoose(raw) {
-  if (!raw) throw new Error("Empty response");
-  let s = String(raw);
-
-  // 0) Remove BOM & invisible/line-separator chars
-  s = s.replace(/^\uFEFF/, "")
-       .replace(/[\u200B-\u200D\u2060\uFEFF]/g, "")      // zero-width
-       .replace(/[\u2028\u2029]/g, "\n")                 // JS line sep → \n
-       .trim();
-
-  // 1) If there are any fenced blocks anywhere, prefer the FIRST one
-  //    Supports ```json / ```JSON / ```jsonc / ```json5 / ``` (any case)
-  const fenceRe = /```(?:jsonc?|json5)?\s*([\s\S]*?)```/ig;
-  const fenceMatch = fenceRe.exec(s);
-  if (fenceMatch && fenceMatch[1]) s = fenceMatch[1].trim();
-
-  // 2) Strip any remaining standalone fences (in case of weird placement)
-  s = s.replace(/```(?:jsonc?|json5)?/ig, "").replace(/```/g, "").trim();
-
-  // 3) Normalize curly quotes → straight
-  s = s.replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
-
-  // 4) Quick direct parse
-  try { return JSON.parse(s); } catch {}
-
-  // 5) Remove comments & trailing commas (JSON5-ish)
-  let cleaned = s
-    .replace(/\/\/[^\n\r]*/g, "")
-    .replace(/\/\*[\s\S]*?\*\//g, "")
-    .replace(/,\s*([}\]])/g, "$1")
-    .trim();
-  try { return JSON.parse(cleaned); } catch {}
-
-  // 6) Extract the largest balanced {...} or [...] region anywhere
-  function extractLargestBalanced(str) {
-    const pairs = { "{": "}", "[": "]" };
-    let best = "", bestLen = 0;
-    for (let i = 0; i < str.length; i++) {
-      const open = str[i];
-      if (!(open in pairs)) continue;
-      let stack = [open], inStr = false, esc = false;
-      for (let j = i + 1; j < str.length; j++) {
-        const c = str[j];
-        if (inStr) {
-          if (esc) { esc = false; continue; }
-          if (c === "\\") { esc = true; continue; }
-          if (c === '"') inStr = false;
-          continue;
-        }
-        if (c === '"') { inStr = true; continue; }
-        if (c === pairs[stack[stack.length - 1]]) {
-          stack.pop();
-          if (!stack.length) {
-            const chunk = str.slice(i, j + 1).trim();
-            if (chunk.length > bestLen) { best = chunk; bestLen = chunk.length; }
-            break;
-          }
-        } else if (c in pairs) {
-          stack.push(c);
-        }
-      }
-    }
-    return best || null;
-  }
-
-  const largest = extractLargestBalanced(cleaned);
-  if (largest) {
-    // try again with trailing-comma cleanup
-    const normalized = largest.replace(/,\s*([}\]])/g, "$1");
-
-    try { return JSON.parse(normalized); } catch {}
-  }
-
-  // 7) As a last resort, slice between first { and last }
-  const fi = s.indexOf("{"), la = s.lastIndexOf("}");
-  if (fi !== -1 && la !== -1 && la > fi) {
-    const core = s.slice(fi, la + 1).replace(/,\s*([}\]])/g, "$1");
-    try { return JSON.parse(core); } catch {}
-  }
-
-  // Show only a small sample to console, then fail
-  console.warn("Malformed reply sample:", s.slice(0, 1200));
-  throw new Error("Batch returned non-JSON");
-}
-
-
-
-
 function isSetShape(o){
   if(!o || typeof o !== 'object') return false;
   // minimal shape check
   return ('set_id' in o) && (
-    Array.isArray(o.mcq) || Array.isArray(o.true_false) ||
-    Array.isArray(o.identification) || Array.isArray(o.matching) ||
-    Array.isArray(o.essay)
+    Array.isArray(o.mcq)
   );
 }
 
 function normalizeSetsFromAny(json){
-  // Already correct?
-  if (json && Array.isArray(json.sets)) return json.sets;
-
-  // Array directly?
-  if (Array.isArray(json) && json.every(isSetShape)) return json;
-
-  // Singular "set"
-  if (json && isSetShape(json.set)) return [json.set];
-
-  // Single set object at the top level
-  if (json && isSetShape(json)) return [json];
-
-  // Sometimes models wrap as { data: { sets: [...] } } or { result: [...] }
+  if (json && Array.isArray(json.sets)) return json.sets;               // preferred
+  if (json && Array.isArray(json.tests)) return json.tests;             // alias some models emit
+  if (Array.isArray(json) && json.every(isSetShape)) return json;       // array of sets
+  if (json && isSetShape(json.set)) return [json.set];                  // wrapped single
+  if (json && isSetShape(json)) return [json];                          // single at top-level
   if (json && json.data && Array.isArray(json.data.sets)) return json.data.sets;
   if (json && Array.isArray(json.result) && json.result.every(isSetShape)) return json.result;
-
-  return null; // unknown shape
+  return null;
 }
+
 
 // Safer no-op normalizer for arrays on a set
 function ensureSetArrays(s){
   s.mcq = Array.isArray(s.mcq) ? s.mcq : [];
-  s.true_false = Array.isArray(s.true_false) ? s.true_false : [];
-  s.identification = Array.isArray(s.identification) ? s.identification : [];
-  s.matching = Array.isArray(s.matching) ? s.matching : [];
-  s.essay = Array.isArray(s.essay) ? s.essay : [];
   return s;
 }
 
-// Find ALL balanced JSON objects in raw text
-function extractBalancedObjects(str) {
-  const out = [];
-  const pairs = { "{": "}", "[": "]" };
-  for (let i = 0; i < str.length; i++) {
-    if (str[i] !== "{") continue;
-    let stack = ["{"], inStr = false, esc = false;
-    for (let j = i + 1; j < str.length; j++) {
-      const c = str[j];
-      if (inStr) {
-        if (esc) { esc = false; continue; }
-        if (c === "\\") { esc = true; continue; }
-        if (c === '"') inStr = false;
-        continue;
-      }
-      if (c === '"') { inStr = true; continue; }
-      if (c === "{") stack.push("{");
-      else if (c === "}") {
-        stack.pop();
-        if (!stack.length) {
-          out.push(str.slice(i, j + 1));
-          i = j; // jump to end of this object
-          break;
-        }
-      }
-    }
-  }
-  return out;
-}
-
-function salvageSetsFromRaw(raw) {
-  const objs = extractBalancedObjects(String(raw));
-  const sets = [];
-  for (const chunk of objs) {
-    try {
-      const o = JSON.parse(chunk.replace(/,\s*([}\]])/g, "$1"));
-      if (isSetShape(o)) {
-        sets.push(ensureSetArrays(o));
-      } else if (o && o.set && isSetShape(o.set)) {
-        sets.push(ensureSetArrays(o.set));
-      }
-    } catch {}
-  }
-  // Return only if we actually found at least one set-shaped object
-  return sets.length ? sets : null;
-}
-
 // === Define the missing batch caller ===
-// Depends on: AGENTS, apikey, scheduledJsonFetch, makeBatchMessages_AI,
-// parseJSONLoose, normalizeSetsFromAny, salvageSetsFromRaw,
-// ensureSetArrays, callTopUp, computeDeficits
 async function callAgentForBatch(agentIdx, kb, plansChunk){
   const lane = AGENTS[agentIdx % AGENTS.length];
 
@@ -2009,18 +2286,45 @@ async function callAgentForBatch(agentIdx, kb, plansChunk){
 
   const raw = (data?.choices?.[0]?.message?.content || "").trim();
 
+    let sets = [];
+    try { sets = safeParseSets(raw) || []; } catch {}
+    
+    if (!sets.length) {
+      // last-ditch salvage of any set-shaped objects
+      const salv = salvageSetsFromRaw(raw);
+      if (salv && salv.length) sets = salv;
+    }
+
+
+/*
+
+  let sets;
+  try { 
+    sets = safeParseSets(raw);
+  } catch (e) {
+    console.warn("Unexpected batch shape; raw sample:", raw.slice(0, 500));
+    throw e;
+  }
+
+
+
   // 2) Parse JSON (tolerant) or salvage individual set objects
-  let json = null, sets = null;
-  try { json = parseJSONLoose(raw); } catch {}
-  if (json) sets = normalizeSetsFromAny(json);
+  let json = null, sets = null; // 0970
+  
+   
+      try { json = parseJSONLoose(raw) || {};  } catch {}
+      if (json) sets = normalizeSetsFromAny(json);
+    
   if (!sets) {
     const salvaged = salvageSetsFromRaw(raw);
     if (salvaged && salvaged.length) sets = salvaged;
   }
+  
   if (!sets) {
     console.warn("Unexpected batch shape; raw sample:", raw.slice(0, 400));
     throw new Error("Malformed batch JSON");
   }
+  */
 
   // 3) Index by set_id and ensure array fields exist
   const got = new Map(sets.map(s => {
@@ -2036,20 +2340,14 @@ async function callAgentForBatch(agentIdx, kb, plansChunk){
     // fill any missing items, a few passes max
     for (let pass = 0; pass < 8; pass++){
       const d = computeDeficits(s, plan.quotas);
-      // const need = d.mcq || d.tf || d.ident || d.essay || d.matchGroups;
-      const need = d.mcq || d.tf || d.ident || d.essay || d.matchingGroups;
+      const need = d.mcq;
       if (!need) break;
       s = await callTopUp(agentIdx, kb, plan, s);
     }
 
     // sanity trim (if model overshot)
     const trim = (arr, want) => Array.isArray(arr) && arr.length > want ? arr.slice(0, want) : arr;
-    s.mcq            = trim(s.mcq,            plan.quotas?.mcq?.total|0);
-    s.true_false     = trim(s.true_false,     plan.quotas?.tf?.total|0);
-    s.identification = trim(s.identification, plan.quotas?.ident?.total|0);
-    s.essay          = trim(s.essay,          plan.quotas?.essay?.total|0);
-    s.matching       = trim(s.matching,       plan.quotas?.matching?.groups|0);
-
+    s.mcq = trim(s.mcq, plan.quotas?.mcq?.total|0);
     normalized.push(s);
   }
 
@@ -2062,12 +2360,18 @@ async function runBatchesParallel(kb, allPlans){
   const results = [];
   let nextBatch = 0;
 
-  const workers = Array.from({ length: Math.min(AGENTS.length, batches.length) }, (_, workerIdx) => (async () => {
+  // const MAX_WORKERS = Math.min(2, batches.length); // <= 2 keeps pressure low
+  const MAX_WORKERS = batches.length > 30 ? 1 : 2;
+
+  // const workers = Array.from({ length: Math.min(AGENTS.length, batches.length) }, (_, workerIdx)
+   const workers = Array.from({ length: MAX_WORKERS }, (_, workerIdx) => (async () => {
     while (true) {
       const myBatchIdx = nextBatch++;
       if (myBatchIdx >= batches.length) break;
 
       const plansChunk = batches[myBatchIdx];
+      
+      /*
       try {
         const part = await callAgentForBatch(workerIdx, kb, plansChunk); // workerIdx picks AGENT[workerIdx]
         results.push(...part);
@@ -2077,6 +2381,24 @@ async function runBatchesParallel(kb, allPlans){
         const part = await callAgentForBatch(workerIdx, kb, plansChunk);
         results.push(...part);
       }
+      */
+      
+      try {
+      const part = await callAgentForBatch(workerIdx, kb, plansChunk);
+      results.push(...part);
+    } catch (err) {
+      console.warn("Worker", workerIdx, "retrying batch", myBatchIdx, err);
+      await new Promise(r => setTimeout(r, 3000));
+      try {
+        const part = await callAgentForBatch(workerIdx, kb, plansChunk);
+        results.push(...part);
+      } catch (err2) {
+        console.warn("Worker", workerIdx, "giving up batch", myBatchIdx, err2);
+        // swallow and continue; other batches still proceed
+      }
+    }
+
+      
       setProgress(20 + Math.round((results.length / allPlans.length) * 60),
                   `Agents: ${results.length}/${allPlans.length} sets`);
     }
@@ -2087,174 +2409,21 @@ async function runBatchesParallel(kb, allPlans){
   return results;
 }
 
-/*
-function buildHTMLFromAISchemaSet(set, title, figs = []) {
-  const num = set.set_id || 1;
-  const sections = { MCQ:[], TF:[], ID:[], MATCH:[], ESSAY:[] };
-  const keyLines = [];
-  let qnum = 1;
-  const pushKey = (n, ans) => keyLines.push(`${n}. ${ans}`);
 
-  // pick ONE figure for the whole set (first selected, if any)
-  const headerFig = (Array.isArray(figs) && figs.length) ? figs[0] : null;
-  const headerFigureHTML = headerFig ? `
-    <div class="mt-2 mb-3 text-center">
-      <img src="${headerFig.src}" alt="${escapeHTML(headerFig.name||'Figure')}"
-           style="max-width:100%;max-height:180px;object-fit:contain;border:1px solid #eee;padding:6px;border-radius:8px;">
-      ${headerFig.name ? `<div class="small muted mt-1">${escapeHTML(headerFig.name)}</div>` : ""}
-    </div>
-  ` : "";
-
-  // MCQ
-  (set.mcq||[]).forEach(it=>{
-    const opts = (it.choices||[]).join('<br>');
-    sections.MCQ.push(
-      `<div class="q">
-         <div><strong>${qnum}.</strong> ${escapeHTML(it.stem)}</div>
-         <div style="margin-top:6px">${opts}</div>
-       </div>`
-    );
-    pushKey(qnum, it.answer || "");
-    qnum++;
-  });
-
-  // True/False
-  (set.true_false||[]).forEach(it=>{
-    sections.TF.push(
-      `<div class="q">
-         <div><strong>${qnum}.</strong> ${escapeHTML(it.stem)} (True/False)</div>
-       </div>`
-    );
-    pushKey(qnum, it.answer || "");
-    qnum++;
-  });
-
-  // Identification
-  (set.identification||[]).forEach(it=>{
-    sections.ID.push(
-      `<div class="q"><strong>${qnum}.</strong> ${escapeHTML(it.prompt)} <em>(Identification)</em></div>`
-    );
-    pushKey(qnum, it.answer || "");
-    qnum++;
-  });
-
-
-// Matching — COUNT EACH PAIR AS ONE NUMBERED ITEM
-(set.matching || []).forEach((group, gidx) => {
-  const colA = Array.isArray(group?.columnA) ? group.columnA.slice() : [];
-  const colB = Array.isArray(group?.columnB) ? group.columnB.slice() : [];
-  const pairs = Math.min(colA.length, colB.length);
-  if (!pairs) return;
-
-  const stripLead = s => String(s ?? "").replace(/^\s*([0-9]+\.|[A-Za-z]\.)\s* 0970/, "").trim();
-  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-
-  const colBLines = colB.slice(0, pairs).map((txt, i) => {
-    const L = letters[i] || String.fromCharCode(65 + (i % 26));
-    return `${L}. ${escapeHTML(stripLead(txt))}`;
-  });
-
-  const aLinesHTML = colA.slice(0, pairs).map((txt, i) =>
-    `${(qnum + i)}. ${escapeHTML(stripLead(txt))}`
-  ).join("<br>");
-
-  const bLinesHTML = colBLines.join("<br>");
-
-  sections.MATCH.push(
-    `<div class="q">
-       ${ (set.matching?.length > 1) ? `<div class="small muted mb-1">Group ${gidx+1}</div>` : "" }
-       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px;">
-         <div><div class="small muted">Column A</div>${aLinesHTML}</div>
-         <div><div class="small muted">Column B</div>${bLinesHTML}</div>
-       </div>
-     </div>`
-  );
-
-  const keyMap = group?.answer_key || {};
-  for (let i = 0; i < pairs; i++) {
-    let ans = keyMap[String(i + 1)];
-    if (!ans) {
-      const k = letters[i];
-      ans = keyMap[k] || keyMap[k?.toLowerCase()];
-    }
-    pushKey(qnum + i, (ans || "").toString().trim());
-  }
-  qnum += pairs;
-});
-
-
-
-
-
-// Essay
-  (set.essay||[]).forEach(it=>{
-    const stem = it.prompt + (it.guidance ? ` ${it.guidance}` : "");
-    sections.ESSAY.push(
-      `<div class="q"><strong>${qnum}.</strong> ${escapeHTML(stem)} <em>(Essay)</em></div>`
-    );
-    pushKey(qnum, "(open-ended)");
-    qnum++;
-  });
-
-  const examHtml = `
-    <div class="paper" contenteditable="true" data-paper>
-      <header class="flex items-end justify-between gap-4 pb-3 mb-2 border-b border-gray-200">
-        <div class="title">${escapeHTML(title)} — SET ${num}</div>
-        <div class="small muted">Name: ____________________  Score: ______</div>
-      </header>
-      ${headerFigureHTML}
-      ${ sections.MCQ.length   ? `<div class="font-semibold mt-4 mb-1">Multiple Choice</div>${sections.MCQ.join('')}`   : '' }
-      ${ sections.TF.length    ? `<div class="font-semibold mt-4 mb-1">True or False</div>${sections.TF.join('')}`       : '' }
-      ${ sections.ID.length    ? `<div class="font-semibold mt-4 mb-1">Identification</div>${sections.ID.join('')}`       : '' }
-      ${ sections.MATCH.length ? `<div class="font-semibold mt-4 mb-1">Matching Type</div>${sections.MATCH.join('')}`     : '' }
-      ${ sections.ESSAY.length ? `<div class="font-semibold mt-4 mb-1">Essay</div>${sections.ESSAY.join('')}`             : '' }
-      <footer class="mt-6 pt-3 border-t border-dashed border-gray-200 small muted">Generated by Exam Maker - Agents</footer>
-    </div>
-  `;
-  const keyHtml = `
-    <div class="paper page-break" data-key>
-      <div class="title font-bold text-lg mb-2">${escapeHTML(title)} — Answer Key (SET ${num})</div>
-      <div class="small whitespace-pre-line">${escapeHTML(
-        keyLines.slice().sort((A,B)=>parseInt(A)-parseInt(B)).join("\\n")
-      )}</div>
-    </div>
-  `;
-  return { examHtml, keyHtml, keyLines };
-}
-*/
 
 function buildHTMLFromAISchemaSet(set, title, figs = []) {
   const num = set.set_id || 1;
-  const sections = { MCQ:[], TF:[], ID:[], MATCH:[], ESSAY:[] };
+  const sections = { MCQ:[]};
   const keyLines = [];
   let qnum = 1;
   const figAlloc = makeFigureAllocator(figs);
   
   const pushKey = (n, ans) => keyLines.push(`${n}. ${ans}`);
 
-  // cycle figures across questions
-  // const nextFig = makeFigureCycler(figs);
-/*
-  // helper: insert inline figure into a stem (supports [FIG] placeholder)
-  function stemWithInlineFigure(rawStem, fallbackAlt = 'Figure') {
-    const stemHTML = String(rawStem ?? '');
-    const fig = nextFig();
-    if (!fig) return escapeHTML(stemHTML);
-
-    const figHTML = figureImgHTML(fig, fallbackAlt);
-
-    // If author explicitly put [FIG] in the stem, replace that token
-    if (/\[FIG\]/i.test(stemHTML)) {
-      return escapeHTML(stemHTML).replace(/\[FIG\]/i, figHTML);
-    }
-    // Otherwise, append the image inline at the end of the stem
-    return `${escapeHTML(stemHTML)} ${figHTML}`;
-  }
-  */
   // Insert a figure only for allowed types; supports [FIG] placeholder
 function stemWithInlineFigureFor(type, rawStem, fallbackAlt = 'Figure') {
   const stemText = String(rawStem ?? '');
-  const allowed = (type === 'mcq' && FIG_USE.mcq) || (type === 'tf' && FIG_USE.tf);
+  const allowed = (type === 'mcq' && FIG_USE.mcq);
   if (!allowed) return escapeHTML(stemText);
 
   const fig = figAlloc.next();           // consume a unique figure (no reuse)
@@ -2283,126 +2452,19 @@ function stemWithInlineFigureFor(type, rawStem, fallbackAlt = 'Figure') {
     qnum++;
   });
 
-  // True/False
-  (set.true_false||[]).forEach(it=>{
-    // const stem = stemWithInlineFigure(it.stem, `Figure ${qnum}`);
-    const stem = stemWithInlineFigureFor('tf', it.stem, `Figure ${qnum}`);
-    sections.TF.push(
-      `<div class="q">
-         <div><strong>${qnum}.</strong> ${stem} (True/False)</div>
-       </div>`
-    );
-    pushKey(qnum, it.answer || "");
-    qnum++;
-  });
-/*
-  // Identification
-  (set.identification||[]).forEach(it=>{
-    const stem = stemWithInlineFigure(it.prompt, `Figure ${qnum}`);
-    sections.ID.push(
-      `<div class="q"><strong>${qnum}.</strong> ${stem} <em>(Identification)</em></div>`
-    );
-    pushKey(qnum, it.answer || "");
-    qnum++;
-  });
-*/
-
-// Identification
-(set.identification||[]).forEach(it=>{
-  const stem = escapeHTML(it.prompt ?? '');
-  sections.ID.push(
-    `<div class="q"><strong>${qnum}.</strong> ${stem} <em>(Identification)</em></div>`
-  );
-  pushKey(qnum, it.answer || "");
-  qnum++;
-});
-
-
-  // Matching — COUNT EACH PAIR AS ONE NUMBERED ITEM
-  (set.matching || []).forEach((group, gidx) => {
-    const colA = Array.isArray(group?.columnA) ? group.columnA.slice() : [];
-    const colB = Array.isArray(group?.columnB) ? group.columnB.slice() : [];
-    const pairs = Math.min(colA.length, colB.length);
-    if (!pairs) return;
-
-    const stripLead = s => String(s ?? "").replace(/^\s*([0-9]+\.|[A-Za-z]\.)\s*/, "").trim();
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-
-    // For Matching we keep stems pure; if you want an inline fig before the table, uncomment:
-    // const preFig = figureImgHTML(nextFig(), `Figure ${qnum}`);
-
-    const colBLines = colB.slice(0, pairs).map((txt, i) => {
-      const L = letters[i] || String.fromCharCode(65 + (i % 26));
-      return `${L}. ${escapeHTML(stripLead(txt))}`;
-    });
-
-    const aLinesHTML = colA.slice(0, pairs).map((txt, i) =>
-      `${(qnum + i)}. ${escapeHTML(stripLead(txt))}`
-    ).join("<br>");
-
-    const bLinesHTML = colBLines.join("<br>");
-
-    sections.MATCH.push(
-      `<div class="q">
-         ${ (set.matching?.length > 1) ? `<div class="small muted mb-1">Group ${gidx+1}</div>` : "" }
-         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px;">
-           <div><div class="small muted">Column A</div>${aLinesHTML}</div>
-           <div><div class="small muted">Column B</div>${bLinesHTML}</div>
-         </div>
-       </div>`
-    );
-
-    const keyMap = group?.answer_key || {};
-    for (let i = 0; i < pairs; i++) {
-      let ans = keyMap[String(i + 1)];
-      if (!ans) {
-        const k = letters[i];
-        ans = keyMap[k] || keyMap[k?.toLowerCase()];
-      }
-      pushKey(qnum + i, (ans || "").toString().trim());
-    }
-    qnum += pairs;
-  });
-/*
-  // Essay
-  (set.essay||[]).forEach(it=>{
-    const stem = stemWithInlineFigure((it.prompt + (it.guidance ? ` ${it.guidance}` : "")), `Figure ${qnum}`);
-    sections.ESSAY.push(
-      `<div class="q"><strong>${qnum}.</strong> ${stem} <em>(Essay)</em></div>`
-    );
-    pushKey(qnum, "(open-ended)");
-    qnum++;
-  });
-*/
-
-// Essay
-(set.essay||[]).forEach(it=>{
-  const stem = escapeHTML((it.prompt || '') + (it.guidance ? ` ${it.guidance}` : ""));
-  sections.ESSAY.push(
-    `<div class="q"><strong>${qnum}.</strong> ${stem} <em>(Essay)</em></div>`
-  );
-  pushKey(qnum, "(open-ended)");
-  qnum++;
-});
-
-
   // Build the paper HTML (no header figure — all figures are inline now)
   const examHtml = `
     <div class="paper" contenteditable="true" data-paper>
-      <header class="flex items-end justify-between gap-4 pb-3 mb-2 border-b border-gray-200">
+      <header class="items-end justify-between gap-4 pb-3 mb-2">
+      <span class="set"></span>
         <div class="title">${escapeHTML(title)} — SET ${num}</div>
-        <div class="small muted">Name: ____________________  Date: ______</div>
-        <div class="small muted">Year & Section: ____________________  Score: ______</div>
       </header>
       ${ sections.MCQ.length   ? `<div class="font-semibold mt-4 mb-1">Multiple Choice</div>${sections.MCQ.join('')}`   : '' }
-      ${ sections.TF.length    ? `<div class="font-semibold mt-4 mb-1">True or False</div>${sections.TF.join('')}`       : '' }
-      ${ sections.ID.length    ? `<div class="font-semibold mt-4 mb-1">Identification</div>${sections.ID.join('')}`       : '' }
-      ${ sections.MATCH.length ? `<div class="font-semibold mt-4 mb-1">Matching Type</div>${sections.MATCH.join('')}`     : '' }
-      ${ sections.ESSAY.length ? `<div class="font-semibold mt-4 mb-1">Essay</div>${sections.ESSAY.join('')}`             : '' }
-      <footer class="mt-6 pt-3 border-t border-dashed border-gray-200 small muted">Generated by Exam Maker - Agents</footer>
+      <footer class="mt-6 pt-3 border-t border-dashed border-gray-200 small muted">Generated by Exam Maker</footer>
     </div>
   `;
-
+   
+   
   const keyHtml = `
     <div class="paper page-break" data-key>
       <div class="title font-bold text-lg mb-2">${escapeHTML(title)} — Answer Key (SET ${num})</div>
@@ -2509,62 +2571,92 @@ let lastCompiledSets = [];
 let lastCompiledText = "";
 let lastTotalQuestions = 0;
 
-async function buildRowsMeta_AI(chosenTypes){
-  const cards = $$('#rows > div');
-  const metas = await Promise.all(cards.map(async (card)=>{
-    const id=card.dataset.rowId;
-    const topic=card.querySelector('.topicInput')?.value || "(Untitled)";
-    const rawMd = await getRowMarkdownFromCard(card); // no cleaning
-    const figsChosen = getChosenFiguresForCard(card);
-    return { id, topic, raw_markdown: rawMd || "", figures: figsChosen, cells:{
-      r: card.querySelector('.r')?.value || '',
-      u: card.querySelector('.u')?.value || '',
-      ap: card.querySelector('.ap')?.value || '',
-      an: card.querySelector('.an')?.value || '',
-      cr: card.querySelector('.cr')?.value || '',
-      ev: card.querySelector('.ev')?.value || ''
-    }};
+
+async function buildRowsMeta_AI(){
+  const metas = await Promise.all(tosRows.map(async (row)=>{
+    const topic = row.topic || "(Untitled)";
+    let rawMd = "";
+    if (!row.files.length){
+      rawMd = `# ${topic}\n\n${topic} covers core concepts, definitions, examples, procedures, and key properties.`;
+    } else {
+      const parts = await Promise.all(row.files.map(async f=>{
+        try{
+          const md = await convertFileToMarkdown(f);
+          return `# ${topic} - ${f.name}\n\n${md}`;
+        }catch(e){ console.warn("Convert failed:", f?.name, e); return ""; }
+      }));
+      rawMd = parts.filter(Boolean).join("\n\n---\n\n");
+    }
+    // selected figures list
+    const figsChosen = [...row.selected].sort((a,b)=>a-b).map(i=> row.figs[i]).filter(Boolean);
+    return {
+      id: row.id,
+      topic,
+      raw_markdown: rawMd || "",
+      figures: figsChosen,
+      cells: {
+        r: row.cells.r.join(', '),
+        u: row.cells.u.join(', '),
+        ap: row.cells.ap.join(', '),
+        an: row.cells.an.join(', '),
+        cr: row.cells.cr.join(', '),
+        ev: row.cells.ev.join(', ')
+      }
+    };
   }));
   return metas;
 }
 
+
+// Force MCQ-only everywhere this function runs
+/*
 async function generateAI(){
-  const types={ mcq:false, tf:false, id:false, match:false, essay:false };
-  $$('.examType').forEach(cb=> types[cb.value]=cb.checked);
-  if(!Object.values(types).some(Boolean)) return showAlert('err','Select at least one exam type.');
-  const cards = $$('#rows > div'); if(!cards.length) return showAlert('err','Add at least one TOS row.');
+  // const types = { mcq:true};
+
+  if (!tosRows.length) return showAlert('err','Add at least one TOS row.');
 
   const { rows, numMap } = buildTOS();
   const allNums = Array.from(new Set(Object.keys(numMap).map(n=>+n))).sort((a,b)=>a-b);
-  if(!allNums.length) return showAlert('err','Provide TOS numbers (e.g., 1,2,3…) in the cells.');
+  if (!allNums.length) return showAlert('err','Provide TOS numbers (e.g., 1,2,3…) in the cells.');
 
-  const sets = Math.max(1, Math.min(MAX_SETS, parseInt(byId('numSets').value||'1',10)));
+  // SAFE: read sets & title without assuming DOM nodes exist
+  const sets  = getNumSets();
+  const title = getExamTitle();
 
-  setLoader('Reading materials...','Converting files and preparing AI context'); setProgress(10,'Files');
-  const rowsMeta = await buildRowsMeta_AI(types);
-  
-  // gather all selected figures across rows
-    const selectedFigs = rowsMeta.flatMap(r => r.figures || []);
-    const figsData = await normalizeFiguresToData(selectedFigs);
-    const title = byId('examTitle').value||'Exam';
-  
+  setLoader('Reading materials...','Converting files and preparing AI context');
+  setProgress(10,'Files');
+
+
+// was: const rowsMeta = await buildRowsMeta_AI(types);
+const rowsMetaRaw = await buildRowsMeta_AI();
+const rowsMeta    = normalizeRowsMeta(rowsMetaRaw);
+
+if (!rowsMeta.length){
+  hideLoader();
+  return showAlert('err', 'No materials parsed for your TOS rows. Check uploads and make sure TOS numbers are filled.');
+}
+
+
+ // const rowsMeta = await buildRowsMeta_AI(types);
+
+  const selectedFigs = rowsMeta.flatMap(r => r.figures || []);
+  const figsData = await normalizeFiguresToData(selectedFigs);
+
   try{
     setProgress(45,'KB build');
     const kb = makeKBFromRows_AI(rowsMeta);
+
     setProgress(55,'Planning sets');
-    const plans = buildSetPlansFromTOS(rowsMeta, types, sets, numMap);
+    const plans = buildSetPlansFromTOS(rowsMeta, sets, numMap);
+
     setProgress(60,'Calling agents');
-    
-    const chosenFigs = getAllSelectedFigures();  // NEW
-    
-  
+    // const chosenFigs = getAllSelectedFigures(); // optional
+
     let aiSets = await runBatchesParallel(kb, plans);
     aiSets = await ensureAllSetsFilled(aiSets, plans, kb, 0);
 
-    
     setProgress(85,'Render');
-    const built = aiSets.map(s => buildHTMLFromAISchemaSet(s, title, figsData /*selectedFigs 0970 */ ));
-
+    const built = aiSets.map(s => buildHTMLFromAISchemaSet(s, title, figsData));
     byId('sets').innerHTML = '';
     renderSets(built);
 
@@ -2572,18 +2664,95 @@ async function generateAI(){
     const compiled = buildPlaintextFromSets(built, title);
     lastCompiledText = compiled.text;
     lastTotalQuestions = compiled.totalQ;
-    byId('compiledText').value = lastCompiledText;
+    const compiledEl = byId('compiledText');
+    if (compiledEl) compiledEl.value = lastCompiledText;   // guard if textarea is missing
 
     hideLoader();
     showAlert('ok', `Draft(s) ready via Agents. Total questions: ${lastTotalQuestions}. You can save.`);
-    byId('btnSaveDbTop').disabled = false;
-    byId('btnSaveDbTop').removeAttribute('title');
+    const saveBtn = byId('btnSaveDbTop');
+    if (saveBtn){ saveBtn.disabled = false; saveBtn.removeAttribute('title'); }
   }catch(e){
     console.error(e);
     hideLoader();
     showAlert('err','Agent generation failed.');
   }
 }
+*/
+
+async function generateAI(){
+  if (!tosRows.length) return showAlert('err','Add at least one TOS row.');
+
+  const { rows, numMap } = buildTOS();
+  const allNums = Array.from(new Set(Object.keys(numMap).map(n=>+n))).sort((a,b)=>a-b);
+  if (!allNums.length) return showAlert('err','Provide TOS numbers (e.g., 1,2,3…) in the cells.');
+
+  // SAFE: read sets & title without assuming DOM nodes exist
+  const sets  = getNumSets();
+  const title = getExamTitle();
+
+  setLoader('Reading materials...','Converting files and preparing AI context');
+  setProgress(10,'Files');
+
+  const rowsMetaRaw = await buildRowsMeta_AI();
+  const rowsMeta    = normalizeRowsMeta(rowsMetaRaw);
+
+  if (!rowsMeta.length){
+    hideLoader();
+    return showAlert('err', 'No materials parsed for your TOS rows. Check uploads and make sure TOS numbers are filled.');
+  }
+
+  const selectedFigs = rowsMeta.flatMap(r => r.figures || []);
+  const figsData = await normalizeFiguresToData(selectedFigs);
+
+  setProgress(45,'KB build');
+  const kb = makeKBFromRows_AI(rowsMeta);
+
+  setProgress(55,'Planning sets');
+  const plans = buildSetPlansFromTOS(rowsMeta, sets, numMap);
+
+  let aiSets = [];
+  try {
+    setProgress(60,'Calling agents');
+    aiSets = await runBatchesParallel(kb, plans);
+
+    // Try to top-up any missing items/sets, but failure here should NOT block rendering:
+    try {
+      aiSets = await ensureAllSetsFilled(aiSets, plans, kb, 0);
+    } catch (e) {
+      console.warn("Top-up pass failed; rendering partial sets.", e);
+    }
+  } catch (e) {
+    console.warn("Generation had errors; rendering whatever we have.", e);
+  } finally {
+    // keep only sets that actually meet their quotas
+    const want = new Map(plans.map(p => [p.set_id, p.quotas?.mcq?.total|0]));
+    const complete = aiSets.filter(s => (s?.mcq?.length||0) >= (want.get(s.set_id)||0));
+
+    setProgress(85,'Render');
+    const built = complete.map(s => buildHTMLFromAISchemaSet(s, title, figsData));
+    byId('sets').innerHTML = '';
+    renderSets(built);
+
+    lastCompiledSets = built;
+    const compiled = buildPlaintextFromSets(built, title);
+    lastCompiledText = compiled.text;
+    lastTotalQuestions = compiled.totalQ;
+    const compiledEl = byId('compiledText');
+    if (compiledEl) compiledEl.value = lastCompiledText;
+
+    hideLoader();
+    showAlert(complete.length ? 'ok' : 'err',
+      complete.length
+        ? `Finished with ${complete.length}/${plans.length} complete set(s).`
+        : 'No complete sets produced. Try again or lower concurrency.'
+    );
+
+    const saveBtn = byId('btnSaveDbTop');
+    if (saveBtn){ saveBtn.disabled = !complete.length; if (complete.length) saveBtn.removeAttribute('title'); }
+  }
+}
+
+
 
 /* =================== Export & Save (kept) =================== */
 function normalizePageBreaks(html){
@@ -2624,17 +2793,7 @@ function downloadPDF(filename, html){
   pdfMake.createPdf(dd).download(filename.endsWith('.pdf')?filename:(filename+'.pdf'));
 }
 
-/*
-(function(){
-  const $g = (id)=>document.getElementById(id);
-  const bind = (id, fn)=>{ const el = $g(id); if (el) el.addEventListener('click', fn); };
-  const title = ()=> (document.getElementById('examTitle')?.value || 'exam');
-  bind('dlDocxExam', ()=> downloadDOCX(`${title()}-sets`, getExamOnlyHTML()));
-  bind('dlPdfExam',  ()=> downloadPDF (`${title()}-sets`, getExamOnlyHTML()));
-  bind('dlDocxKey',  ()=> downloadDOCX(`${title()}-keys`, getCompiledKeysHTML()));
-  bind('dlPdfKey',   ()=> downloadPDF (`${title()}-keys`, getCompiledKeysHTML()));
-})();
-*/
+
 
 (function(){
   const $g = (id)=>document.getElementById(id);
@@ -2669,7 +2828,17 @@ function downloadPDF(filename, html){
 
 /* ========= Generation binding ========= */
 
-if (byId('btnGenerate')) byId('btnGenerate').onclick = generateAI;
+// if (byId('btnGenerate')) byId('btnGenerate').onclick = generateAI;
+
+if (byId('btnGenerate')) byId('btnGenerate').onclick = async ()=>{
+  const n = await askNumSets(); // stores into #numSets for your generateAI()
+  await generateAI();
+};
+
+byId('examTitle')?.addEventListener('input', e => {
+  window._lastExamTitle = e.target.value;
+});
+
 
 
 if (byId('btnSaveDbTop')) byId('btnSaveDbTop').onclick = async (e)=>{
@@ -2691,9 +2860,7 @@ if (byId('btnSaveDbTop')) byId('btnSaveDbTop').onclick = async (e)=>{
   const htmlWithImages = await inlineAllImages(htmlClean);   // <-- FIXED: use htmlClean
 
   // 4) Compose learning material names
-  const names = $$('#rows > div').map((c)=> {
-    const id=c.dataset.rowId; return (rowState[id]?.files||[]).map(f=>f.name).join('; ');
-  }).join(' | ');
+  const names = tosRows.map((row)=> (row.files||[]).map(f=>f.name).join('; ')).join(' | ');
 
   // 5) Send to server
   const fd = new FormData();
@@ -2717,5 +2884,6 @@ if (byId('btnSaveDbTop')) byId('btnSaveDbTop').onclick = async (e)=>{
 };
 
 </script>
+  
   </body>
  </html>

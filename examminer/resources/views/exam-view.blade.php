@@ -418,6 +418,18 @@
   </style>
 
   <script>
+      function getCurrentHeaderCfg() {
+  const $ = (id)=>document.getElementById(id);
+  return {
+    title:  ($('eh_title')?.value || '').trim(),
+    college:($('eh_college')?.value || '').trim(),
+    addr:   ($('eh_addr')?.value || '').trim(),
+    left:  { src: $('eh_leftPreview')?.dataset.dataurl || '',  w: +($('eh_leftW')?.value||0) || 0 },
+    right: { src: $('eh_rightPreview')?.dataset.dataurl || '', w: +($('eh_rightW')?.value||0) || 0 }
+  };
+}
+
+
   // Open the modal: openExportHeaderModal('docx'|'pdf'|'skip')
   function openExportHeaderModal(target='docx'){
     const m = document.getElementById('exportHeaderModal');
@@ -432,8 +444,8 @@
   // Make the whole dropzone clickable
   const lDrop = document.getElementById('eh_leftDrop');
   const rDrop = document.getElementById('eh_rightDrop');
-  lDrop.addEventListener('click', ()=> document.getElementById('eh_leftFile').click());
-  rDrop.addEventListener('click', ()=> document.getElementById('eh_rightFile').click());
+  // lDrop.addEventListener('click', ()=> document.getElementById('eh_leftFile').click());
+  // rDrop.addEventListener('click', ()=> document.getElementById('eh_rightFile').click());
 
   // Helpers: show preview + remove
   function wirePreview(side){
@@ -446,13 +458,14 @@
       const f = file.files && file.files[0];
       if (!f) return;
       const url = await fileToDataUrl(f);
+      file.value = '';
       prev.src = url;
       prev.classList.remove('hidden');
       empty.classList.add('hidden');
       remove.classList.remove('hidden');
       prev.dataset.dataurl = url; // stash for export
     });
-
+/*
     remove.addEventListener('click', (e) => {
       e.stopPropagation();
       file.value = '';
@@ -462,6 +475,48 @@
       remove.classList.add('hidden');
       empty.classList.remove('hidden');
     });
+    
+    
+    remove.addEventListener('click', (e) => {
+  e.stopPropagation();
+
+  // Reset input + preview
+  file.value = '';
+  prev.removeAttribute('src');
+  prev.dataset.dataurl = '';
+  prev.classList.add('hidden');
+  remove.classList.add('hidden');
+  empty.classList.remove('hidden');
+
+  // 🧹 CLEAR from global state too
+  if (window.exportHeaderState && window.exportHeaderState[side]) {
+    window.exportHeaderState[side].src = '';
+    window.exportHeaderState[side].w = 0;
+  }
+});
+*/
+    
+    remove.addEventListener('click', (e) => {
+  e.stopPropagation();
+
+  // clear UI
+  file.value = '';
+  prev.removeAttribute('src');
+  prev.dataset.dataurl = '';
+  prev.classList.add('hidden');
+  remove.classList.add('hidden');
+  empty.classList.remove('hidden');
+
+  // clear any cached state
+  if (window.exportHeaderState && window.exportHeaderState[side]) {
+    window.exportHeaderState[side].src = '';
+    window.exportHeaderState[side].w   = 0;
+  }
+  window._exportHeaderCfg = null; // nuke stale cache if it existed
+});
+
+
+
   }
   wirePreview('left');
   wirePreview('right');
@@ -1028,6 +1083,8 @@ function annotateSetsInHTML(html) {
 // ===== DOCX pieces =====
 
 // Your DOCX header (logos + school), already good:
+
+/*
 function buildHeaderHTML_DOCX(){
   const L = exportHeaderState.left  || {};
   const R = exportHeaderState.right || {};
@@ -1054,6 +1111,55 @@ function buildHeaderHTML_DOCX(){
     </tr>
   </table>`;
 }
+*/
+
+function buildHeaderHTML_DOCX(cfg){
+  const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, Number(n)||0));
+  const L = cfg.left  || {}, R = cfg.right || {};
+  const LW = L.src ? clamp(L.w, 30, 240) : 0;
+  const RW = R.src ? clamp(R.w, 30, 240) : 0;
+  const leftImg  = L.src ? `<img src="${L.src}" width="${LW}" style="width:${LW}px;height:auto;display:block;margin:0 auto;">` : '';
+  const rightImg = R.src ? `<img src="${R.src}" width="${RW}" style="width:${RW}px;height:auto;display:block;margin:0 auto;">` : '';
+  const title   = cfg.title?.trim(); 
+  const college = cfg.college?.trim();
+  const addr    = cfg.addr?.trim();
+
+  return `
+  <table width="100%" border="0" style="border-collapse:collapse;table-layout:fixed;margin:0 0 10pt 0">
+    <tr>
+      <td width="${LW ? LW+20 : 0}" align="left"  valign="middle">${leftImg}</td>
+      <td align="center" valign="middle">
+        ${title   ? `<div style="font-weight:700;font-size:16pt;line-height:1.2">${escapeHTML(title)}</div>` : ''}
+        ${college ? `<div style="font-weight:700;font-size:14pt;line-height:1.2">${escapeHTML(college)}</div>` : ''}
+        ${addr    ? `<div style="font-size:11pt;color:#444;line-height:1.2">${escapeHTML(addr)}</div>`      : ''}
+      </td>
+      <td width="${RW ? RW+20 : 0}" align="right" valign="middle">${rightImg}</td>
+    </tr>
+  </table>`;
+}
+
+function buildPdfHeaderNode(cfg) {
+  const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, Number(n)||0));
+  const L = cfg.left  || {}, R = cfg.right || {};
+  const leftW  = L.src ? clamp(L.w, 30, 240) : 0;
+  const rightW = R.src ? clamp(R.w, 30, 240) : 0;
+
+  const middle = [];
+  if (cfg.title)   middle.push({ text: cfg.title,   bold:true, fontSize:16, alignment:'center', margin:[0,0,0,2] });
+  if (cfg.college) middle.push({ text: cfg.college, bold:true, fontSize:12, alignment:'center', margin:[0,0,0,2] });
+  if (cfg.addr)    middle.push({ text: cfg.addr,    fontSize:11, color:'#444', alignment:'center' });
+
+  return {
+    columns: [
+      { width: leftW  || 0, alignment:'left',  stack: L.src ? [{ image: L.src, width: leftW  }] : [] },
+      { width: '*',   alignment:'center', stack: middle },
+      { width: rightW || 0, alignment:'right', stack: R.src ? [{ image: R.src, width: rightW }] : [] },
+    ],
+    columnGap: 10,
+    margin: [0,0,0,2]
+  };
+}
+
 
 // Plain-text name lines for DOCX (no borders/tables; width blocks for alignment)
 function makePlainTextHeader_HTML() {
@@ -1073,6 +1179,7 @@ function makePlainTextHeader_HTML() {
 }
  
  // Inject the DOCX header + name-lines HTML at the top of every .paper
+ /*
 async function injectHeaderPerSet_DOCX(html) {
   const root = document.createElement('div');
   root.innerHTML = html;
@@ -1098,11 +1205,33 @@ async function injectHeaderPerSet_DOCX(html) {
 
   return root.innerHTML;
 }
+*/
+async function injectHeaderPerSet_DOCX(html, cfg) {
+  const root = document.createElement('div');
+  root.innerHTML = html;
 
+  let hdr = buildHeaderHTML_DOCX(cfg);
+  hdr = await inlineAndClampImages(hdr, null, null);
+
+  const nameLines = makePlainTextHeader_HTML();
+  root.querySelectorAll('.paper').forEach((paper, i) => {
+    if (i > 0) {
+      const br = document.createElement('p');
+      br.setAttribute('style','page-break-before:always;margin:0;padding:0;');
+      br.innerHTML = '&nbsp;';
+      paper.parentNode.insertBefore(br, paper);
+    }
+    const wrap = document.createElement('div');
+    wrap.innerHTML = hdr + nameLines;
+    paper.insertBefore(wrap, paper.firstChild);
+  });
+
+  return root.innerHTML;
+}
 
 // ===== PDF pieces =====
-
-
+/*
+//orig
 function buildPdfHeaderNode() {
   const L = exportHeaderState.left  || {};
   const R = exportHeaderState.right || {};
@@ -1132,7 +1261,7 @@ function buildPdfHeaderNode() {
     margin: [0,0,0,8]
   };
 }
-
+*/
 
 function buildNameDateRow() {
   const l1Left  = { text: 'Name: _______________________________________', margin:[0,0,0,2] };
@@ -1142,7 +1271,7 @@ function buildNameDateRow() {
   const l2Right = { text: 'Score: ____________________', alignment: 'right', margin:[0,0,0,0] };
 
   return {
-    margin: [0, 4, 0, 10],
+    margin: [0, 0, 0, 4],
     columnGap: 10,
     stack: [
       { columns: [ { width:'*', ...l1Left },  { width: 200, ...l1Right } ] },
@@ -1305,7 +1434,7 @@ function fixFigureSizesHTML(html, maxPx = FIGURE_MAX_PX){
   return node.innerHTML;
 }
 
- 
+ /* orig
  async function downloadDOCX_withHeader(title){
   const fname = (title || 'exam_paper').trim();
 
@@ -1323,8 +1452,17 @@ function fixFigureSizesHTML(html, maxPx = FIGURE_MAX_PX){
   const blob = window.htmlDocx.asBlob(html);
   saveAs(blob, fname.replace(/[^\w\-\. ]+/g,'_') + ".docx");
 }
+*/
 
-
+async function downloadDOCX_withHeader(title){
+  const cfg = getCurrentHeaderCfg();              // ← read current UI
+  let bodyHtml = DOMPurify.sanitize(getHTMLWithoutAnswerKey(), { ADD_ATTR: ['style'] });
+  bodyHtml = fixFigureSizesHTML(bodyHtml, 280);
+  bodyHtml = await injectHeaderPerSet_DOCX(bodyHtml, cfg);
+  const blob = window.htmlDocx.asBlob(`<!doctype html><html><head><meta charset="utf-8"><style>body{font-family:Arial,sans-serif;font-size:14pt;line-height:1.6}</style></head><body>${bodyHtml}</body></html>`);
+  saveAs(blob, (title||'exam_paper').replace(/[^\w\-\. ]+/g,'_') + ".docx");
+}
+/* orig
 async function downloadPDF_withHeader(title){
   const docTitle = (title || 'Exam Paper').toUpperCase();
 
@@ -1376,7 +1514,49 @@ async function downloadPDF_withHeader(title){
     defaultStyle: { font:'Roboto', fontSize:12, lineHeight:1.15 }
   }).download(docTitle + '.pdf');
 }
+*/
 
+function buildHeaderBlock(cfg){ 
+  return [ buildPdfHeaderNode(cfg), buildNameDateRow() ]; 
+}
+
+
+
+async function downloadPDF_withHeader(title){
+  const cfg = getCurrentHeaderCfg();              // ← read current UI
+  let html = DOMPurify.sanitize(getHTMLWithoutAnswerKey(), { ADD_ATTR: ['style'] });
+  html = stripUnsupportedFonts(html);
+  html = fixFiguresForPdf(html, 380);
+
+  const host = document.createElement('div'); host.innerHTML = html;
+  const sets = Array.from(host.querySelectorAll('.paper'));
+
+  let content = [];
+  for (let i=0; i<sets.length; i++){
+    let nodes = window.htmlToPdfmake(sets[i].outerHTML, { window });
+    if (!Array.isArray(nodes)) nodes = [nodes];
+    nodes = sanitizePdfNode(nodes);
+    nodes = tightenPdfSpacing(nodes);
+    if (i>0) content.push({ text:'', pageBreak:'before' });
+    content.push(...JSON.parse(JSON.stringify(buildHeaderBlock(cfg)))); // deep clone
+    content.push(...nodes);
+  }
+  if (!sets.length){
+    let nodes = window.htmlToPdfmake(html, { window });
+    if (!Array.isArray(nodes)) nodes = [nodes];
+    nodes = sanitizePdfNode(nodes);
+    nodes = tightenPdfSpacing(nodes);
+    content.push(...buildHeaderBlock(cfg), ...nodes);
+  }
+
+  pdfMake.createPdf({
+    info:{ title:(title||'Exam Paper').toUpperCase() },
+    pageSize:'A4',
+    pageMargins:[40,54,40,54],
+    content,
+    defaultStyle:{ font:'Roboto', fontSize:12, lineHeight:1.15 }
+  }).download((title||'Exam Paper') + '.pdf');
+}
 
 
 // Optional: catch unhandled promise rejections from pdfmake internals

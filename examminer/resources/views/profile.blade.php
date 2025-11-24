@@ -41,7 +41,7 @@
                     <i class="fas fa-file-alt mr-3 group-hover:scale-110 transition-transform duration-200"></i>
                     My Exams
                 </a>
-                <a href="/cms" class="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-xl mb-2"><i class="fas fa-clipboard-list mr-3"></i> CMS</a>
+                <!--a href="/cms" class="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-xl mb-2"><i class="fas fa-clipboard-list mr-3"></i> CMS</a-->
             </nav>
 
             <!-- User Profile Section (populated via JS) -->
@@ -386,8 +386,5 @@
   // init
   hydrateProfile();
 </script>
-
-
-
 </body>
 </html>

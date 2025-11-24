@@ -44,12 +44,16 @@ Route::get('/dashboard', function (Request $r, Agent $a) use ($deviceView) {
 })->name('dashboard');
 
 Route::get('/generate-exam', function (Request $r, Agent $a) use ($deviceView) {
-    return $deviceView($r, $a, 'generate-exam', 'mobile.generate-exam');
+    return $deviceView($r, $a, 'generate-exam', 'generate-exam');
 })->name('generate-exam');
 
 Route::get('/my-exams', function (Request $r, Agent $a) use ($deviceView) {
     return $deviceView($r, $a, 'my-exams', 'mobile.my-exams');
 })->name('my-exams');
+
+Route::get('/cms', function (Request $r, Agent $a) use ($deviceView) {
+    return $deviceView($r, $a, 'cms', 'cms');
+})->name('cms');
 
 Route::get('/profile', function (Request $r, Agent $a) use ($deviceView) {
     return $deviceView($r, $a, 'profile', 'mobile.profile');

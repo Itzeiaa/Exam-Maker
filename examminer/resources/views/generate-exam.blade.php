@@ -19,6 +19,9 @@
   <script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+
 
   <!-- pdf.js (for reading PDFs only) -->
   <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
@@ -48,6 +51,17 @@
     .fg-thumb { width:72px;height:54px;object-fit:cover;border:1px solid #e5e7eb;border-radius:6px; }
     
     /* From Uiverse.io by arieshiphop */ 
+    #removeBtn {
+     font-size: 12px;
+     padding: 10px 10px; 
+     margin: 10px;
+     border: transparent;
+     box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+     background: #e74c3c;
+     color: white;
+     border-radius: 4px;
+    }
+    
     #addRowBtn, #removeRow, #rescan {
      font-size: 12px;
      padding: 10px 10px; 
@@ -63,7 +77,7 @@
         background-color: #c0392b;
     }
     
-    #addRowBtn:hover, #rescan:hover {
+    #addRowBtn:hover, #rescan:hover, #removeBtn:hover {
      background: rgb(2,0,36);
      background: linear-gradient(90deg, rgba(30,144,255,1) 0%, rgba(0,212,255,1) 100%);
     }
@@ -74,7 +88,7 @@
      background: linear-gradient(90deg, #c0392b 0%, #e74c3c 100%);
     }
     
-     #addRowBtn:active, #removeRow:active, #rescan:active {
+     #addRowBtn:active, #removeBtn:active, #removeRow:active, #rescan:active {
      transform: translate(0em, 0.2em);
     }
     /*#autoDistributeBtn:active,*/
@@ -290,12 +304,7 @@ ol li { margin: 2px 0; }
           <button id="btnSaveDbTop" class="bg-white text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-100 border border-gray-200 shadow-sm" disabled title="Nothing to save yet">
             <i class="fas fa-save mr-2"></i>Save Exam
           </button>
-          <!--div class="ml-auto flex items-center gap-2">
-            <button id="dlPdfExam" class="px-3 py-2 border rounded hover:bg-gray-50"><i class="fas fa-file-pdf mr-2"></i>PDF (Exams)</button>
-            <button id="dlPdfKey" class="px-3 py-2 border rounded hover:bg-gray-50"><i class="fas fa-file-pdf mr-2"></i>PDF (Keys)</button>
-            <button id="dlDocxExam" class="px-3 py-2 border rounded hover:bg-gray-50"><i class="fas fa-file-word mr-2"></i>DOCX (Exams)</button>
-            <button id="dlDocxKey" class="px-3 py-2 border rounded hover:bg-gray-50"><i class="fas fa-file-word mr-2"></i>DOCX (Keys)</button>
-          </div-->
+          <button id="dlTosPng" type="button" class="bg-white text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-100 border border-gray-200 shadow-sm">Download TOS (PNG)</button>
         </div>
 
         <!-- Loader -->
@@ -360,16 +369,163 @@ ol li { margin: 2px 0; }
       </div>
     </main>
   </div>
-  
+  <div id="tosExportWrap" class="hidden"></div>
+
  
   <script> // TOPS
+  
+  /* ============ DOWNLOAD TOS ============= */
+  
+  /* ---------- TOS Export (clean table -> PNG) ---------- */
+
+
+
+// Build a clean, print-friendly table (no inputs/buttons)
+function buildTOStableHTML() {
+  const { rows } = buildTOS(); // uses your existing function
+  if (!rows.length) return '<div class="text-gray-500">No TOS rows.</div>';
+
+  // live totals
+  const sum = rows.reduce((a, d) => {
+    a.r  += d.cells.r.length;
+    a.u  += d.cells.u.length;
+    a.ap += d.cells.ap.length;
+    a.an += d.cells.an.length;
+    a.cr += d.cells.cr.length;
+    a.ev += d.cells.ev.length;
+    a.days += d.days|0;
+    a.items += d.total|0;
+    return a;
+  }, {r:0,u:0,ap:0,an:0,cr:0,ev:0,days:0,items:0});
+
+  const grand = Math.max(1, sum.items);
+  const perc = rows.map(r => (r.total/grand*100));
+  // round + adjust last cell to hit ~100%
+  const perc2 = perc.map(x => Math.round(x*100)/100);
+  const deficit = Math.round((100 - perc2.reduce((a,b)=>a+b,0))*100)/100;
+  if (Math.abs(deficit) >= 0.01) perc2[perc2.length-1] = Math.round((perc2[perc2.length-1]+deficit)*100)/100;
+
+  // styles scoped to export only
+  const styles = `
+    <style>
+      .tos-card{max-width:1200px;margin:0 auto;background:#fff;padding:18px;border:1px solid #e5e7eb;border-radius:14px}
+      .tos-title{font:600 16px/1.2 system-ui,Segoe UI,Arial;margin-bottom:10px}
+      .tos-table{width:100%;border-collapse:collapse;font:13px/1.4 system-ui,Segoe UI,Arial;color:#111}
+      .tos-table th,.tos-table td{border:1px solid #e5e7eb;vertical-align:top;padding:8px}
+      .tos-table th{background:#f8fafc;text-align:center;font-weight:600}
+      .tos-num{white-space:nowrap;text-align:center}
+      .tos-topic{min-width:220px}
+      .tos-foot th{background:#f3f4f6}
+      .muted{color:#6b7280}
+      .sub{font-size:12px;color:#374151}
+      /* better wrapping for lists of numbers */
+      .nums{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;font-size:12px;word-break:break-word}
+    </style>
+  `;
+
+  const head = `
+    <thead>
+      <tr>
+        <th rowspan="2" class="tos-topic">Topic</th>
+        <th colspan="6">Bloom Levels (items)</th>
+        <th rowspan="2">No. of items</th>
+        <th rowspan="2">No. of days</th>
+        <th rowspan="2">Percent in test</th>
+      </tr>
+      <tr>
+        <th>Remember</th><th>Understand</th>
+        <th>Apply</th><th>Analyze</th>
+        <th>Create</th><th>Evaluate</th>
+      </tr>
+    </thead>
+  `;
+
+  const body = `
+    <tbody>
+      ${rows.map((d,i)=>`
+        <tr>
+          <td><div class="sub">${escapeHTML(d.topic||'')}</div></td>
+          <td><div class="nums">${escapeHTML((d.cells.r||[]).join(', '))}</div><div class="tos-num muted">${d.cells.r.length}</div></td>
+          <td><div class="nums">${escapeHTML((d.cells.u||[]).join(', '))}</div><div class="tos-num muted">${d.cells.u.length}</div></td>
+          <td><div class="nums">${escapeHTML((d.cells.ap||[]).join(', '))}</div><div class="tos-num muted">${d.cells.ap.length}</div></td>
+          <td><div class="nums">${escapeHTML((d.cells.an||[]).join(', '))}</div><div class="tos-num muted">${d.cells.an.length}</div></td>
+          <td><div class="nums">${escapeHTML((d.cells.cr||[]).join(', '))}</div><div class="tos-num muted">${d.cells.cr.length}</div></td>
+          <td><div class="nums">${escapeHTML((d.cells.ev||[]).join(', '))}</div><div class="tos-num muted">${d.cells.ev.length}</div></td>
+          <td class="tos-num"><strong>${d.total}</strong></td>
+          <td class="tos-num">${d.days|0}</td>
+          <td class="tos-num">${(perc2[i]||0).toFixed(2)}%</td>
+        </tr>
+      `).join('')}
+    </tbody>
+  `;
+
+  const foot = `
+    <tfoot class="tos-foot">
+      <tr>
+        <th>Totals</th>
+        <th class="tos-num">${sum.r}</th>
+        <th class="tos-num">${sum.u}</th>
+        <th class="tos-num">${sum.ap}</th>
+        <th class="tos-num">${sum.an}</th>
+        <th class="tos-num">${sum.cr}</th>
+        <th class="tos-num">${sum.ev}</th>
+        <th class="tos-num"><strong>${sum.items}</strong></th>
+        <th class="tos-num">${sum.days}</th>
+        <th class="tos-num"><strong>100.00%</strong></th>
+      </tr>
+    </tfoot>
+  `;
+
+  return `
+    ${styles}
+    <div class="tos-card" id="tosExportCard">
+      <div class="tos-title">Table of Specifications (Export)</div>
+      <table class="tos-table">
+        ${head}${body}${foot}
+      </table>
+      <div class="muted" style="margin-top:6px">Note: counts under each Bloom level are shown below the item lists.</div>
+    </div>
+  `;
+}
+
+// Render the clean table into the hidden wrapper
+function renderTOSExport() {
+  const wrap = byId('tosExportWrap');
+  if (!wrap) return null;
+  wrap.classList.remove('hidden');
+  wrap.innerHTML = buildTOStableHTML();
+  return byId('tosExportCard');
+}
+
+// Download as PNG (via html2canvas already loaded on your page)
+async function downloadTOStablePNG(filename = 'TOS-table.png') {
+
+  const card = renderTOSExport();
+  if (!card) { showAlert?.('err','Nothing to export.'); return; }
+
+  // snapshot at 2x scale for crisp text
+  const canvas = await html2canvas(card, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+  const url = canvas.toDataURL('image/png');
+
+  // re-hide the export DOM
+  const wrap = byId('tosExportWrap'); if (wrap) wrap.classList.add('hidden');
+
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+
+byId('dlTosPng')?.addEventListener('click', ()=> downloadTOStablePNG(`${(byId('examTitle')?.value||'Exam').trim()}-TOS.png`));
+
+  
   
   /* =========================
    TOS-only data model (source of truth)
 ========================= */
 const tosRows = []; // [{id, topic, days, files:[], figs:[], selected:Set<number>, cells:{r,u,ap,an,cr,ev}}]
 const newId = () => 'tos_' + Math.random().toString(36).slice(2,9);
-
+/*
 function createEmptyTosRow() {
   return {
     id: newId(),
@@ -392,6 +548,74 @@ function addTosRow(initial = {}) {
   tosRows.push(row);
   renderTOS();
 }
+*/
+
+function redistributeFromCounts() {
+  // Sum targets per Bloom across all rows
+  const keys = ['r','u','ap','an','cr','ev'];
+  const totals = { r:0,u:0,ap:0,an:0,cr:0,ev:0 };
+  tosRows.forEach(row=> keys.forEach(k=> totals[k] += Math.max(0, row.counts[k]|0)));
+
+  // allocate global numbers 1..N and give each Bloom its own consecutive range
+  let cursor = 1;
+  const pool = {};
+  keys.forEach(k=>{
+    const n = totals[k]|0;
+    pool[k] = Array.from({length:n}, (_,i)=> cursor + i);
+    cursor += n;
+  });
+
+  // clear old arrays
+  tosRows.forEach(r=> keys.forEach(k=> r.cells[k] = []));
+
+  // for each Bloom, slice per-row counts sequentially
+  keys.forEach(k=>{
+    let p = 0; const arr = pool[k];
+    tosRows.forEach(row=>{
+      const want = Math.max(0, row.counts[k]|0);
+      const take = arr.slice(p, p + want);
+      row.cells[k] = take;
+      p += want;
+    });
+  });
+}
+
+function createEmptyTosRow() {
+  return {
+    id: newId(),
+    topic: '',
+    days: 1,
+    files: [],
+    figs: [],
+    selected: new Set(),
+    // arrays used by the rest of the pipeline
+    cells: { r:[], u:[], ap:[], an:[], cr:[], ev:[] },
+    // NEW: totals user types (per Bloom)
+    counts: { r:0, u:0, ap:0, an:0, cr:0, ev:0 }
+  };
+}
+
+function addTosRow(initial = {}) {
+  const row = createEmptyTosRow();
+  if (initial.topic) row.topic = initial.topic;
+  if (Number.isFinite(initial.days)) row.days = initial.days|0;
+
+  // accept legacy numbers or initial counts
+  ['r','u','ap','an','cr','ev'].forEach(k=>{
+    if (initial[k]) row.cells[k] = parseNums(initial[k]);
+    if (Number.isFinite(initial[k+'_count'])) row.counts[k] = Math.max(0, initial[k+'_count']|0);
+  });
+
+  // if numbers were provided, sync counts from them
+  ['r','u','ap','an','cr','ev'].forEach(k=>{
+    if (!row.counts[k]) row.counts[k] = row.cells[k].length|0;
+  });
+
+  tosRows.push(row);
+  renderTOS();
+}
+
+
 
 function removeTosRowByIndex(idx){
   if (idx>=0 && idx<tosRows.length){ tosRows.splice(idx,1); renderTOS(); }
@@ -865,10 +1089,9 @@ function renderTOS(){
         <th>Remember</th><th>Understand</th>
         <th>Apply</th><th>Analyze</th>
         <th>Create</th><th>Evaluate</th>
-        <th>No. of days</th>
         <th rowspan="1">No. of items</th>
+        <th>No. of days</th>
         <th rowspan="1">Percent in test</th>
-        <th>Exam Type</th>
         <th></th>
       </tr>
     </thead>
@@ -882,21 +1105,53 @@ function renderTOS(){
           <td>
             <div class="flex items-center gap-2">
               <input id="file-input"  type="file" class="tosFileInput" multiple accept=".pdf,.docx,.pptx,.xlsx,.csv,.txt,.html,.htm,.md"/>
-              <button id="figureBtn" type="button" class="figBtn text-xs underline text-blue-600">Pick Figures</button>
+              <!--button id="figureBtn" type="button" class="figBtn text-xs underline text-blue-600">Pick Figures</button-->
             </div>
             <div style="font-size: 8px; max-width: 140px; overflow:hidden" class="tosFileList small mt-1 text-gray-600"> ${((tosRows[i]?.files||[]).map(f=>escapeHTML(f.name)).join(' • '))} </div>
           </td>
-          <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-28 text-center" data-field="r"  value="${(d.cells.r||[]).join(', ')}"></td>
+          <!--td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-28 text-center" data-field="r"  value="${(d.cells.r||[]).join(', ')}"></td>
           <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-28 text-center" data-field="u"  value="${(d.cells.u||[]).join(', ')}"></td>
           <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-28 text-center" data-field="ap" value="${(d.cells.ap||[]).join(', ')}"></td>
           <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-28 text-center" data-field="an" value="${(d.cells.an||[]).join(', ')}"></td>
           <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-28 text-center" data-field="cr" value="${(d.cells.cr||[]).join(', ')}"></td>
-          <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-28 text-center" data-field="ev" value="${(d.cells.ev||[]).join(', ')}"></td>
-          <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-20 text-center" data-field="days" type="number" min="0" value="${d.days}"></td>
+          <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-28 text-center" data-field="ev" value="${(d.cells.ev||[]).join(', ')}"></td-->
+          
+          <td class="text-center">
+  <input style="width:70px" type="number" min="0"
+         class="tosCount border rounded px-2 py-1 w-28 text-center"
+         data-field="r" value="${d.cells.r.length}">
+</td>
+<td class="text-center">
+  <input style="width:70px" type="number" min="0"
+         class="tosCount border rounded px-2 py-1 w-28 text-center"
+         data-field="u" value="${d.cells.u.length}">
+</td>
+<td class="text-center">
+  <input style="width:70px" type="number" min="0"
+         class="tosCount border rounded px-2 py-1 w-28 text-center"
+         data-field="ap" value="${d.cells.ap.length}">
+</td>
+<td class="text-center">
+  <input style="width:70px" type="number" min="0"
+         class="tosCount border rounded px-2 py-1 w-28 text-center"
+         data-field="an" value="${d.cells.an.length}">
+</td>
+<td class="text-center">
+  <input style="width:70px" type="number" min="0"
+         class="tosCount border rounded px-2 py-1 w-28 text-center"
+         data-field="cr" value="${d.cells.cr.length}">
+</td>
+<td class="text-center">
+  <input style="width:70px" type="number" min="0"
+         class="tosCount border rounded px-2 py-1 w-28 text-center"
+         data-field="ev" value="${d.cells.ev.length}">
+</td>
+
+          
           <td class="text-center"><strong>${d.total}</strong></td>
+          <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-20 text-center" data-field="days" type="number" min="0" value="${d.days}"></td>
           <td class="text-center">${(round2[i]||0).toFixed(2)}</td>
-          <td>Multiple choice</td>
-          <td class="text-right"><button type="button" class="rmRow text-xs text-red-600 underline">Remove</button></td>
+          <td class="text-right"><button type="button" id="removeBtn" class="rmRow text-xs text-red-600">Remove</button></td>
         </tr>
       `).join('')}
     </tbody>
@@ -905,30 +1160,20 @@ function renderTOS(){
   const foot = `
     <tfoot>
       <tr>
+        <th><button id="addRowBtn" type="button" class="text-xs underline text-blue-600">Add Row</button></th></th>
         <th>Totals</th>
-        <th></th>
         <th class="text-center">${sum.r}</th>
         <th class="text-center">${sum.u}</th>
         <th class="text-center">${sum.ap}</th>
         <th class="text-center">${sum.an}</th>
         <th class="text-center">${sum.cr}</th>
         <th class="text-center">${sum.ev}</th>
-        <th class="text-center">${sum.days}</th>
         <th class="text-center"><strong>${sum.items}</strong></th>
+        <th class="text-center">${sum.days}</th>
         <th class="text-center"><strong>${(round2.reduce((a,b)=>a+b,0)).toFixed(2)}</strong></th>
         <th></th><th></th>
       </tr>
-      <tr>
-        <th>Group totals</th>
-        <th></th>
-        <th colspan="2" class="text-center">${easyTotal}</th>
-        <th colspan="2" class="text-center">${avgTotal}</th>
-        <th colspan="2" class="text-center">${diffTotal}</th>
-        <th colspan="4"></th>
-        <th colspan="2" class="text-right">
-          <button id="addRowBtn" type="button" class="text-xs underline text-blue-600">Add Row</button>
-        </th>
-      </tr>
+      
     </tfoot>
   `;
 
@@ -938,6 +1183,23 @@ function renderTOS(){
       <div class="overflow-x-auto"><table class="tos">${head}${body}${foot}</table></div>
     </div>
   `;
+
+
+// NEW: when a count changes, update targets -> redistribute -> re-render
+tableWrap.querySelectorAll('input.tosCount').forEach(inp=>{
+  const apply = ()=>{
+    const idx   = parseInt(inp.closest('tr').dataset.row,10);
+    const row   = tosRows[idx]; if(!row) return;
+    const field = inp.dataset.field;  // 'r','u','ap','an','cr','ev'
+    const val   = Math.max(0, parseInt(inp.value||'0',10) || 0);
+    // ensure counts object exists
+    row.counts = row.counts || { r:0,u:0,ap:0,an:0,cr:0,ev:0 };
+    row.counts[field] = val;
+  };
+  inp.addEventListener('input', apply);                 // don’t re-render every keystroke
+  inp.addEventListener('change', ()=>{ apply(); redistributeFromCounts(); renderTOS(); });
+  inp.addEventListener('blur',   ()=>{ apply(); redistributeFromCounts(); renderTOS(); });
+});
 
 
 
@@ -1659,29 +1921,152 @@ function trimToQuotas(setObj, quotas) {
 }
 
 
-async function callTopUpForTask(agentIdx, kb, plan, existingSet, task) {
-  // Build a micro-plan that requests ONLY the task’s type
-  const oneTypePlan = {
-    ...plan,
-    strict: plan.strict ?? true,
-    quotas: {
-      mcq: task.type === 'mcq' ? { total: task.count } : undefined,
+// Super-tolerant TOON MCQ parser: no JSON.parse, works on "garbage" text.
+function parseToonMcq(raw) {
+  if (!raw) return { mcq: [] };
+
+  let text = String(raw);
+
+  // 1) Strip ``` fences (keep inner content)
+  text = text.replace(/```[\s\S]*?```/g, block => {
+    let inner = block.replace(/^```[^\n]*\n?/, "");
+    inner = inner.replace(/```$/, "");
+    return inner;
+  });
+
+  // 2) Remove leading "toon" word if present
+  text = text.replace(/^\s*toon\b/i, "").trim();
+
+  const mcq = [];
+
+  // 3) Split into mcq blocks: "… mcq{ … } mcq{ … } …"
+  const parts = text.split(/mcq\s*{/i);
+  parts.shift(); // drop text before first mcq
+
+  for (const part of parts) {
+    // take up to the first closing brace – this is one MCQ body
+    const body = part.split("}")[0];
+    if (!body) continue;
+
+    const objText = "{" + body + "}";
+
+    // helper to grab a single quoted field
+    const grab = (re) => {
+      const m = objText.match(re);
+      return m ? m[1].trim() : null;
+    };
+
+    const id    = grab(/id\s*:\s*"([\s\S]*?)"/i);
+    const stem  = grab(/stem\s*:\s*"([\s\S]*?)"/i);
+    const ansRaw = grab(/answer\s*:\s*"([\s\S]*?)"/i);
+
+    // choices block
+    let choices = [];
+    const choicesMatch = objText.match(/choices\s*:\s*\[([\s\S]*?)\]/i);
+    if (choicesMatch) {
+      const inside = choicesMatch[1];
+      const reChoice = /"([\s\S]*?)"/g;
+      let cm;
+      while ((cm = reChoice.exec(inside))) {
+        const c = cm[1].trim();
+        if (c) choices.push(c);
+      }
     }
-  };
 
-  // Strengthen the system/assistant notes inside callTopUp (see section 4 below)
-  const add = await callTopUp(agentIdx, kb, oneTypePlan, existingSet);
+    // minimal validation
+    if (!id || !stem || !choices.length) continue;
 
-  // Basic empty-payload retry (helps with occasional blank LLM responses)
-  const isEmpty = (!add?.mcq?.length);
+    // normalize answer to just "A/B/C/D"
+    let answer = ansRaw || "";
+    let m = answer.match(/\b([ABCD])\b/i) || answer.match(/^([ABCD])\)/i);
+    if (m) {
+      answer = m[1].toUpperCase();
+    }
 
-  if (isEmpty) {
-    await new Promise(r => setTimeout(r, 600 + Math.floor(Math.random()*200)));
-    return await callTopUp(agentIdx, kb, oneTypePlan, existingSet);
+    mcq.push({ id, stem, choices, answer });
   }
 
-  return add || {};
+  return { mcq };
 }
+
+
+async function callTopUp(agentIdx, kb, plan, existingSet) {
+  const lane = AGENTS[agentIdx % AGENTS.length];
+  const deficits = computeDeficits(existingSet, plan.quotas);
+  if (!deficits.mcq) return existingSet;
+
+  const topupSchema = `
+mcq[]: {
+  id: string,
+  stem: string,
+  choices: string[],
+  answer: string
+}
+`;
+
+  const msgSystem = `
+You generate MCQs using TOON format ONLY.
+Never use JSON. Never use Markdown. Never use code fences.
+
+TOON Schema:
+${topupSchema}
+`.trim();
+
+  const requests = { mcq: deficits.mcq };
+
+  const payload = {
+    model: lane.model,
+    agent: lane.agent,
+    temperature: 0.2,
+    response_format: { type: "text" },
+    messages: [
+      { role: "system", content: msgSystem },
+      {
+        role: "user",
+        content: `
+set_id: ${plan.set_id}
+need_mcq: ${deficits.mcq}
+
+Generate ONLY the missing MCQs using TOON syntax.
+Topics: ${JSON.stringify(kb.topics)}
+
+--- MATERIAL ---
+${kb.combined_markdown}
+        `.trim()
+      }
+    ]
+  };
+
+  const data = await scheduledJsonFetch({
+    url: "https://exammaker.site/api/v1/chat/completions.php",
+    init: {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": apikey
+      },
+      body: JSON.stringify(payload)
+    },
+    tokenText: JSON.stringify({ set_id: plan.set_id, requests })
+  });
+
+  let raw = (data?.choices?.[0]?.message?.content || "").trim();
+
+  // strip any accidental fences
+  raw = raw
+    .replace(/```+[a-zA-Z]*/g, "")
+    .replace(/```/g, "")
+    .trim();
+
+  const toonObj = parseToonMcq(raw);
+  const additional = (toonObj && Array.isArray(toonObj.mcq)) ? toonObj.mcq : [];
+
+  existingSet.mcq = (existingSet.mcq || []).concat(additional);
+  return existingSet;
+}
+
+
+
 
 
 
@@ -1714,7 +2099,7 @@ async function generateOneSetCoop(kb, plan, initialSet = {}) {
           // PATCH D: tiny stagger so agents don't fire at the same millisecond
     const base = agentIdx * 75; // per-agent offset (helps even more)
     await new Promise(r => setTimeout(r, 100 + base + Math.floor(Math.random() * 250)));
-        const add = await callTopUpForTask(agentIdx, kb, plan, s, task);
+        const add = await callTopUp(agentIdx, kb, plan, s, task);
         mergeSetInto(s, add);
       }
     }));
@@ -1735,7 +2120,7 @@ async function generateOneSetCoop(kb, plan, initialSet = {}) {
           // PATCH D: tiny stagger so agents don't fire at the same millisecond
     const base = agentIdx * 75; // per-agent offset (helps even more)
     await new Promise(r => setTimeout(r, 100 + base + Math.floor(Math.random() * 250)));
-        const add = await callTopUpForTask(agentIdx, kb, strictPlan, s, task);
+        const add = await callTopUp(agentIdx, kb, strictPlan, s, task);
         mergeSetInto(s, add);
       }
     }));
@@ -1838,7 +2223,7 @@ while (true) {
     for (const task of agentTasks) {
          const base = aIdx * 75;
          await new Promise(r => setTimeout(r, 100 + base + Math.floor(Math.random() * 250)));
-      const add = await callTopUpForTask(aIdx, kb, plan, s, task);
+      const add = await callTopUp(aIdx, kb, plan, s, task);
       mergeSetInto(s, add);
     }
   }));
@@ -1858,7 +2243,7 @@ while (true) {
       for (const task of agentTasks) {
            const base = aIdx * 75;
            await new Promise(r => setTimeout(r, 100 + base + Math.floor(Math.random() * 250)));
-        const add = await callTopUpForTask(aIdx, kb, strictPlan, s, task);
+        const add = await callTopUp(aIdx, kb, strictPlan, s, task);
         mergeSetInto(s, add);
       }
     }));
@@ -2003,109 +2388,94 @@ function computeDeficits(setObj, quotas) {
 }
 
 // NEW: ask the agent to generate ONLY the missing portions for one set
-async function callTopUp(agentIdx, kb, plan, existingSet){
-    
-    
+async function callTopUp(agentIdx, kb, plan, existingSet) {
+
   const lane = AGENTS[agentIdx % AGENTS.length];
   const deficits = computeDeficits(existingSet, plan.quotas);
-  const needAny = deficits.mcq;
-  if(!needAny) return existingSet;
+  if (!deficits.mcq) return existingSet;
 
-  const topupSchema = `{
-    "set_id": ${plan.set_id},
-    "mcq": [ {"id":"MC#","stem":"...","choices":["A) ...","B) ...","C) ...","D) ..."],"answer":"A|B|C|D"} ]
-  }`;
-/*
+  const topupSchema = `
+mcq{
+  id: string,
+  stem: string,
+  choices: array[string],
+  answer: string
+}[]:
+`;
+
   const msgSystem = [
-    "Generate ONLY the missing MCQ items to meet quotas for this one set.",
-    "Do NOT repeat or modify existing items; add new ones only.",
-    "If materials are thin, you MAY use reasonable domain knowledge.",
-    "Return STRICT JSON: a single object with an 'mcq' array only.",
-    'Schema (exact): {"mcq":[{"id":"MC1","stem":"...","choices":["A) ...","B) ...","C) ...","D) ..."],"answer":"A|B|C|D"}]}',
-    "No code fences, no prose, no extra keys."
-  ].join(" ");
-*/
+    "You are an MCQ generator.",
+    "OUTPUT FORMAT: Use ONLY this TOON schema:",
+    topupSchema,
+    "Never output JSON, Markdown, or code fences."
+  ].join("\n");
 
-   const msgSystem =[
-       "You are a content-only JSON generator.",
-       "GOAL: Add ONLY the missing MCQ items for this single set.",
-        "STRICT RULES:",
-        '- Reply with ONE minified JSON object only. No prose. No Markdown. No code fences.',
-        '- The top-level MUST be exactly: {"mcq":[ ... ]}',
-        '- Each mcq item: {"id":"MC#","stem":"...","choices":["A) ...","B) ...","C) ...","D) ..."],"answer":"A|B|C|D"}',
-        '- choices must be 4 items labeled "A) "..."D) ".',
-        '- answer must be "A" or "B" or "C" or "D".',
-        '- Do not repeat or modify existing items.',
-        '- If nothing is needed, return {"mcq":[]}.'
-        ].join(" ");
-       
-       
-  const requests = {
-    mcq: deficits.mcq 
-  };
+  const requests = { mcq: deficits.mcq };
 
   const payload = {
     model: lane.model,
     agent: lane.agent,
     temperature: 0.2,
-    response_format: { type: "json_object" },
+    response_format: { type: "text" },
     messages: [
       { role: "system", content: msgSystem },
-      { role: "user", content: JSON.stringify({
-          knowledge_base: { topics: kb.topics, combined_markdown: kb.combined_markdown },
-          set_id: plan.set_id, requests, schema: topupSchema
-        })}
+      {
+        role: "user",
+        content: `
+Generate ONLY the missing MCQs.
+set_id: ${plan.set_id}
+need_mcq: ${deficits.mcq}
+topics: ${JSON.stringify(kb.topics)}
+--- markdown content ---
+${kb.combined_markdown}
+        `.trim()
+      }
     ]
   };
-  
 
   const data = await scheduledJsonFetch({
     url: "https://exammaker.site/api/v1/chat/completions.php",
-    init: { method:'POST', headers:{ 'Content-Type':'application/json','Authorization': apikey }, body: JSON.stringify(payload) },
-    tokenText: JSON.stringify({set_id: plan.set_id, requests})
+    init: {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": apikey
+      },
+      body: JSON.stringify(payload)
+    },
+    tokenText: JSON.stringify({ set_id: plan.set_id, requests })
   });
-  
-  
-  const raw = (data?.choices?.[0]?.message?.content || "").trim();
-  //let add = parseJSONLoose(raw); 0970
 
- let addSets;
-  try { addSets = safeParseSets(raw); } catch { addSets = null; }
+  let raw = (data?.choices?.[0]?.message?.content || "").trim();
 
-  // "top up" asks for exactly one object; tolerate either {"mcq":[...]} or {"sets":[{...}]}
-  let add = {};
-  if (addSets && addSets.length) {
-    add = addSets[0];
-  } else {
-    // tolerate pure {"mcq":[...]}
-    try {
-      const single = JSON.parse(raw);
-      if (single && Array.isArray(single.mcq)) add = { mcq: single.mcq };
-    } catch {}
+  // Optional: strip code fences once (parseToonMcq also tolerates them,
+  // so this is just extra safety)
+  raw = raw
+    .replace(/```+[a-zA-Z]*/g, "") // remove ```toon / ```json / ```whatever
+    .replace(/```/g, "")
+    .trim();
+
+  /* -------------- TOON → usable objects (via custom parser) -------------- */
+  let toonObj;
+  try {
+    toonObj = parseToonMcq(raw);   // <-- your tolerant parser
+  } catch (err) {
+    console.warn("TopUp TOON parse error:", err, raw.slice(0, 300));
+    toonObj = { mcq: [] };
   }
 
-  // Normalize missing arrays to []
-  add = add || {};
-  add.mcq = add.mcq || [];
-  existingSet.mcq = (existingSet.mcq||[]).concat(add.mcq);
+  let additional = [];
+  if (toonObj && Array.isArray(toonObj.mcq)) {
+    additional = toonObj.mcq;
+  }
+
+  // ---------- merge new MCQs into existing set ----------
+  existingSet.mcq = (existingSet.mcq || []).concat(additional);
+
   return existingSet;
-  
-  /* 0970
-  const raw = (data?.choices?.[0]?.message?.content || "").trim();
-    let add = {};
-    try {
-      const one = parseSetsFromAnyRaw(`{"sets":[${raw.replace(/^\s*{/, "").replace(/}\s*$/, "")}]}`); 
-      // the line above coerces {"mcq":[...]} into a fake {"sets":[{...}]} shell then reuses the same parser.
-      add = one && one[0] ? one[0] : {};
-    } catch {
-      // ultra fallback: keep your old tolerant parser for {"mcq":[...]}
-      try { add = parseJSONLoose(raw) || {}; } catch {}
-    }
-    add.mcq = Array.isArray(add.mcq) ? add.mcq : [];
-    existingSet.mcq = (existingSet.mcq || []).concat(add.mcq);
-    return existingSet;
-*/
 }
+
+
 
 function getAllSelectedFigures(){
   const list = [];
@@ -2185,8 +2555,21 @@ function makeBatchMessages_AI(kb, setPlans){
     ? "Use the provided topics as anchors and reasonable domain knowledge when the combined_markdown is brief."
     : "Prefer facts/terms from combined_markdown; ground each stem with at least one domain term found there.";
 
-  const system = `You are a content-only JSON generator.
+const system = `
+You are an MCQ generator for an exam system.
 
+STRICT OUTPUT FORMAT:
+Use ONLY the TOON format below. Never output JSON, never output markdown code fences.
+
+mcq{
+  id: string,
+  stem: string,
+  choices: array[string],
+  answer: string
+}[]:
+`;
+
+/*
 STRICT RULES:
 - Reply with ONE minified JSON object only. No prose. No Markdown. No code fences.
 - The top-level MUST be exactly: {"sets":[ ... ]}  (NOT "test", "tests", "result", etc.)
@@ -2203,9 +2586,9 @@ STRICT RULES:
 QUALITY RULES:
 - Stems are clear, self-contained, and domain-relevant.
 - 1 correct option + 3 plausible distractors. No "All of the above"/"None of the above".
-- No duplicates within a set.`;
+- No duplicates within a set.
 
- /* You generate exam items aligned to a TOS but without meta talk. Return ONLY minified JSON. No prose, no code-fences, no keys outside the schema. Schema: {"sets":[{"set_id":1,"mcq":[{"id":"MC1","stem":"…","choices":["A) …","B) …","C) …","D) …"],"answer":"A"}]}]} ${style} ${grounding}
+  You generate exam items aligned to a TOS but without meta talk. Return ONLY minified JSON. No prose, no code-fences, no keys outside the schema. Schema: {"sets":[{"set_id":1,"mcq":[{"id":"MC1","stem":"…","choices":["A) …","B) …","C) …","D) …"],"answer":"A"}]}]} ${style} ${grounding}
 */
 
 
@@ -2262,6 +2645,131 @@ function ensureSetArrays(s){
 }
 
 // === Define the missing batch caller ===
+/*
+async function callAgentForBatch(agentIdx, kb, plansChunk) {
+  const lane = AGENTS[agentIdx % AGENTS.length];
+
+  // 1) Ask the model for all sets in this chunk
+  const payload = {
+    model: lane.model,
+    agent: lane.agent,
+    temperature: 0.2,
+    response_format: { type: "text" },
+    messages: makeBatchMessages_AI(kb, plansChunk)
+  };
+
+  const data = await scheduledJsonFetch({
+    url: "https://exammaker.site/api/v1/chat/completions.php",
+    init: {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": apikey
+      },
+      body: JSON.stringify(payload)
+    },
+    tokenText: JSON.stringify({ plans: plansChunk.map(p => p.set_id) })
+  });
+
+  // original raw (for JSON/salvage)
+  const rawOriginal = (data?.choices?.[0]?.message?.content || "").trim();
+
+  // cleaned version for TOON (remove ```toon / ```json, etc.)
+  let raw = rawOriginal
+    .replace(/```+[a-zA-Z]* /g, "") // remove ```toon, ```json, etc.
+    .replace(/```/g, "")           // remove closing ```
+    .trim();
+
+  let sets = null;
+
+  // --------- TRY TOON FIRST (but only if library exists) ----------
+  if (typeof toon !== "undefined") {
+    try {
+      const toonObj = parseToonMcq(raw); //toon.parse(raw);
+
+      if (toonObj) {
+        // If your schema is something like: sets[] { ... }
+        if (Array.isArray(toonObj.sets)) {
+          sets = toonObj.sets;
+        }
+        // Or if model returns just mcq{...}
+        else if (Array.isArray(toonObj.mcq)) {
+          sets = [{
+            set_id: plansChunk[0].set_id,
+            mcq: toonObj.mcq
+          }];
+        }
+      }
+
+      if (!sets) {
+        console.warn("No MCQ/sets parsed from TOON, will try JSON fallback.");
+      }
+    } catch (e) {
+      console.warn("TOON parse failed:", e, raw.slice(0, 300));
+    }
+  } else {
+    console.warn("TOON library not loaded; skipping TOON parse.");
+  }
+
+  // --------- JSON / LEGACY FALLBACK PIPELINE ----------
+  if (!sets) {
+    let json = null;
+    try {
+      json = parseJSONLoose(rawOriginal) || {};
+    } catch (e) {
+      // ignore, we’ll try salvage next
+    }
+    if (json) {
+      sets = normalizeSetsFromAny(json);
+    }
+  }
+
+  if (!sets) {
+    const salvaged = salvageSetsFromRaw(rawOriginal);
+    if (salvaged && salvaged.length) {
+      sets = salvaged;
+    }
+  }
+
+  if (!sets) {
+    console.warn("Unexpected batch shape; raw sample:", rawOriginal.slice(0, 400));
+    throw new Error("Malformed batch JSON/TOON");
+  }
+
+  // 3) Index by set_id and ensure array fields exist
+  const got = new Map(
+    sets.map(s => {
+      const clean = ensureSetArrays(s || {});
+      return [clean.set_id, clean];
+    })
+  );
+
+  // 4) For every plan in this chunk, make sure we have a set and top-up deficits
+  const normalized = [];
+  for (const plan of plansChunk) {
+    let s = got.get(plan.set_id) || ensureSetArrays({ set_id: plan.set_id, meta: {} });
+
+    // fill any missing items, a few passes max
+    for (let pass = 0; pass < 8; pass++) {
+      const d = computeDeficits(s, plan.quotas);
+      const need = d.mcq;
+      if (!need) break;
+      s = await callTopUp(agentIdx, kb, plan, s);
+    }
+
+    // sanity trim (if model overshot)
+    const trim = (arr, want) =>
+      Array.isArray(arr) && arr.length > want ? arr.slice(0, want) : arr;
+
+    s.mcq = trim(s.mcq, plan.quotas?.mcq?.total | 0);
+    normalized.push(s);
+  }
+
+  return normalized;
+}
+*/
+
+
 async function callAgentForBatch(agentIdx, kb, plansChunk){
   const lane = AGENTS[agentIdx % AGENTS.length];
 
@@ -2270,7 +2778,7 @@ async function callAgentForBatch(agentIdx, kb, plansChunk){
     model: lane.model,
     agent: lane.agent,
     temperature: 0.2,
-    response_format: { type: "json_object" },
+    response_format: { type:"text" },
     messages: makeBatchMessages_AI(kb, plansChunk)
   };
 
@@ -2286,53 +2794,57 @@ async function callAgentForBatch(agentIdx, kb, plansChunk){
 
   const raw = (data?.choices?.[0]?.message?.content || "").trim();
 
-    let sets = [];
-    try { sets = safeParseSets(raw) || []; } catch {}
-    
-    if (!sets.length) {
-      // last-ditch salvage of any set-shaped objects
-      const salv = salvageSetsFromRaw(raw);
-      if (salv && salv.length) sets = salv;
-    }
+  let sets = null;
+
+  // ---- 1A) TRY TOON PARSER FIRST (handles ```toon + mcq{...}) ----
+  /*
+  const toonObj = parseToonMcq(raw);
+  if (toonObj && Array.isArray(toonObj.mcq) && toonObj.mcq.length) {
+    console.warn("Malformed reply sample (TOON salvage):", raw.slice(0, 300));
+    sets = [{
+      set_id: plansChunk[0].set_id,
+      mcq: toonObj.mcq
+    }];
+  }
+  */
+  
+        const toonObj = parseToonMcq(raw);
+        if (!toonObj.mcq || !toonObj.mcq.length) {
+          console.warn("Malformed reply sample (TOON salvage):", raw.slice(0,300));
+        } else {
+          // we got valid MCQs, no need to complain
+          sets = [{
+            set_id: plansChunk[0].set_id,
+            mcq: toonObj.mcq
+          }];
+        }
 
 
-/*
-
-  let sets;
-  try { 
-    sets = safeParseSets(raw);
-  } catch (e) {
-    console.warn("Unexpected batch shape; raw sample:", raw.slice(0, 500));
-    throw e;
+  // ---- 2) NORMAL JSON PATH (only if TOON parser found nothing) ----
+  if (!sets) {
+    let json = null;
+    try { json = parseJSONLoose(raw) || {}; } catch {}
+    if (json) sets = normalizeSetsFromAny(json);
   }
 
-
-
-  // 2) Parse JSON (tolerant) or salvage individual set objects
-  let json = null, sets = null; // 0970
-  
-   
-      try { json = parseJSONLoose(raw) || {};  } catch {}
-      if (json) sets = normalizeSetsFromAny(json);
-    
+  // ---- 3) Old salvage (regex-based) if still nothing ----
   if (!sets) {
     const salvaged = salvageSetsFromRaw(raw);
     if (salvaged && salvaged.length) sets = salvaged;
   }
-  
+
   if (!sets) {
     console.warn("Unexpected batch shape; raw sample:", raw.slice(0, 400));
     throw new Error("Malformed batch JSON");
   }
-  */
 
-  // 3) Index by set_id and ensure array fields exist
+  // 4) Index by set_id and ensure array fields exist
   const got = new Map(sets.map(s => {
     const clean = ensureSetArrays(s || {});
     return [clean.set_id, clean];
   }));
 
-  // 4) For every plan in this chunk, make sure we have a set and top-up deficits
+  // 5) For every plan, make sure we have a set and top-up deficits
   const normalized = [];
   for (const plan of plansChunk){
     let s = got.get(plan.set_id) || ensureSetArrays({ set_id: plan.set_id, meta:{} });
@@ -2355,6 +2867,8 @@ async function callAgentForBatch(agentIdx, kb, plansChunk){
 }
 
 
+
+
 async function runBatchesParallel(kb, allPlans){
   const batches = chunkPlans(allPlans, BATCH_SIZE);
   const results = [];
@@ -2370,18 +2884,6 @@ async function runBatchesParallel(kb, allPlans){
       if (myBatchIdx >= batches.length) break;
 
       const plansChunk = batches[myBatchIdx];
-      
-      /*
-      try {
-        const part = await callAgentForBatch(workerIdx, kb, plansChunk); // workerIdx picks AGENT[workerIdx]
-        results.push(...part);
-      } catch (err) {
-        console.warn("Worker", workerIdx, "retrying batch", myBatchIdx, err);
-        await new Promise(r => setTimeout(r, 3000));
-        const part = await callAgentForBatch(workerIdx, kb, plansChunk);
-        results.push(...part);
-      }
-      */
       
       try {
       const part = await callAgentForBatch(workerIdx, kb, plansChunk);

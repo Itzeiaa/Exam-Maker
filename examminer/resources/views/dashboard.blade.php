@@ -68,8 +68,8 @@
         <a href="/my-exams" class="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-xl mb-2">
           <i class="fas fa-file-alt mr-3"></i> My Exams
         </a>
-        <a href="/cms" class="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-xl mb-2">
-          <i class="fas fa-clipboard-list mr-3"></i> CMS</a>
+        <!--a href="/cms" class="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-xl mb-2">
+          <i class="fas fa-clipboard-list mr-3"></i> CMS</a-->
       </nav>
 
       <div class="mt-auto p-4 border-t border-gray-100 bg-gray-50">
@@ -114,8 +114,8 @@
           <i class="fas fa-file-alt mr-3 group-hover:scale-110 transition-transform duration-200"></i>
           My Exams
         </a>
-        <a href="/cms" class="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-xl mb-2">
-          <i class="fas fa-clipboard-list mr-3"></i> CMS</a>
+        <!--a href="/cms" class="flex items-center px-4 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-xl mb-2">
+          <i class="fas fa-clipboard-list mr-3"></i> CMS</a-->
       </nav>
 
       <!-- User Profile Section -->
@@ -208,6 +208,10 @@
               <i class="fas fa-plus inline mr-2"></i>
               Create Your First Exam
             </a>
+            <!--button onclick="showTutorial()" class="border-2 border-blue-500 text-blue-500 px-8 py-4 rounded-lg hover:bg-blue-50 transition-all duration-200 font-medium text-lg hover:border-blue-600">
+              <i class="fas fa-info-circle inline mr-2"></i>
+              Learn How It Works
+            </button-->
           </div>
         </div>
       </section>
@@ -496,6 +500,5 @@
   document.getElementById('logoutBtn_m')?.addEventListener('click', doLogout);
 })();
 </script>
-
 </body>
 </html>

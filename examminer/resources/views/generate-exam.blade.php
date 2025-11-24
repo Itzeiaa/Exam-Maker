@@ -1109,47 +1109,42 @@ function renderTOS(){
             </div>
             <div style="font-size: 8px; max-width: 140px; overflow:hidden" class="tosFileList small mt-1 text-gray-600"> ${((tosRows[i]?.files||[]).map(f=>escapeHTML(f.name)).join(' • '))} </div>
           </td>
-          <!--td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-28 text-center" data-field="r"  value="${(d.cells.r||[]).join(', ')}"></td>
-          <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-28 text-center" data-field="u"  value="${(d.cells.u||[]).join(', ')}"></td>
-          <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-28 text-center" data-field="ap" value="${(d.cells.ap||[]).join(', ')}"></td>
-          <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-28 text-center" data-field="an" value="${(d.cells.an||[]).join(', ')}"></td>
-          <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-28 text-center" data-field="cr" value="${(d.cells.cr||[]).join(', ')}"></td>
-          <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-28 text-center" data-field="ev" value="${(d.cells.ev||[]).join(', ')}"></td-->
+          
           
           <td class="text-center">
-  <input style="width:70px" type="number" min="0"
+  <input style="width:40px" type="number" min="0"
          class="tosCount border rounded px-2 py-1 w-28 text-center"
          data-field="r" value="${d.cells.r.length}">
 </td>
 <td class="text-center">
-  <input style="width:70px" type="number" min="0"
+  <input style="width:40px" type="number" min="0"
          class="tosCount border rounded px-2 py-1 w-28 text-center"
          data-field="u" value="${d.cells.u.length}">
 </td>
 <td class="text-center">
-  <input style="width:70px" type="number" min="0"
+  <input style="width:40px" type="number" min="0"
          class="tosCount border rounded px-2 py-1 w-28 text-center"
          data-field="ap" value="${d.cells.ap.length}">
 </td>
 <td class="text-center">
-  <input style="width:70px" type="number" min="0"
+  <input style="width:40px" type="number" min="0"
          class="tosCount border rounded px-2 py-1 w-28 text-center"
          data-field="an" value="${d.cells.an.length}">
 </td>
 <td class="text-center">
-  <input style="width:70px" type="number" min="0"
+  <input style="width:40px" type="number" min="0"
          class="tosCount border rounded px-2 py-1 w-28 text-center"
          data-field="cr" value="${d.cells.cr.length}">
 </td>
 <td class="text-center">
-  <input style="width:70px" type="number" min="0"
+  <input style="width:40px" type="number" min="0"
          class="tosCount border rounded px-2 py-1 w-28 text-center"
          data-field="ev" value="${d.cells.ev.length}">
 </td>
 
           
           <td class="text-center"><strong>${d.total}</strong></td>
-          <td class="text-center"><input style="width:70px" class="tosCell border rounded px-2 py-1 w-20 text-center" data-field="days" type="number" min="0" value="${d.days}"></td>
+          <td class="text-center"><input style="width:40px" class="tosCell border rounded px-2 py-1 w-20 text-center" data-field="days" type="number" min="0" value="${d.days}"></td>
           <td class="text-center">${(round2[i]||0).toFixed(2)}</td>
           <td class="text-right"><button type="button" id="removeBtn" class="rmRow text-xs text-red-600">Remove</button></td>
         </tr>
